@@ -20,5 +20,5 @@ router.put("/organisation/edit", isAuth, editOrganisation);
 router.get("/organisation/:id", isAuth, getOrganisationById);
 router.get("/organisations", isAuth, getAllOrganisations);
 
-router.post("/organisation/join/:id", isAuth,joinOrganisation,);
+router.post("/organisation/join", isAuth,joinOrganisation,);
 module.exports = router;
