@@ -3,11 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OrganisationSchema = new Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
+   
     nom: {
         type: String,
         required: true
