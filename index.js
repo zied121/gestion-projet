@@ -1,0 +1,25 @@
+const express = require('express');
+const connectDb = require('./config/ConnectDb');
+const app = express();
+const cors = require('cors');
+
+const userRouter=require('./Routes/UserRoutes');
+const AuthRoutes=require('./Routes/AuthRoutes');
+const OrganisationRoutes=require('./Routes/OrganisationRoutes');
+
+require("dotenv").config({
+    path: "./config/.env"
+});
+
+const port = process.env.port ||5000;
+app.listen(port, (error) => {
+    (error) ? console.log('server is failed'): console.log('server is running on port ' + port);
+});
+connectDb();
+app.use(express.json());
+app.use(cors());
+
+
+app.use('/api',OrganisationRoutes);
+app.use('/api',AuthRoutes);
+app.use('/api',userRouter);
