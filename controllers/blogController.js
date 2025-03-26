@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const authMiddleware = require('../middlewares/authMiddleware');
 const Blog = require("../models/Blog");
-
+const User = require('../models/User');
 
 
 //Fonction pour récupérer tous les blogs
@@ -100,41 +100,45 @@ exports.deleteBlog = async (req, res) => {
   }
 };
 
+
 // Ajouter un commentaire à un blog
+// Fonction pour ajouter un commentaire
 exports.addComment = async (req, res) => {
   try {
-    const { blogId } = req.params;  // Récupérer l'ID du blog depuis les paramètres
-    const { content } = req.body;  // Récupérer le contenu du commentaire depuis le corps de la requête
+    const { blogId } = req.params;
+    const { content } = req.body;
 
-    // Vérifier que l'utilisateur est authentifié (avec le middleware authMiddleware)
+    // Vérification de l'authentification
     if (!req.user) {
       return res.status(401).json({ message: 'Vous devez être connecté pour commenter' });
     }
 
-                  // Trouver le blog à modifier
+    // Trouver le blog
     const blog = await Blog.findById(blogId);
     if (!blog) {
       return res.status(404).json({ message: 'Blog non trouvé' });
     }
 
-                     // Créer un nouveau commentaire
+    // Créer un nouveau commentaire
     const newComment = {
       author: req.user.id,  // L'ID de l'utilisateur qui fait le commentaire
       content: content,     // Le contenu du commentaire
     };
 
-                 // Ajouter le commentaire au tableau des commentaires du blog
+    // Ajouter le commentaire au tableau des commentaires du blog
     blog.comments.push(newComment);
 
-               // Sauvegarder les modifications dans la base de données
+    // Sauvegarder les modifications
     await blog.save();
 
+    // Retourner la réponse
     res.status(201).json({ message: 'Commentaire ajouté avec succès', blog });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Erreur serveur lors de l\'ajout du commentaire' });
   }
 };
+
 
 //route pour récupérer les commentaires d'un blog. 
 exports.getComments = async (req, res) => {
@@ -224,4 +228,90 @@ exports.deleteComment = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur", error: err });
   }
 };
+// Récupérer les blogs avec pagination
+exports.getBlogsPaginated = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
+    const blogs = await Blog.find().skip(skip).limit(limit);
+    const totalBlogs = await Blog.countDocuments();
+
+    res.json({
+      blogs,
+      currentPage: page,
+      totalPages: Math.ceil(totalBlogs / limit),
+      totalBlogs,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// Fonction pour paginer les commentaires
+exports.getCommentsPaginated = async (req, res) => {
+  const blogId = req.params.blogId; // ID du blog pour lequel on veut récupérer les commentaires
+  const page = parseInt(req.query.page) || 1; // Page courante
+  const limit = parseInt(req.query.limit) || 10; // Nombre de commentaires par page
+  const skip = (page - 1) * limit; // Calcul du décalage
+
+  try {
+    // Recherche du blog avec ses commentaires
+    const blog = await Blog.findById(blogId).select('comments'); // On récupère seulement les commentaires
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog non trouvé' });
+    }
+
+    // Paginer les commentaires directement en base de données
+    const totalComments = blog.comments.length; // Nombre total de commentaires
+    const totalPages = Math.ceil(totalComments / limit); // Calcul du nombre total de pages
+
+    // On extrait seulement les commentaires nécessaires pour la page courante
+    const comments = blog.comments.slice(skip, skip + limit);
+
+    return res.status(200).json({
+      comments,
+      totalComments,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Erreur serveur lors de la récupération des commentaires' });
+  }
+};
+
+
+
+//route pour ajouter un like à un blog
+exports.likeBlog = async (req, res) => {
+  try {
+    const { blogId } = req.params; // Récupération de l'ID du blog depuis l'URL
+    const userId = req.user.id; // ID de l'utilisateur connecté (extrait du token)
+
+    // Vérifier si le blog existe
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog non trouvé" });
+    }
+
+    // Vérifier si l'utilisateur a déjà aimé ce blog
+    if (blog.likes.includes(userId)) {
+      return res.status(400).json({ message: "Vous avez déjà aimé ce blog." });
+    }
+
+    // Ajouter l'utilisateur à la liste des likes
+    blog.likes.push(userId);
+    blog.likeCount += 1; // Augmenter le nombre de likes
+
+    // Sauvegarder les modifications
+    await blog.save();
+
+    res.status(200).json({ message: "Blog aimé avec succès.", likeCount: blog.likeCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur lors du like du blog." });
+  }
+};

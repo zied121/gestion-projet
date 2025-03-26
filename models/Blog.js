@@ -14,7 +14,10 @@ const BlogSchema = new mongoose.Schema({
   content: { type: String, required: true },
   author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   comments: [CommentSchema],   // Tableau de commentaires
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Liste des utilisateurs qui ont aimé
+  likeCount: { type: Number, default: 0 },
 });
 
 

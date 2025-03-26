@@ -33,10 +33,10 @@ exports.createFeedback = async (req, res) => {
       return res.status(400).json({ message: "Le commentaire est requis" });
     }
 
-    const newFeedback = new Feedback({ 
-      blog: req.params.blogId, 
-      user: req.user.id, 
-      comment 
+    const newFeedback = new Feedback({
+      blog: req.params.blogId,
+      user: req.user.id,
+      comment
     });
 
     await newFeedback.save();
@@ -72,7 +72,7 @@ exports.updateFeedback = async (req, res) => {
   }
 };
 
-//Supprimer un feedback
+// Supprimer un feedback
 exports.deleteFeedback = async (req, res) => {
   try {
     const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
