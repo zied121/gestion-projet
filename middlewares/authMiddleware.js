@@ -12,7 +12,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     // Vérifie le token et décode les informations utilisateur
-   const verified = jwt.verify(token, process.env.JWT_SECRET); // Utilisation de la clé secrète depuis les variables d'environnement
+    const verified = jwt.verify(token, process.env.JWT_SECRET); // Utilisation de la clé secrète depuis les variables d'environnement
 
     req.user = verified; // Ajoute les informations de l'utilisateur dans la requête
 
