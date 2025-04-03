@@ -6,6 +6,8 @@ const cors = require('cors');
 const userRouter=require('./Routes/UserRoutes');
 const AuthRoutes=require('./Routes/AuthRoutes');
 const OrganisationRoutes=require('./Routes/OrganisationRoutes');
+const feedbackRoutes = require('./Routes/feedbackRoutes');
+const blogRoutes = require('./Routes/blogRoutes');
 
 require("dotenv").config({
     path: "./config/.env"
@@ -23,3 +25,5 @@ app.use(cors());
 app.use('/api/organisation',OrganisationRoutes);
 app.use('/api',AuthRoutes);
 app.use('/api/users',userRouter);
+app.use("/api/feedbacks", feedbackRoutes);
+app.use("/api/blogs", blogRoutes);
