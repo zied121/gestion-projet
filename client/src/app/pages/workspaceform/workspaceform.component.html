@@ -1,0 +1,101 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <img
+        class="mx-auto h-10 w-auto"
+        src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+        alt="Your Company"
+      />
+      <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+        Welcome
+      </h2>
+    </div>
+  
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <hlm-tabs tab="Create" class="w-full">
+        <hlm-tabs-list class="w-full grid grid-cols-2" aria-label="Workspace Tabs">
+          <button hlmTabsTrigger="Create">Create workspace</button>
+          <button hlmTabsTrigger="Join">Join workspace</button>
+        </hlm-tabs-list>
+  
+        <div hlmTabsContent="Create">
+          <form [formGroup]="createWorkspaceForm" (ngSubmit)="onCreateWorkspace()">
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>Create</h3>
+                <p hlmCardDescription>
+                  Fill in the details below to create a new workspace.
+                </p>
+              </div>
+              <div hlmCardContent>
+                <label class="block my-4" hlmLabel>
+                  Name
+                  <input
+                    type="text"
+                    class="mt-1.5 w-full"
+                    formControlName="nom"
+                    required
+                    hlmInput
+                  />
+                </label>
+  
+                <label class="block my-4" hlmLabel>
+                  Matricule Fiscal
+                  <input
+                    type="text"
+                    class="mt-1.5 w-full"
+                    formControlName="matricule_fiscal"
+                    required
+                    hlmInput
+                  />
+                </label>
+                <div *ngIf="showError"  hlmBadge variant='destructive'>{{ errorMessage }}</div>
+                <div *ngIf="showSuccess"  hlmBadge  variant="secondary">{{ susccessMessage }}</div>
+              </div>
+             
+              
+              <div hlmCardFooter>
+                <button type="submit" hlmBtn [disabled]="!createWorkspaceForm.valid">
+                  Create Workspace
+                </button>
+              </div>
+            </section>
+          </form>
+        </div>
+  
+        <!-- JOIN WORKSPACE TAB -->
+        <div hlmTabsContent="Join">
+          <form [formGroup]="joinWorkspaceForm" (ngSubmit)="onJoinWorkspace()">
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h3 hlmCardTitle>Join</h3>
+                <p hlmCardDescription>
+                  Enter the code of the workspace you want to join.
+                </p>
+              </div>
+              <div hlmCardContent>
+                <label class="block my-4" hlmLabel>
+                  Workspace Code
+                  <input
+                    type="password"
+                    class="mt-1.5 w-full"
+                    formControlName="code"
+                    required
+                    hlmInput
+                  />
+                </label>
+                <div *ngIf="showError"  hlmBadge variant='destructive'>{{ errorMessage }}</div>
+                <div *ngIf="showSuccess"  hlmBadge  variant="secondary">{{ susccessMessage }}</div>
+              </div>
+              
+              <div hlmCardFooter>
+                <button type="submit" hlmBtn [disabled]="!joinWorkspaceForm.valid">
+                  Join Workspace
+                </button>
+              </div>
+            </section>
+          </form>
+        </div>
+      </hlm-tabs>
+    </div>
+  </div>
+  

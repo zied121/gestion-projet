@@ -20,6 +20,6 @@ app.use(express.json());
 app.use(cors());
 
 
-app.use('/api',OrganisationRoutes);
+app.use('/api/organisation',OrganisationRoutes);
 app.use('/api',AuthRoutes);
-app.use('/api',userRouter);
+app.use('/api/users',userRouter);
