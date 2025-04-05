@@ -5,7 +5,7 @@ const isauth = async (req, res, next) => {
     try {
         const authHeader = req.header("Authorization");
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({ message: "No token provided or malformed header" });
+            return res.status(404).json({ message: "No token provided or malformed header" });
         }
 
         const token = authHeader.replace("Bearer ", "").trim();
@@ -14,8 +14,9 @@ const isauth = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+     
 
-        req.user = user; // attach user to request
+        req.user = user; 
         next();
     } catch (err) {
         console.error("Auth error:", err);

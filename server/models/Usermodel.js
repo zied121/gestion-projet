@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
     nom: {
@@ -14,13 +15,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    role: {
-        type: String,
-        enum: ['Admin_Application', 'Admin_Organisation', 'Manager', 'Membre'],
-        default: 'Membre'
+    Organisation_id: {
+         type: Schema.Types.ObjectId,
+        ref: 'Organisation',
+        required: false
     },
+    role:{
+        type:String,
+        required:false
+    }
 }, {
-    timestamps: true // Automatically adds createdAt and updatedAt fields
+    timestamps: true 
 });
 
 module.exports = mongoose.model('Utilisateur', userSchema);

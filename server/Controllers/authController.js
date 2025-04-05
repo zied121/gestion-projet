@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
+const { ForgetPasswordEmail } = require('../config/nodemailer');
 const login = async (req, res) => {
     const { email, motDePasse } = req.body;
     try {
@@ -26,7 +26,8 @@ const login = async (req, res) => {
         const token = jwt.sign({ id: user._id }, 'zied', { expiresIn: '10h' });
 
         res.status(200).json({
-            token
+            token,
+            role: user.role
         });
     }
     catch (err) {
@@ -37,56 +38,38 @@ const login = async (req, res) => {
 }
 const forgetPassword = async (req, res) => {
     const { email } = req.body;
+
     try {
-        const user = await User.findOne({
-            email
-        });
+        const user = await User.findOne({ email });
+
         if (!user) {
-            return res.status(401).json({
-                msg: 'No user found'
-            });
+            return res.status(401).json({ msg: 'No user found' });
         }
 
         // Generate a new password
         const newPassword = crypto.randomBytes(8).toString('hex');
-        user.password = newPassword;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update the password
+        user.motDePasse = hashedPassword;
         await user.save();
 
+        // Debug log (remove in production)
+        console.log(`Password updated for user ${email}`);
+
         // Send the new password to the user's email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'your-email@gmail.com',
-                pass: 'your-email-password'
-            }
+        await ForgetPasswordEmail(email, newPassword);
+
+        return res.status(200).json({
+            msg: 'New password sent to your email'
         });
 
-        const mailOptions = {
-            from: 'your-email@gmail.com',
-            to: user.email,
-            subject: 'Password Reset',
-            text: `Your new password is: ${newPassword}`
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                return res.status(500).json({
-                    msg: 'Failed to send email'
-                });
-            } else {
-                res.status(200).json({
-                    msg: 'New password sent to your email'
-                });
-            }
-        });
-    }
-    catch (err) {
-        res.status(400).json({
-            msg: "operation failed"
-        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ msg: 'Server error' });
     }
 }
-
 const signup = async (req, res) => {
     const user = req.body;
     try {
@@ -105,7 +88,7 @@ const signup = async (req, res) => {
         });
     }
 
-};
+}
 
 
 
