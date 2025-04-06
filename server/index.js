@@ -3,11 +3,14 @@ const connectDb = require('./config/ConnectDb');
 const app = express();
 const cors = require('cors');
 
+const projectRoutes = require('./Routes/ProjectRoutes');
+const taskRoutes = require('./Routes/TaskRoutes');
 const userRouter=require('./Routes/UserRoutes');
 const AuthRoutes=require('./Routes/AuthRoutes');
 const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
+
 
 require("dotenv").config({
     path: "./config/.env"
@@ -27,3 +30,5 @@ app.use('/api',AuthRoutes);
 app.use('/api/users',userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use('/api', projectRoutes);
+app.use('/api', taskRoutes);
