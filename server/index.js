@@ -8,7 +8,10 @@ const AuthRoutes=require('./Routes/AuthRoutes');
 const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
-
+const RoomRoutes = require('./Routes/RoomRoutes');
+const { RoomSchema , validateRoomSchema }= require('./models/Room')
+const validate = require('./Middleware/validate');
+const isauth = require('./Middleware/isauth');
 require("dotenv").config({
     path: "./config/.env"
 });
@@ -27,3 +30,4 @@ app.use('/api',AuthRoutes);
 app.use('/api/users',userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/rooms", RoomRoutes);
