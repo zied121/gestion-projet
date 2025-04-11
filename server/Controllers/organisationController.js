@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Organisation = require('../models/OrganisationModel'); // Assuming you have a model defined
 const User = require('../models/Usermodel');
+const cloudinary = require('../config/cloudinary'); // adjust path if needed
+const streamifier = require('streamifier');
 
 const addOrganisation = async (req, res) => {
     console.log(req.user);
@@ -21,13 +23,49 @@ const addOrganisation = async (req, res) => {
     }
 }
 const editOrganisation = async (req, res) => {
+    console.log(req.body);
+    console.log(req.params.id);
+
     try {
-        const updatedOrganisation = await Organisation.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const organisationFound = await Organisation.findById(req.params.id);
+        if (!organisationFound) {
+            return res.status(404).json({ msg: 'Organisation not found' });
+        }
+
+        const updateData = { ...req.body };
+
+        if (req.file) {
+            const streamUpload = () => {
+                return new Promise((resolve, reject) => {
+                    const stream = cloudinary.uploader.upload_stream(
+                        {
+                            folder: 'organisation_images',
+                            resource_type: 'image',
+                        },
+                        (error, result) => {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    );
+                    streamifier.createReadStream(req.file.buffer).pipe(stream);
+                });
+            };
+
+            const uploadResult = await streamUpload();
+            updateData.image = uploadResult.secure_url;
+        }
+
+        const updatedOrganisation = await Organisation.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
         res.status(200).json(updatedOrganisation);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        console.error(err);
+        res.status(500).json({ message: 'Update failed', error: err.message });
     }
-}
+};
 const deleteOrganisation = async (req, res) => {
     try {
         await Organisation.findByIdAndDelete(req.params.id);

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const isAuth = require("../Middleware/isauth");
 const isAdmin = require("../Middleware/adminorganisation");
+const upload = require('../Middleware/multer'); // using memoryStorage
 
 const {
 
@@ -23,14 +24,14 @@ router.post("/join", isAuth,joinOrganisation,);
 
 router.post("/add", isAuth, addOrganisation);
 
+router.get("/organisations", isAuth, getAllOrganisations);
+
 //check if user has an organisation
 router.get("/check", isAuth, checkUserOrganisation)
 
 router.delete("/delete", isAuth, deleteOrganisation);
 
-router.put("/edit", isAuth, editOrganisation);
-
-router.get("/organisations", isAuth, getAllOrganisations);
+router.put("/edit/:id", isAuth,upload.single('image'), editOrganisation);
 
 router.get("/:id", isAuth, getOrganisationById);
 

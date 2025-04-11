@@ -13,7 +13,23 @@ const OrganisationSchema = new Schema({
         required: true,
         unique: true
     },
+    type: {
+        type: String,
+        required: true,
+    },
     image: {
+        type: String,
+        required: false
+    },
+    description: {
+        type: String,
+        required: false
+    },
+    image: {
+        type: String,
+        required: false
+    },
+    location:{
         type: String,
         required: false
     },

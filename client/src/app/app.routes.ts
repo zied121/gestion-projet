@@ -5,7 +5,7 @@ import { ForgetpswdComponent } from './pages/forgetpswd/forgetpswd.component';
 import { WorkspaceformComponent } from './pages/workspaceform/workspaceform.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProfileDetailsComponent } from './pages/profile-details/profile-details.component';
-
+import { OrganisationProfileComponent } from './pages/organisation-profile/organisation-profile.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
@@ -46,8 +46,13 @@ export const routes: Routes = [
         canActivate: [authGuard,adminGuard]
       },
       {
-        path: 'workspace/:id/profile',
+        path: 'profile/:id',
         component: ProfileDetailsComponent
+      },
+      {
+        path:'workspace/:id/profile',
+        canActivate: [adminGuard],
+        component: OrganisationProfileComponent
       }
     ]
   }

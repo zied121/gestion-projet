@@ -29,8 +29,8 @@ export class UserService {
     });
   }
 
-  updateUser(userId: string, userData: any,organisationid:any): Observable<any> {
-    return this.http.put(`${API_URL}/update/${organisationid}/${userId}`, userData, {
+  updateUser(userId: string, userData: any): Observable<any> {
+    return this.http.put(`${API_URL}/update/${userId}`, userData, {
       headers: this.getAuthHeaders()
     });
   }

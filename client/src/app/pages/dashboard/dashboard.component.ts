@@ -120,7 +120,7 @@ export class DashboardComponent implements OnInit {
   saveEditUser(ctx: any): void {
     if (this.selectedUserIndex !== null) {
       const userId = this.listUsers[this.selectedUserIndex]._id;
-      this.userService.updateUser(userId, this.editUserData, this.workspaceId).subscribe({
+      this.userService.updateUser(userId, this.editUserData).subscribe({
         next: () => {
           // ✅ After successful update, refresh the user list
           this.getUsersByOrganisation();

@@ -37,7 +37,12 @@ export class OrganisationService {
       headers: this.getAuthHeaders()
     });
   }
-
+  
+  updateOrganisationById(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/edit/${id}`, data, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
   
   getAllUsersByOrganisation(organisationId: string): Observable<any> {

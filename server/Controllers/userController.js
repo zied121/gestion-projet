@@ -2,6 +2,8 @@ const User = require('../models/Usermodel');
 const bcrypt = require('bcrypt');
 const Organisation = require('../models/OrganisationModel');
 const { sendOrganiastionCodeEmail } = require('../config/nodemailer');
+const cloudinary = require('../config/cloudinary'); // adjust path if needed
+const streamifier = require('streamifier');
 
 const getOneUser = async (req, res) => {
     const id = req.user;
@@ -27,33 +29,50 @@ const getOneUser = async (req, res) => {
 
 };
 
-
 const updateUser = async (req, res) => {
-   const id = req.params.id;
-    const user = req.body;
+    const id = req.params.id;
+  
     try {
-        const userFound = await User.findById(id);
-       
-        if (!userFound) {
-            return res.status(401).send({
-                msg: 'No user found'
-            });
-            
-        } else {
-            await User.findByIdAndUpdate(id, user);
-            res.status(200).json({
-                msg: 'user updated successfully'
-            });
-        }
-
+      const userFound = await User.findById(id);
+      if (!userFound) {
+        return res.status(404).json({ msg: 'User not found' });
+      }
+  
+      const updateData = { ...req.body };
+  
+      if (req.file) {
+        const streamUpload = () => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: 'profile_images',
+                resource_type: 'image',
+              },
+              (error, result) => {
+                if (error) {
+                  reject(error);
+                } else {
+                  resolve(result);
+                }
+              }
+            );
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+          });
+        };
+  
+        const uploadResult = await streamUpload();
+        updateData.image = uploadResult.secure_url;
+      }
+  
+      await User.findByIdAndUpdate(id, updateData);
+  
+      return res.status(200).json({ msg: 'User updated successfully' });
+  
     } catch (err) {
-        res.status(400).json({
-            msg: "update is failed"
-        });
+      console.error(err);
+      return res.status(500).json({ msg: 'Update failed', error: err.message });
     }
-
-};
-
+  }
 const createUser = async (req, res) => {
     const user = req.body;
     try {

@@ -1,9 +1,9 @@
-<div class="p-6 bg-white rounded-lg shadow-md">
+<div class="overflow-x-auto mt-6 p-8">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-semibold">Manage Users of your Workspace</h2>
-
+  
     <hlm-dialog>
-      <button id="add-user" brnDialogTrigger hlmBtn>add User</button>
+      <button id="add-user" brnDialogTrigger hlmBtn class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add User</button>
       <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
         <hlm-dialog-header>
           <h3 hlmDialogTitle>Add User</h3>
@@ -21,31 +21,28 @@
           <div class="items-center grid grid-cols-4 gap-4">
             <label hlmLabel for="add-role" class="text-right">Role</label>
             <select
-            id="add-role"
-            [(ngModel)]="newUserData.role"
-            class="col-span-3 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          >
-            <option disabled value="">Select role</option>
-            <option value="Member">Member</option>
-            <option value="Manager">Manager</option>
-          </select>
+              id="add-role"
+              [(ngModel)]="newUserData.role"
+              class="col-span-3 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+              <option disabled value="">Select role</option>
+              <option value="Member">Member</option>
+              <option value="Manager">Manager</option>
+            </select>
           </div>
           <div class="items-center grid grid-cols-4 gap-4">
             <label for="add-password" class="text-right">Password</label>
             <div class="col-span-3 flex gap-2">
               <input
-              type="text"
-              id="add-password"
-              [(ngModel)]="newUserData.motDePasse"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Generated password"
-              />
+                type="text"
+                id="add-password"
+                [(ngModel)]="newUserData.motDePasse"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Generated password" />
               <button
-              type="button"
-              (click)="generatePassword()"
-              class="px-3 py-2 bg-indigo-500 text-white text-sm rounded-md hover:bg-indigo-600"
-              >
-              Generate
+                type="button"
+                (click)="generatePassword()"
+                class="px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">
+                Generate
               </button>
             </div>
           </div>
@@ -56,77 +53,91 @@
       </hlm-dialog-content>
     </hlm-dialog>
   </div>
-
-  <div class="overflow-x-auto">
-    <table class="min-w-full table-auto border border-gray-200 rounded-lg">
-      <thead class="bg-gray-100 text-gray-600 text-sm uppercase">
-        <tr>
-          <th class="py-3 px-6 text-left">Name</th>
-          <th class="py-3 px-6 text-left">Email</th>
-          <th class="py-3 px-6 text-left">Role</th>
-          <th class="py-3 px-6 text-center">Action</th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-700">
-        <tr *ngFor="let user of listUsers; let i = index" class="border-b hover:bg-gray-50">
-          <td class="py-3 px-6">{{ user.nom }}</td>
-          <td class="py-3 px-6">{{ user.email }}</td>
-          <td class="py-3 px-6">{{ user.role }}</td>
-          <td class="py-3 px-6 text-center space-x-2">
+  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Name</th>
+        <th class="px-12 py-3.5 text-sm font-normal text-left text-gray-500">Status</th>
+        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Role</th>
+        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Email</th>
+        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Teams</th>
+        <th class="px-4 py-3.5 text-sm text-gray-500">Action</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let user of listUsers; let i = index" class="hover:bg-gray-50">
+        <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+          <div class="flex items-center gap-x-3">
+            <img class="object-cover w-10 h-10 rounded-full" [src]="'https://ui-avatars.com/api/?name=' + user.nom + '&background=random'" alt="Avatar" />
+            <div>
+              <h2 class="font-medium text-gray-800">{{ user.nom }}</h2>
+              <p class="text-sm text-gray-600">{{ user.nom | lowercase }}</p>
+            </div>
+          </div>
+        </td>
+        <td class="px-12 py-4 text-sm text-gray-700 whitespace-nowrap">
+          <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2 bg-emerald-100/60">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span class="text-sm text-emerald-500">Active</span>
+          </div>
+        </td>
+        <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.role }}</td>
+        <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.email }}</td>
+        <td class="px-4 py-4 text-sm whitespace-nowrap">
+          <div class="flex items-center gap-x-2">
+            <p class="px-3 py-1 text-xs text-indigo-500 rounded-full bg-indigo-100/60">Design</p>
+            <p class="px-3 py-1 text-xs text-blue-500 rounded-full bg-blue-100/60">Product</p>
+            <p class="px-3 py-1 text-xs text-pink-500 rounded-full bg-pink-100/60">Marketing</p>
+          </div>
+        </td>
+        <td class="px-4 py-4 text-sm whitespace-nowrap">
+          <div class="flex items-center gap-x-4">
             <hlm-dialog>
-              <button brnDialogTrigger hlmBtn (click)="editUser(i)">Edit</button>
+              <button brnDialogTrigger (click)="editUser(i)" title="Edit" class="text-gray-500 hover:text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+              </button>
               <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
                 <hlm-dialog-header>
-                  <h3 hlmDialogTitle>Edit profile</h3>
-                  <p hlmDialogDescription>Update the user's information.</p>
+                  <h3 hlmDialogTitle>Edit User</h3>
+                  <p hlmDialogDescription>Update user info here.</p>
                 </hlm-dialog-header>
-                <div class="py-4 grid gap-4">
-                  <div class="items-center grid grid-cols-4 gap-4">
-                    <label hlmLabel for="edit-name" class="text-right">Name</label>
-                    <input hlmInput id="edit-name" [(ngModel)]="editUserData.nom" class="col-span-3" />
-                  </div>
-                  <div class="items-center grid grid-cols-4 gap-4">
-                    <label hlmLabel for="edit-email" class="text-right">Email</label>
-                    <input hlmInput id="edit-email" [(ngModel)]="editUserData.email" class="col-span-3" />
-                  </div>
-                  <div class="items-center grid grid-cols-4 gap-4">
-                    <label hlmLabel for="edit-role" class="text-right">Role</label>
-                    <select
-                    id="edit-role"
-                    [(ngModel)]="editUserData.role"
-                    class="col-span-3 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    <option disabled value="">Select role</option>
-                    <option value="Member">Member</option>
-                    <option value="Manager">Manager</option>
-                  </select>
-                  </div>
+                <div class="grid gap-4 py-4">
+                  <label>Name <input hlmInput [(ngModel)]="editUserData.nom" /></label>
+                  <label>Email <input hlmInput [(ngModel)]="editUserData.email" /></label>
+                  <label>Role
+                    <select [(ngModel)]="editUserData.role" class="w-full px-2 py-1 border rounded">
+                      <option disabled value="">Select role</option>
+                      <option value="Member">Member</option>
+                      <option value="Manager">Manager</option>
+                    </select>
+                  </label>
                 </div>
                 <hlm-dialog-footer>
-                  <button hlmBtn type="submit" (click)="saveEditUser(ctx)">Save</button>
+                  <button hlmBtn (click)="saveEditUser(ctx)">Save</button>
                 </hlm-dialog-footer>
               </hlm-dialog-content>
             </hlm-dialog>
 
             <hlm-alert-dialog>
-              <button id="edit-profile" variant="outline" brnAlertDialogTrigger hlmBtn>Delete Account</button>
+              <button brnAlertDialogTrigger title="Delete" class="text-gray-500 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg></button>
               <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
                 <hlm-alert-dialog-header>
-                  <h3 hlmAlertDialogTitle>Are you absolutely sure?</h3>
-                  <p hlmAlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account and remove your data from our
-                    servers.
-                  </p>
+                  <h3 hlmAlertDialogTitle>Are you sure?</h3>
+                  <p hlmAlertDialogDescription>This action will permanently remove the user.</p>
                 </hlm-alert-dialog-header>
                 <hlm-alert-dialog-footer>
                   <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
-                  <button hlmAlertDialogAction (click)="deleteUser(i); ctx.close()">Delete account</button>
+                  <button hlmAlertDialogAction (click)="deleteUser(i); ctx.close()">Delete</button>
                 </hlm-alert-dialog-footer>
               </hlm-alert-dialog-content>
             </hlm-alert-dialog>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
