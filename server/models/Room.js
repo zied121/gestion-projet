@@ -11,11 +11,11 @@ const RoomSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Utilisateur',
     },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Utilisateur'
     }],
     projectID: {
         type: String,
