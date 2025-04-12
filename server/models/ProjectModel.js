@@ -11,12 +11,12 @@ const projectSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Utilisateur',
         required: true
     },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Utilisateur'
     }],
     tasks: [{
         type: mongoose.Schema.Types.ObjectId,
