@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('../models/Usermodel');
 
 const projectSchema = new mongoose.Schema({
     name: {
@@ -11,12 +12,12 @@ const projectSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Utilisateur',
         required: true
     },
     members: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Utilisateur'
     }],
     tasks: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -32,8 +33,6 @@ const projectSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
-
-}, {
 
 });
 

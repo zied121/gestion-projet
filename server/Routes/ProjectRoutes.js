@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const isAuth = require('../Middleware/isauth');
-
+const checkRole = require('../Middleware/checkRole');
 const {
     createProject,
     getProjects,
@@ -10,10 +10,9 @@ const {
     deleteProject
 } = require('../Controllers/projectController');
 
-router.post('/projects', isAuth, createProject);
-router.get('/projects', isAuth, getProjects);
+router.post('/projects', isAuth, checkRole(['manager', 'admin']), createProject);
+router.put('/projects/:id', isAuth, checkRole(['manager', 'admin']), updateProject);
+router.delete('/projects/:id', isAuth, checkRole(['manager', 'admin']), deleteProject);
+router.get('/projects', isAuth, getProjects); // members/managers peuvent voir les projets
 router.get('/projects/:id', isAuth, getProjectById);
-router.put('/projects/:id', isAuth, updateProject);
-router.delete('/projects/:id', isAuth, deleteProject);
-
 module.exports = router;

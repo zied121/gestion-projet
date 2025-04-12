@@ -1,4 +1,5 @@
 const Project = require('../models/ProjectModel');
+const User = require('../models/Usermodel'); // Add this line to import the User model
 
 const createProject = async (req, res) => {
     try {
@@ -15,7 +16,13 @@ const createProject = async (req, res) => {
 
 const getProjects = async (req, res) => {
     try {
-        const projects = await Project.find().populate('owner members tasks');
+        const projects = await Project.find({
+            $or: [
+                { owner: req.user._id },
+                { members: req.user._id }
+            ]
+        }).populate('owner members tasks');
+
         res.status(200).json(projects);
     } catch (err) {
         res.status(400).json({ message: err.message });

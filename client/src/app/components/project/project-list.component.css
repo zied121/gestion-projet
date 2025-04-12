@@ -1,0 +1,16 @@
+.jira-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.jira-table th,
+.jira-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+.clickable-row {
+  cursor: pointer;
+}
+.clickable-row:hover {
+  background-color: #f1f1f1;
+}
