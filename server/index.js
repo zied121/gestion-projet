@@ -1,3 +1,4 @@
+require("dotenv").config({path: "./config/.env"});
 const express = require('express');
 const connectDb = require('./config/ConnectDb');
 const app = express();
@@ -18,9 +19,6 @@ const { RoomSchema , validateRoomSchema }= require('./models/Room');
 const validate = require('./Middleware/validate');
 const isauth = require('./Middleware/isauth');
 
-require("dotenv").config({
-    path: "./config/.env"
-});
 
 
 //app.use(express.json());
