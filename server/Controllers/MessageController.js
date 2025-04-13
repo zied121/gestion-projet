@@ -1,12 +1,13 @@
 const Message = require("../models/MessageModal");
 const { Room } = require("../models/Room");
-const io = require('../index');
+//const io = require('../index');
+/* functional create const createMessage = (io) => async (req, res) => {
 
-const createMessage = async (req, res) => {
+//const createMessage = async (req, res) => {
   try {
     const { room, content, file } = req.body;
     const sender = req.user._id; 
-
+console.log(sender)
     const existingRoom = await Room.findById(room);
     if (!existingRoom) {
       return res.status(404).json({ message: "Room non trouvée." });
@@ -20,7 +21,43 @@ const createMessage = async (req, res) => {
     });
 
     const savedMessage = await message.save();
+    const io = req.app.get('io');
+
     io.to(room).emit('receiveMessage', savedMessage);
+    console.log(savedMessage)
+    res.status(201).json(savedMessage);
+  } catch (error) {
+    console.error("Erreur lors de la création du message :", error);
+    res.status(500).json({ message: "Erreur serveur lors de l'envoi du message." });
+  }
+};
+const createMessage = (io) => async (req, res) => {*/
+
+const createMessage = async (req, res) => {
+  try {
+    const { room, content } = req.body;
+    const sender = req.user?._id; // Optional chaining to avoid crash
+    console.log('Sender ID:', sender);
+    const file = req.file;
+
+    const existingRoom = await Room.findById(room);
+    if (!existingRoom) {
+      return res.status(404).json({ message: "Room non trouvée." });
+    }
+
+    const message = new Message({
+      sender,
+      room,
+      content,
+      file: file ? file.filename : null
+    });
+
+    const savedMessage = await message.save();
+
+    /*Emit to room via WebSocket
+    io.to(room).emit('receiveMessage', savedMessage);
+    console.log('Message envoyé via WebSocket:', savedMessage);
+*/
     res.status(201).json(savedMessage);
   } catch (error) {
     console.error("Erreur lors de la création du message :", error);

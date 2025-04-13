@@ -9,6 +9,7 @@ import { ProfileDetailsComponent } from './pages/profile-details/profile-details
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { RoomComponent } from './room/room.component';
 
 export const routes: Routes = [
   {
@@ -25,11 +26,14 @@ export const routes: Routes = [
     path: 'signup',
     component: SignupComponent
   },
-  {
+  {  
     path: 'forgetpswd',
     component: ForgetpswdComponent
   },
-
+  {
+    path: 'room/:id', 
+    component: RoomComponent
+  },
   // Protected routes with navbar via MainLayoutComponent
   {
     path: '',

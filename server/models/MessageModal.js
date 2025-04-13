@@ -15,7 +15,7 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  attachment: {
+  file: {
     type: String,
     default: null,
   },

@@ -10,40 +10,38 @@ const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
 const RoomRoutes = require('./Routes/RoomRoutes');
+//const MessageRoutes = require('./Routes/MessageRoute')(io);
 const MessageRoutes = require('./Routes/MessageRoute');
+
 const GoogleAuth = require('./Routes/GoogleAuthRoute')
 const { RoomSchema , validateRoomSchema }= require('./models/Room');
 const validate = require('./Middleware/validate');
 const isauth = require('./Middleware/isauth');
+
 require("dotenv").config({
     path: "./config/.env"
 });
 
 
-app.use(express.json());
-
-//io
+//app.use(express.json());
 // Création du serveur HTTP
 const server = http.createServer(app);
-
+/*
 // Création de l'instance Socket.IO
 const io = socketIo(server, {
   cors: {
     origin: '*', // Autorise toutes les origines (tu peux restreindre ça à ton domaine Angular)
   }
 });
+app.set('io', io);
 
 // Gérer les connexions socket
 io.on('connection', (socket) => {
-  console.log('✅ Un utilisateur est connecté :', socket.id);
-
-  // Rejoindre une room spécifique
+  console.log('Un utilisateur est connecté :', socket.id);
   socket.on('joinRoom', (roomId) => {
     socket.join(roomId);
-    console.log(`➡️ L'utilisateur ${socket.id} a rejoint la room ${roomId}`);
+    console.log(`L'utilisateur ${socket.id} a rejoint la room ${roomId}`);
   });
-
-  // Recevoir un message et le diffuser aux membres de la room
   socket.on('sendMessage', (data) => {
     const { roomId, message } = data;
     io.to(roomId).emit('receiveMessage', message);
@@ -52,9 +50,11 @@ io.on('connection', (socket) => {
     console.log(`📡 Event: ${event}`, args);
   })
   socket.on('disconnect', () => {
-    console.log('❌ Un utilisateur s\'est déconnecté');
+    console.log('Un utilisateur s\'est déconnecté');
   });
 });
+*/
+
 
 const port = process.env.port ||5000;
 app.listen(port, (error) => {
@@ -75,4 +75,4 @@ app.use("/api/message", MessageRoutes);
 app.use('/google', GoogleAuth);
 
 
-module.exports = io;
+//module.exports = io;

@@ -14,7 +14,7 @@ router.get('/callback', async (req, res) => {
   const { code } = req.query;
   const { tokens } = await oauth2Client.getToken(code);
   oauth2Client.setCredentials(tokens);
-  res.send('✅ Google authentication successful. You can now create meetings!');
+  res.send('Google authentication successful. You can now create meetings!');
 });
 
 module.exports = router;

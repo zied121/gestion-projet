@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const isauth = require('../Middleware/isauth');
+const { io } = require('../index');
+const upload = require('../Middleware/upload');
+
 const {
     createMessage, getAllMessages,getMessageById , deleteMessage , getMessagesByRoom , pinMessage , updateMessage
 } = require("../Controllers/MessageController");
+//router.post('/createMsg', createMessage(io));
 
-router.post('/createMsg', createMessage);
+router.post('/createMsg',isauth, upload.single('file'),  createMessage);
 router.put('/updateMsg/:id', isauth, updateMessage);
 router.delete('/deleteMsg/:id', isauth, deleteMessage);
 router.patch('/pinMsg/:id', pinMessage); //one attribute
