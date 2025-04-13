@@ -1,0 +1,8 @@
+<div>
+  <input #messageInput type="text" placeholder="Type your message" />
+  <button (click)="sendMessage()">Send</button>
+</div>
+
+<div>
+  <p>Latest: {{ latestMessage?.content }}</p>
+</div>
