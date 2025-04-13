@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const isAuth = require('../Middleware/isauth');
-const { suggestTaskTitleHF } = require('../Controllers/aiController');
+const { summarizeWithCohere } = require('../Controllers/aiController');
 
-router.post('/ai/suggest-title-hf', isAuth, suggestTaskTitleHF);
+router.post('/ai/summarize', isAuth, summarizeWithCohere);
+
 
 
 module.exports = router;

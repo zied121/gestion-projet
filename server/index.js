@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: './config/.env' });
 const express = require('express');
 const connectDb = require('./config/ConnectDb');
 const app = express();
@@ -11,10 +11,6 @@ const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
 const aiRoutes = require('./Routes/aiRoutes');
-
-require("dotenv").config({
-    path: "./config/.env"
-});
 
 const port = process.env.port ||5000;
 app.listen(port, (error) => {

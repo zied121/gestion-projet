@@ -1,37 +1,41 @@
 const axios = require('axios');
 
-const HF_API_KEY = process.env.HUGGINGFACE_API_KEY;
-const MODEL = 'mistralai/Mistral-7B-Instruct-v0.1'; // ou 'google/flan-t5-small'
+const COHERE_API_KEY = process.env.COHERE_API_KEY;
 
-const suggestTaskTitleHF = async (req, res) => {
-    const { description } = req.body;
+const summarizeWithCohere = async (req, res) => {
+    const { text } = req.body;
 
-    if (!description) {
-        return res.status(400).json({ message: "Description is required" });
+    if (!text || text.length < 20) {
+        return res.status(400).json({ message: "Texte trop court à résumer" });
     }
 
     try {
-        const result = await axios.post(
-            `https://api-inference.huggingface.co/models/${MODEL}`,
+        const response = await axios.post(
+            'https://api.cohere.ai/v1/generate',
             {
-                inputs: `Génère un titre clair pour cette tâche : ${description}`
+                model: 'command',
+                prompt: `Résume ce texte en une phrase concise :\n\n${text}`,
+                max_tokens: 100,
+                temperature: 0.3,
+                k: 0,
+                stop_sequences: ["--"],
+                return_likelihoods: "NONE"
             },
             {
                 headers: {
-                    Authorization: `Bearer ${HF_API_KEY}`,
+                    Authorization: `Bearer ${COHERE_API_KEY}`,
                     'Content-Type': 'application/json'
-                },
-                timeout: 60000
+                }
             }
         );
 
-        const response = result.data;
-        const title = response?.[0]?.generated_text || 'Titre non généré';
-        res.status(200).json({ title });
+        const summary = response.data?.generations?.[0]?.text.trim() || 'Résumé non généré';
+        res.status(200).json({ summary });
+
     } catch (error) {
-        console.error(error.response?.data || error.message);
-        res.status(500).json({ message: 'Erreur Hugging Face', error: error.message });
+        console.error('Erreur Cohere:', error.response?.data || error.message);
+        res.status(500).json({ message: 'Erreur Cohere', error: error.message });
     }
 };
 
-module.exports = { suggestTaskTitleHF };
+module.exports = { summarizeWithCohere };
