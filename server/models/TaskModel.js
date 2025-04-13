@@ -22,7 +22,6 @@ const taskSchema = new mongoose.Schema({
     assignee: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Utilisateur',
-        ref: 'User'
     }
 }, {
     timestamps: true
