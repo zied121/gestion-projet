@@ -59,6 +59,10 @@
             type: String,
             enum: ['En_attente', 'Confirme', 'Annule', 'Terminé'],
             default: 'En_attente'
+        }, 
+        file: {
+            type: String,
+            default: 'none'
         }
     }, {
         timestamps: true

@@ -7,20 +7,15 @@ const Project = require('../models/ProjectModel');
 const emailService = require('../config/emailservice');
 const { checkAndSendReminders } = require('../config/node-cron');
 
-
-
-// Fonction utilitaire pour synchroniser les événements Holiday
 const syncHolidayEvents = async () => {
     const holidays = await Holiday.find();
     const createdEvents = [];
-
     for (const holiday of holidays) {
         const existingEvent = await Event.findOne({
             type: 'Holiday',
             date_debut: holiday.date,
             titre: holiday.titre,
         });
-
         if (!existingEvent) {
             const holidayEvent = new Event({
                 type: 'Holiday',
@@ -28,34 +23,27 @@ const syncHolidayEvents = async () => {
                 description: holiday.description,
                 date_debut: holiday.date,
                 date_fin: holiday.date,
-                organisateur_id: null,  // ou undefined
+                organisateur_id: null,  
                 status: 'Confirme'
             });
             await holidayEvent.save();
             createdEvents.push(holidayEvent);
         }
     }
-
     return createdEvents;
 };
-
-
 // Fonction utilitaire pour synchroniser les événements Deadline
 const syncDeadlineEvents = async () => {
     const projects = await Project.find()
         .populate('owner', 'nom email')
         .populate('members', 'nom email');
-    
-    const createdEvents = [];
-
+     const createdEvents = [];
     for (const project of projects) {
         // Vérification de l'existence de l'événement Deadline
         const existingEvent = await Event.findOne({
             type: 'Deadline',
             projet_id: project._id,  
-            date_fin: project.end_date 
-        });
-
+            date_fin: project.end_date });
         if (!existingEvent) {
             // Créer un nouvel événement Deadline s'il n'existe pas
             const deadlineEvent = new Event({
@@ -69,8 +57,7 @@ const syncDeadlineEvents = async () => {
                 status: 'Confirme'
             });
             await deadlineEvent.save();
-
-            // Ajouter les participants à l'événement
+            // Ajouter les participants à l'event
             if (project.members?.length > 0) {
                 const participantsData = project.members.map(member => ({
                     event_id: deadlineEvent._id,
@@ -94,7 +81,7 @@ const syncDeadlineEvents = async () => {
     return createdEvents;
 };
 
-// Fonction principale pour récupérer et synchroniser les événements
+
 const getEvents = async (req, res) => {
     try {
         // Synchronisation des événements Holiday et Deadline
@@ -102,12 +89,10 @@ const getEvents = async (req, res) => {
             syncHolidayEvents(),  
             syncDeadlineEvents()  
         ]);
-
         // Récupérer tous les événements avec leurs détails
         const events = await Event.find()
             .populate('organisateur_id', 'nom prenom email')
             .lean();
-
         // Récupérer tous les participants en une seule requête
         const allParticipants = await Participant.find({
             event_id: { $in: events.map(e => e._id) }
@@ -169,107 +154,17 @@ const getEventById = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
-/*
+
 const createEvent = async (req, res) => {
-    try {
-        const eventData = {
-            ...req.body,
-            organisateur_id: req.user._id
-        };
-        if (eventData.type === 'Holiday') {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez pas créer un événement de type Holiday.'
-            });
-        }
-        if (eventData.type === 'Deadline') {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez pas créer un événement de type Deadline.'
-            }); 
-        }
-        
 
-        if (eventData.type === 'Tâche' && req.body.participants?.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Les tâches ne peuvent pas avoir de participants.'
-            });
-        }
-
-        if (['Réunion', 'Événement'].includes(eventData.type) && req.body.participants?.length > 0) {
-            let participants = req.body.participants.filter(
-                participantId => participantId.toString() !== req.user._id.toString()
-            );
-
-            if (participants.length === 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Vous devez ajouter au moins un invité à l'événement."
-                });
-            }
-
-            const existingUsers = await Utilisateur.find({
-                _id: { $in: participants }
-            });
-
-            if (existingUsers.length !== participants.length) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Certains participants n\'existent pas dans la base de données.'
-                });
-            }
-
-            eventData.participants = participants;
-        }
-         // ➕ Génération automatique du lien Jitsi Meet si type Réunion/Événement et en ligne
-         if (['Réunion', 'Événement'].includes(eventData.type) && eventData.emplacement === 'En ligne') {
-            eventData.lien = generateJitsiLink(eventData.titre || 'event', eventData.date_debut);
-        }
-
-        const event = new Event(eventData);
-        await event.save();
-
-        if (['Réunion', 'Événement'].includes(eventData.type) && eventData.participants?.length > 0) {
-            const participantsData = eventData.participants.map(participantId => ({
-                event_id: event._id,
-                id_participant: participantId,
-                organisateur_id: req.user._id
-            }));
-
-            await Participant.insertMany(participantsData);
-        }
-        if (['Réunion', 'Événement'].includes(event.type) && event.participants?.length > 0) {
-            const fullParticipants = await Utilisateur.find({
-                _id: { $in: event.participants }
-            });
-        
-            // Envoie email à chaque participant
-            for (const participant of fullParticipants) {
-                await emailService.sendEmail(
-                    participant.email,
-                    emailService.getEventCreationEmail(event, participant)
-                );
-            }
-        
-            // Planifie les rappels
-            await emailService.scheduleEventReminder(event, fullParticipants);
-        }
-
-        res.status(201).json({
-            success: true,
-            data: event
-        });
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};*/
-const createEvent = async (req, res) => {
+    
     try {
       const eventData = {
         ...req.body,
         organisateur_id: req.user._id
+        
       };
+      
   
       // Validation des types d'événements
       if (eventData.type === 'Holiday' || eventData.type === 'Deadline') {
@@ -318,6 +213,9 @@ const createEvent = async (req, res) => {
       if (['Réunion', 'Événement'].includes(eventData.type) && eventData.emplacement === 'En ligne') {
         eventData.lien = generateJitsiLink(eventData.titre || 'event', eventData.date_debut);
       }
+      if (req.file) {
+        eventData.file = `/uploads/${req.file.filename}`;
+      }
   
       // Création de l'événement
       const event = new Event(eventData);
@@ -334,9 +232,7 @@ const createEvent = async (req, res) => {
   
         await Participant.insertMany(participantsData);
       }
-  
-// Dans la fonction createEvent, remplacez le bloc d'envoi d'emails par :
-
+//mail
 if (['Réunion', 'Événement'].includes(event.type) && eventData.participants?.length > 0) {
     try {
   
@@ -376,6 +272,7 @@ if (['Réunion', 'Événement'].includes(event.type) && eventData.participants?.
       res.status(400).json({ message: err.message });
     }
   };
+  
 const updateEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
@@ -406,7 +303,6 @@ const updateEvent = async (req, res) => {
                     end_date: req.body.date_fin
                 });
             }
-            await checkAndSendReminders();
 
             return res.status(200).json({
                 success: true,
@@ -455,14 +351,12 @@ const deleteEvent = async (req, res) => {
                 message: 'Événement non trouvé'
             });
         }
-         // Vérification si l'événement est de type 'Holiday'
          if (event.type === 'Holiday') {
             return res.status(403).json({
                 success: false,
                 message: 'Les événements de type Holiday ne peuvent pas être supprimés.'
             });
         }
-
         if (event.organisateur_id.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,

@@ -16,7 +16,7 @@ router.use(isAuth);
 // Routes publiques pour consulter les jours fériés
 router.get('/', getAllHolidays);
 
-router.post('/addHoliday', isAuth, addHoliday);
+router.post('/addHoliday', addHoliday);
 router.put('/:id', isAuth, updateHoliday);
 router.delete('/:id', isAuth, deleteHoliday);
 

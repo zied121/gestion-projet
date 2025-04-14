@@ -63,7 +63,7 @@ function getEventReminderEmail(event, user, recipientEmail, timeInfoOverride = n
   return {
     from: emailConfig.user,
     to: recipientEmail,
-    subject,
+    subject: `Rappel de l'évenement ${event.type}: ${event.titre}`, 
     text: `Bonjour ${user.nom || 'invité'},\n\nCeci est un rappel que l'événement "${event.titre}" (${event.type}) aura lieu ${timeInfo}, soit à ${new Date(event.date_debut).toLocaleString()}.\n\nLieu : ${event.emplacement}${event.lien ? `\nLien : ${event.lien}` : ''}\n\nMerci.`,
     html: `
       <p>Bonjour <strong>${user.nom || 'invité'}</strong>,</p>
@@ -71,6 +71,7 @@ function getEventReminderEmail(event, user, recipientEmail, timeInfoOverride = n
       <p><strong>Lieu :</strong> ${event.emplacement}</p>
       ${event.lien ? `<p><strong>Lien :</strong> <a href="${event.lien}">${event.lien}</a></p>` : ''}
       <p>Merci,</p>
+       <p>Cordialement,</p>
     `
   };
 }

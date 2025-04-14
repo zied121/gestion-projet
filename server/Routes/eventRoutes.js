@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const isAuth = require('../Middleware/isauth');
+const upload = require('../Middleware/upload');
+
+
 const {
   getEvents,
     getEventById,
@@ -15,7 +18,8 @@ const {
 router.use(isAuth);
 
 // Routes pour la gestion des événements
-router.post('/create', createEvent);
+
+router.post('/create',isAuth,upload.single('file'), createEvent);
 router.get('/list', getEvents);
 router.put('/update/:id', updateEvent);
 router.delete('/delete/:id', deleteEvent);
@@ -24,3 +28,7 @@ router.get('/', getEventsByUser);
 router.delete('/cleanup', deleteHolidayAndDeadlineEvents);
 
 module.exports = router;
+
+
+
+
