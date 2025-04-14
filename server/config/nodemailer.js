@@ -40,8 +40,20 @@ const ForgetPasswordEmail = async (email, password) => {
     }
 }   
 
-
+const SendOtpMail = async (to, subject, otp) => {
+    try {
+        await transporter.sendMail({
+            from: "ziedbensalah10@gmail.com",
+            to: to,
+            subject: subject,
+            html: `<p>Your OTP code is: <strong>${otp}</strong></p>`
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
 module.exports = {
     sendOrganiastionCodeEmail,
-    ForgetPasswordEmail
+    ForgetPasswordEmail,
+    SendOtpMail 
 };

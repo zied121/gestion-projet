@@ -5,23 +5,30 @@ const cloudinary = require('../config/cloudinary'); // adjust path if needed
 const streamifier = require('streamifier');
 
 const addOrganisation = async (req, res) => {
-    console.log(req.user);
     try {
+        const foundUser = await User.findById(req.user._id); // Use req.user._id directly
+
+        if (!foundUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         const newOrganisation = new Organisation({
             ...req.body,
-            admin: req.user
+            admin: foundUser._id,
         });
+
         const savedOrganisation = await newOrganisation.save();
 
-        const user = await User.findById(req.user.id);
-        user.Organisation_id = savedOrganisation._id;
-        await user.save();
+        foundUser.Organisation_id = savedOrganisation._id;
+        foundUser.role = "admin";
+        await foundUser.save();
 
         res.status(201).json(savedOrganisation);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
-}
+};
+
 const editOrganisation = async (req, res) => {
     console.log(req.body);
     console.log(req.params.id);
@@ -119,6 +126,7 @@ const joinOrganisation = async (req, res) => {
         await organisation.save();
 
         user.Organisation_id = organisation._id;
+        user.role= "Membre";
          await user.save();        
         // const token = jwt.sign({ id: user._id, organisation_id: User.Organisation_id}, 'zied', { expiresIn: '10h' });
         // console.log("token",token);

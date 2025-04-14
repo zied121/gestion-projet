@@ -44,22 +44,39 @@ export class LoginComponent {
 
 
 
-  onSubmit() {
-    const payload = { email: this.email, motDePasse: this.motDePasse };
+  otp: string = '';
+step: 'login' | 'verify_otp' = 'login';
 
-    this.authService.login(payload).subscribe({
-      next: (response:any) => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('role', response.role);
+onSubmit() {
+  const payload = { email: this.email, motDePasse: this.motDePasse };
+  this.authService.login(payload).subscribe({
+    next: (response: any) => {
+      if (response.step === 'verify_otp') {
+        this.step = 'verify_otp';
         this.showError = false;
-        this.router.navigate(['/workspaceform']);
-      },
-      error: (err) => {
-        this.showError = true;
-        this.errorMessage = err.error.msg || 'An error occurred during login.';
       }
-    });
-  }
+    },
+    error: (err) => {
+      this.showError = true;
+      this.errorMessage = err.error.msg || 'Login failed.';
+    }
+  });
+}
+
+verifyOtp() {
+  const payload = { email: this.email, otp: this.otp };
+  this.authService.verifyOtp(payload).subscribe({
+    next: (res: any) => {
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('role', res.role);
+      this.router.navigate(['/workspaceform']);
+    },
+    error: (err) => {
+      this.showError = true;
+      this.errorMessage = err.error.msg || 'OTP failed.';
+    }
+  });
+}
 }
 
 

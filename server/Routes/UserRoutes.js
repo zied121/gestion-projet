@@ -11,10 +11,10 @@ const {
     getOneUser,
     deleteUser,
     updateUser,
-
 } = require("../Controllers/userController");
 
 router.post("/add/:organisationId",isAuth,isAdmin, createUser)
+
 
 router.delete("/delete/:organisationId/:id", isAuth,isAdmin, deleteUser)
 

@@ -51,6 +51,10 @@ export class AuthService {
     return Role;
 }
 
+
+verifyOtp(payload: { email: string; otp: string }): Observable<any> {
+  return this.http.post(`${this.baseUrl}/verify-otp`, payload);
+}
 forgetPassword(email: string): Observable<any> {
   return this.http.post(`${this.baseUrl}/forget`, { email });
 }

@@ -9,6 +9,10 @@ import { OrganisationProfileComponent } from './pages/organisation-profile/organ
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { SubscriptionComponent } from './pages/subscription/subscription.component';
+
+import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
+import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +33,15 @@ export const routes: Routes = [
     path: 'forgetpswd',
     component: ForgetpswdComponent
   },
+  {
+    path: 'success',
+    component: SuccessPaiementComponent
+  },
+  {
+    path: 'cancel',
+    component: FailPaiementComponent
+  },
+
 
   // Protected routes with navbar via MainLayoutComponent
   {
@@ -53,6 +66,10 @@ export const routes: Routes = [
         path:'workspace/:id/profile',
         canActivate: [adminGuard],
         component: OrganisationProfileComponent
+      },
+      {
+        path: 'subscription',
+        component: SubscriptionComponent
       }
     ]
   }

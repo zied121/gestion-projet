@@ -35,6 +35,19 @@ const userSchema = new mongoose.Schema({
     role:{
         type:String,
         required:false
+    },
+    Status:{
+        type:String,
+        required:false,
+        default:'inactive'
+    },
+    otpCode: {
+        type: String,
+        required: false
+    },
+    otpExpires: {
+        type: Date,
+        required: false
     }
 }, {
     timestamps: true 

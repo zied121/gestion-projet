@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OrganisationSchema = new Schema({
-   
     nom: {
         type: String,
         required: true
@@ -11,11 +10,11 @@ const OrganisationSchema = new Schema({
     matricule_fiscal: {
         type: String,
         required: true,
-        unique: true
+       
     },
     type: {
         type: String,
-        required: true,
+        required: false,
     },
     image: {
         type: String,
@@ -25,11 +24,7 @@ const OrganisationSchema = new Schema({
         type: String,
         required: false
     },
-    image: {
-        type: String,
-        required: false
-    },
-    location:{
+    location: {
         type: String,
         required: false
     },
@@ -40,14 +35,19 @@ const OrganisationSchema = new Schema({
     },
     membres: [{
         type: Schema.Types.ObjectId,
-        ref: 'Utilisateur'
+        ref: 'Utilisateur',
+        required: false
     }],
     projets: [{
         type: Schema.Types.ObjectId,
-        ref: 'Projet'
-    }]
+        ref: 'Projet',
+        required: false
+    }],
+    subscription: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subscription',
+        required: false
+    }
 });
-
-
 
 module.exports = mongoose.model('Organisation', OrganisationSchema);

@@ -1,39 +1,54 @@
 const User = require('../models/Usermodel');
-const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { ForgetPasswordEmail } = require('../config/nodemailer');
+
+const { ForgetPasswordEmail,SendOtpMail } = require('../config/nodemailer');
 const login = async (req, res) => {
     const { email, motDePasse } = req.body;
+
     try {
-        const user = await User.findOne({
-            email
-        });
-        if (!user) {
-            return res.status(401).json({
-                msg: 'No user found'
-            });
-        }
+        const user = await User.findOne({ email });
+        if (!user) return res.status(401).json({ msg: 'No user found' });
+
         const isMatch = await bcrypt.compare(motDePasse, user.motDePasse);
-        if (!isMatch) {
-            return res.status(401).json({
-            msg: 'Incorrect password'
-            });
+        if (!isMatch) return res.status(401).json({ msg: 'Incorrect password' });
+
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+        user.otpCode = otp;
+        user.otpExpires = otpExpires;
+        await user.save();
+
+        // Send OTP via email
+        await SendOtpMail(user.email, 'Your OTP code', otp);
+
+        return res.status(200).json({ msg: 'OTP sent to email', step: 'verify_otp' });
+    } catch (err) {
+        res.status(500).json({ msg: 'Operation failed' });
+    }
+};
+const verifyOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user || user.otpCode !== otp || user.otpExpires < Date.now()) {
+            return res.status(400).json({ msg: 'Invalid or expired OTP' });
         }
 
-        // Generate a token
+        user.Status = 'active';
+        user.otpCode = null;
+        user.otpExpires = null;
+        await user.save();
+
         const token = jwt.sign({ id: user._id }, 'zied', { expiresIn: '10h' });
 
-        res.status(200).json({
-            token,
-            role: user.role
-        });
-    }
-    catch (err) {
-        res.status(400).json({
-            msg: "operation failed"
-        });
+        res.status(200).json({ token, role: user.role, msg: 'Login successful' });
+    } catch (err) {
+        res.status(500).json({ msg: 'OTP verification failed' });
     }
 }
 const forgetPassword = async (req, res) => {
@@ -95,6 +110,7 @@ const signup = async (req, res) => {
 module.exports = {
     login,
     forgetPassword,
-    signup
+    signup,
+    verifyOtp
 
 }

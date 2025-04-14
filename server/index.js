@@ -8,6 +8,7 @@ const AuthRoutes=require('./Routes/AuthRoutes');
 const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
+const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
 
 require("dotenv").config({
     path: "./config/.env"
@@ -16,6 +17,8 @@ require("dotenv").config({
 const port = process.env.port ||5000;
 app.listen(port, (error) => {
     (error) ? console.log('server is failed'): console.log('server is running on port ' + port);
+
+    
 });
 connectDb();
 app.use(express.json());
@@ -27,3 +30,14 @@ app.use('/api',AuthRoutes);
 app.use('/api/users',userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use('/api/subscription', SubscriptionRoutes);
+
+
+
+
+
+
+
+
+
+
