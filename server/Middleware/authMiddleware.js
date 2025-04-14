@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
+const jwt = require("jsonwebtoken");
 const authMiddleware = (req, res, next) => {
 
   // Récupération du token depuis l'en-tête Authorization
@@ -12,9 +13,9 @@ const authMiddleware = (req, res, next) => {
 
   try {
     // Vérifie le token et décode les informations utilisateur
-    const verified = jwt.verify(token, process.env.JWT_SECRET); // Utilisation de la clé secrète depuis les variables d'environnement
+    const verified = jwt.verify(token, 'zied'); // Utilisation de la clé secrète .env
 
-    req.user = verified; // Ajoute les informations de l'utilisateur dans la requête
+    req.user = verified;                       // Ajoute les informations de l'utilisateur dans la requête
 
     next(); // Passe à la route suivante
   } catch (err) {

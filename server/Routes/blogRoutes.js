@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { addComment } = require("../controllers/blogController");
+const { addComment } = require("../Controllers/blogController");
 
 const {
     getBlogs,
@@ -13,9 +13,10 @@ const {
     deleteBlog,
     updateComment,
     deleteComment
-} = require("../controllers/blogController");
+} = require("../Controllers/blogController");
 
-const authMiddleware = require("../middleware/authMiddleware");
+
+const authMiddleware = require("../middleware/authMiddleware");    //	Pour protéger les routes qui nécessitent un utilisateur connecté
 
 // 🔹 Récupérer tous les blogs (avec pagination)
 router.get("/", getBlogsPaginated);
@@ -53,7 +54,7 @@ router.post("/:blogId/comments", authMiddleware, async (req, res) => {
     }
 });
 
-// 🔹 Route pour récupérer les commentaires d'un blog avec pagination
+// 🔹 Route pour récupérer les comments d'un blog avec pagination 
 router.get("/:blogId/comments", getCommentsPaginated);
 
 // 🔹 Route pour modifier un commentaire
@@ -66,3 +67,7 @@ router.delete("/:blogId/comments/:commentId", authMiddleware, deleteComment);
 router.post("/like/:blogId", authMiddleware, likeBlog); 
 
 module.exports = router;
+
+
+
+
