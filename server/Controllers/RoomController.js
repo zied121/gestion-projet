@@ -33,6 +33,7 @@ const getProjectPerUser = async (req,res) => {
 
 const createRoomPerProject = async (req, res) => {
   try {
+    //await ValideRoomSchema.validate(req.body, { abortEarly: false });
     const projectId = req.params.id; 
     const { roomName } = req.body; 
 
