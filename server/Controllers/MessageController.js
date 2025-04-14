@@ -1,135 +1,125 @@
-const Message = require("../models/MessageModal");
-const { Room } = require("../models/Room");
-//const io = require('../index');
-/* functional create const createMessage = (io) => async (req, res) => {
+const Message = require('../models/MessageModal');
+const Room = require('../models/Room');
 
-//const createMessage = async (req, res) => {
-  try {
-    const { room, content, file } = req.body;
-    const sender = req.user._id; 
-console.log(sender)
-    const existingRoom = await Room.findById(room);
-    if (!existingRoom) {
-      return res.status(404).json({ message: "Room non trouvée." });
-    }
-
-    const message = new Message({
-      sender,
-      room,
-      content,
-      file: file || null,
-    });
-
-    const savedMessage = await message.save();
-    const io = req.app.get('io');
-
-    io.to(room).emit('receiveMessage', savedMessage);
-    console.log(savedMessage)
-    res.status(201).json(savedMessage);
-  } catch (error) {
-    console.error("Erreur lors de la création du message :", error);
-    res.status(500).json({ message: "Erreur serveur lors de l'envoi du message." });
-  }
-};
-const createMessage = (io) => async (req, res) => {*/
-
+// ✅ Créer un message
 const createMessage = async (req, res) => {
-  try {
-    const { room, content } = req.body;
-    const sender = req.user?._id; // Optional chaining to avoid crash
-    console.log('Sender ID:', sender);
-    const file = req.file;
+  const { room, content } = req.body;
+  const file = req.file;
 
-    const existingRoom = await Room.findById(room);
-    if (!existingRoom) {
-      return res.status(404).json({ message: "Room non trouvée." });
+  if (!room || !content) {
+    return res.status(400).json({ message: 'Room et contenu sont requis.' });
+  }
+
+  try {
+    const roomExists = await Room.findById(room);
+    if (!roomExists) {
+      return res.status(404).json({ message: 'Room non trouvée.' });
     }
 
     const message = new Message({
-      sender,
+      sender: req.user._id,
       room,
       content,
-      file: file ? file.filename : null
+      file: file?.filename || null,
     });
 
     const savedMessage = await message.save();
 
-    /*Emit to room via WebSocket
+    // ✅ Émettre le message à tous les membres connectés à cette room
+    const io = req.app.get('io');
     io.to(room).emit('receiveMessage', savedMessage);
-    console.log('Message envoyé via WebSocket:', savedMessage);
-*/
+
     res.status(201).json(savedMessage);
-  } catch (error) {
-    console.error("Erreur lors de la création du message :", error);
-    res.status(500).json({ message: "Erreur serveur lors de l'envoi du message." });
+  } catch (err) {
+    console.error('Erreur création message :', err.message);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
 };
 
+// ✅ Récupérer les messages d'une room
 const getMessagesByRoom = async (req, res) => {
-    try {
-      const roomId = req.params.id;
-        if (!roomId) {
-        return res.status(400).json({ message: "ID de la room invalide" });
-      }
-        const messages = await Message.find({ room: roomId });
-      if (!messages || messages.length === 0) {
-        return res.status(404).json({ message: "Aucun message trouvé pour cette room" });
-      }
-  
-      res.status(200).json(messages);
-    } catch (error) {
-      console.error("Erreur récupération messages de la room :", error);
-      res.status(500).json({ message: 'Erreur récupération messages de la room', error: error.message });
-    }
-  };
-  
-  
-  const updateMessage = async (req, res) => {
-    try {
-      const message = await Message.findById(req.params.id);
-      if (!message) return res.status(404).json({ message: 'Message non trouvé' });
-  
-      // Optionnel : vérifier si req.user._id === message.sender pour autoriser la modif
-      message.content = req.body.content || message.content;
-      const updated = await message.save();
-      res.json(updated);
-    } catch (error) {
-      res.status(500).json({ message: 'Erreur mise à jour', error });
-    }
-  };
+  const { id: roomId } = req.params;
 
-  const deleteMessage = async (req, res) => {
-    try {
-      const message = await Message.findByIdAndDelete(req.params.id);
-      if (!message) return res.status(404).json({ message: 'Message non trouvé' });
-      res.json({ message: 'Message supprimé' });
-    } catch (error) {
-      res.status(500).json({ message: 'Erreur suppression', error });
-    }
-  };
+  try {
+    const messages = await Message.find({ room: roomId })
+        .populate('sender', 'nom email')
+        .sort({ createdAt: 1 });
 
-  const pinMessage = async (req, res) => {
-    try {
-      const message = await Message.findById(req.params.id);
-  
-      if (!message) {
-        return res.status(404).json({ message: "Message not found" });
-      }
+    res.status(200).json(messages);
+  } catch (err) {
+    console.error('Erreur récupération messages :', err.message);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
 
-      message.isPinned = !message.isPinned;
-      await message.save();
-      res.status(200).json({ message: "Pin status updated", isPinned: message.isPinned });
-    } catch (error) {
-      console.error("Erreur lors du pin/unpin :", error);
-      res.status(500).json({ message: "Erreur serveur" });
+// ✅ Mettre à jour un message
+const updateMessage = async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+
+  if (!content) {
+    return res.status(400).json({ message: 'Contenu requis pour la mise à jour.' });
+  }
+
+  try {
+    const updated = await Message.findByIdAndUpdate(
+        id,
+        { content },
+        { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Message non trouvé.' });
     }
-  };
-  
-  
-  module.exports = {
-    createMessage,
-    updateMessage,
-    deleteMessage,
-    getMessagesByRoom,
-    pinMessage,
-  };
+
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error('Erreur update message :', err.message);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+// ✅ Supprimer un message
+const deleteMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deleted = await Message.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Message non trouvé.' });
+    }
+
+    res.status(200).json({ message: 'Message supprimé avec succès.' });
+  } catch (err) {
+    console.error('Erreur suppression message :', err.message);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+// ✅ Épingler ou désépingler un message
+const pinMessage = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const message = await Message.findById(id);
+    if (!message) {
+      return res.status(404).json({ message: 'Message non trouvé.' });
+    }
+
+    message.isPinned = !message.isPinned;
+    await message.save();
+
+    res.status(200).json({ message: 'État de l’épingle mis à jour.', pinned: message.isPinned });
+  } catch (err) {
+    console.error('Erreur épinglage message :', err.message);
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+module.exports = {
+  createMessage,
+  getMessagesByRoom,
+  updateMessage,
+  deleteMessage,
+  pinMessage,
+};

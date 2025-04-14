@@ -11,53 +11,44 @@ const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
 const RoomRoutes = require('./Routes/RoomRoutes');
-//const MessageRoutes = require('./Routes/MessageRoute')(io);
 const MessageRoutes = require('./Routes/MessageRoute');
-
 const GoogleAuth = require('./Routes/GoogleAuthRoute')
-const { RoomSchema , validateRoomSchema }= require('./models/Room');
-const validate = require('./Middleware/validate');
-const isauth = require('./Middleware/isauth');
+const { Server } = require('socket.io');
 
+require('dotenv').config();
 
-
-//app.use(express.json());
-// Création du serveur HTTP
 const server = http.createServer(app);
-/*
-// Création de l'instance Socket.IO
-const io = socketIo(server, {
-  cors: {
-    origin: '*', // Autorise toutes les origines (tu peux restreindre ça à ton domaine Angular)
-  }
+const io = new Server(server, {
+    cors: {
+        origin: "*", // remplace * par l'URL de ton frontend si besoin
+        methods: ["GET", "POST"]
+    }
 });
-app.set('io', io);
 
-// Gérer les connexions socket
+app.set('io', io); // <-- utile pour y accéder dans les contrôleurs
+
 io.on('connection', (socket) => {
-  console.log('Un utilisateur est connecté :', socket.id);
-  socket.on('joinRoom', (roomId) => {
-    socket.join(roomId);
-    console.log(`L'utilisateur ${socket.id} a rejoint la room ${roomId}`);
-  });
-  socket.on('sendMessage', (data) => {
-    const { roomId, message } = data;
-    io.to(roomId).emit('receiveMessage', message);
-  });
-  socket.onAny((event, ...args) => {
-    console.log(`📡 Event: ${event}`, args);
-  })
-  socket.on('disconnect', () => {
-    console.log('Un utilisateur s\'est déconnecté');
-  });
-});
-*/
+    console.log('✅ Nouvelle connexion Socket.IO', socket.id);
 
+    // Rejoindre une room
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`🟢 ${socket.id} a rejoint la room : ${roomId}`);
+    });
 
-const port = process.env.port ||5000;
-app.listen(port, (error) => {
-    (error) ? console.log('server is failed'): console.log('server is running on port ' + port);
+    // Quitter la room
+    socket.on('leaveRoom', (roomId) => {
+        socket.leave(roomId);
+        console.log(`🔴 ${socket.id} a quitté la room : ${roomId}`);
+    });
 });
+
+const messageRoutes = require('./routes/MessageRoute'); // exemple
+app.use('/api/messages', messageRoutes);
+
+const port = process.env.PORT || 5000;
+server.listen(port, () => console.log(`Server listening on port ${port}`));
+
 connectDb();
 app.use(express.json());
 app.use(cors());
@@ -71,6 +62,3 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/rooms", RoomRoutes);
 app.use("/api/message", MessageRoutes);
 app.use('/google', GoogleAuth);
-
-
-//module.exports = io;
