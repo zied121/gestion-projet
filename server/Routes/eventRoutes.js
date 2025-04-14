@@ -23,6 +23,10 @@ router.post('/create',isAuth,upload.single('file'), createEvent);
 router.get('/list', getEvents);
 router.put('/update/:id', updateEvent);
 router.delete('/delete/:id', deleteEvent);
+router.get('/event_participant/', getEventsByParticipant);
+router.get('/event_org/', getEventsByOrganisateur);
+
+
 router.get('/', getEventsByUser);
 
 router.delete('/cleanup', deleteHolidayAndDeadlineEvents);

@@ -89,11 +89,10 @@ const getEvents = async (req, res) => {
             syncHolidayEvents(),  
             syncDeadlineEvents()  
         ]);
-        // Récupérer tous les événements avec leurs détails
+        // Récupérer tous les événements 
         const events = await Event.find()
             .populate('organisateur_id', 'nom prenom email')
             .lean();
-        // Récupérer tous les participants en une seule requête
         const allParticipants = await Participant.find({
             event_id: { $in: events.map(e => e._id) }
         }).populate('id_participant', 'nom email').lean();
@@ -112,7 +111,7 @@ const getEvents = async (req, res) => {
             return acc;
         }, {});
 
-        // Combiner les événements avec leurs participants
+        // coombiner les événements avec leurs participants
         const eventsWithParticipants = events.map(event => ({
             ...event,
             participants: participantsByEvent[event._id] || []
@@ -157,15 +156,19 @@ const getEventById = async (req, res) => {
 
 const createEvent = async (req, res) => {
 
+    console.log("hello")
     
     try {
+        console.log("hello2")
+
       const eventData = {
         ...req.body,
         organisateur_id: req.user._id
         
       };
       
-  
+      console.log("eventData",eventData)
+
       // Validation des types d'événements
       if (eventData.type === 'Holiday' || eventData.type === 'Deadline') {
         return res.status(403).json({
@@ -208,9 +211,10 @@ const createEvent = async (req, res) => {
   
         eventData.participants = participants;
       }
-  
+      console.log("eventData2",eventData)
+
       // Génération du lien Jitsi si type Réunion/Événement et en ligne
-      if (['Réunion', 'Événement'].includes(eventData.type) && eventData.emplacement === 'En ligne') {
+      if (['Réunion', 'Événement'].includes(eventData.type) && eventData.emplacement == 'En ligne') {
         eventData.lien = generateJitsiLink(eventData.titre || 'event', eventData.date_debut);
       }
       if (req.file) {
@@ -223,30 +227,31 @@ const createEvent = async (req, res) => {
 
   
       // Enregistrement des participants
-      if (['Réunion', 'Événement'].includes(eventData.type) && eventData.participants?.length > 0) {
-        const participantsData = eventData.participants.map(participantId => ({
+      if (['Réunion', 'Événement'].includes(eventData.type) && eventData.participant?.length > 0) {
+        const participantsData = eventData.participant.map(participantId => ({
           event_id: event._id,
           id_participant: participantId,
           organisateur_id: req.user._id
         }));
-  
+        console.log   ('participantdata',participantsData)
         await Participant.insertMany(participantsData);
       }
 //mail
-if (['Réunion', 'Événement'].includes(event.type) && eventData.participants?.length > 0) {
+if (['Réunion', 'Événement'].includes(event.type) && eventData.participant?.length > 0) {
     try {
   
       const fullParticipants = await Utilisateur.find({
-        _id: { $in: eventData.participants }
+        _id: { $in: eventData.participant }
       });
   
   
       for (const participant of fullParticipants) {
 
-  
+  console.log("participant",participant.email)
   
         const emailData = emailService.getEventCreationEmail(event, participant, participant.email);
-  
+        
+  console.log("emaildata",emailData)
         try {
           await emailService.sendEmail(participant.email, emailData);
         } catch (error) {
@@ -254,12 +259,11 @@ if (['Réunion', 'Événement'].includes(event.type) && eventData.participants?.
         }
       }
   
-      console.log("✅ Tous les emails ont été envoyés.");
+      console.log("Tous les emails ont été envoyés.");
     } catch (error) {
-      console.error("❌ Erreur lors de l'envoi des emails :", error);
+      console.error(" Erreur lors de l'envoi des emails :", error);
     }
   }
-  await checkAndSendReminders();
   
   
       // Réponse de succès

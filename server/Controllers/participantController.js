@@ -181,7 +181,6 @@ const updateReponse = async (req, res) => {
             console.log(`✅ Notification envoyée à l'organisateur (${organisateur.email})`);
         } catch (emailError) {
             console.error('Erreur lors de l\'envoi de l\'email:', emailError);
-            // On continue malgré l'erreur d'envoi d'email
         }
 
         res.status(200).json({
