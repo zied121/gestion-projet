@@ -1,3 +1,4 @@
+const path = require('path');
 require("dotenv").config({path: "./config/.env"});
 const express = require('express');
 const connectDb = require('./config/ConnectDb');
@@ -71,6 +72,6 @@ app.use("/api/blogs", blogRoutes);
 app.use("/api/rooms", RoomRoutes);
 app.use("/api/message", MessageRoutes);
 app.use('/google', GoogleAuth);
-
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware/uploads')));
 
 //module.exports = io;

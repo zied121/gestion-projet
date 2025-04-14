@@ -36,7 +36,7 @@ const createMessage = (io) => async (req, res) => {*/
 const createMessage = async (req, res) => {
   try {
     const { room, content } = req.body;
-    const sender = req.user?._id; // Optional chaining to avoid crash
+    const sender = req.user?._id; 
     console.log('Sender ID:', sender);
     const file = req.file;
 
@@ -49,7 +49,7 @@ const createMessage = async (req, res) => {
       sender,
       room,
       content,
-      file: file ? file.filename : null
+
     });
 
     const savedMessage = await message.save();
@@ -88,9 +88,7 @@ const getMessagesByRoom = async (req, res) => {
     try {
       const message = await Message.findById(req.params.id);
       if (!message) return res.status(404).json({ message: 'Message non trouvé' });
-  
-      // Optionnel : vérifier si req.user._id === message.sender pour autoriser la modif
-      message.content = req.body.content || message.content;
+        message.content = req.body.content || message.content;
       const updated = await message.save();
       res.json(updated);
     } catch (error) {
