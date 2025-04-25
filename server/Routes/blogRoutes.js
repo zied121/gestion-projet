@@ -6,53 +6,34 @@ const {
     getBlogs,
     getBlogsPaginated,
     getCommentsPaginated,
-    likeBlog, 
+    likeBlog,
     getBlogById,
     createBlog,
     updateBlog,
     deleteBlog,
     updateComment,
-    deleteComment
+    deleteComment,
+    getRecommendedBlogs,
+    getPopularBlogs,
+    addTagsToBlog
+
+    
 } = require("../Controllers/blogController");
 
 
 const authMiddleware = require("../middleware/authMiddleware");    //	Pour protéger les routes qui nécessitent un utilisateur connecté
 
-// 🔹 Récupérer tous les blogs (avec pagination)
-router.get("/", getBlogsPaginated);
+// 🔹 Blogs les plus likés
+router.get("/popular", getPopularBlogs);
 
-// 🔹 Récupérer un blog par ID
-router.get("/:id", getBlogById);
-
-// 🔹 Ajouter un blog (auth requis)
-router.post("/", authMiddleware, createBlog);
-
-// 🔹 Modifier un blog (auth requis)
-router.put("/:id", authMiddleware, updateBlog);
-
-// 🔹 Supprimer un blog (auth requis)
-router.delete("/:id", authMiddleware, deleteBlog);
+// 🔹 Blogs similaires (tags en commun)
+router.get("/:id/recommendations", getRecommendedBlogs);
 
 // 🔹 Route pour ajouter un commentaire à un blog (auth requis)
-router.post("/:blogId/comments", authMiddleware, async (req, res) => {
-    try {
-        const { blogId } = req.params;
-        const { content } = req.body;
+router.post("/:blogId/comments", authMiddleware, addComment);
 
-        // Appeler la fonction d'ajout de commentaire
-        const newComment = await addComment(req, res);
-
-        // Si le commentaire est ajouté avec succès, émettre la notification
-        sendCommentNotification(blogId, newComment);
-
-        // Répondre avec succès
-        res.status(201).json({ message: "Commentaire ajouté avec succès", blog: newComment });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Erreur serveur lors de l'ajout du commentaire et de la notification" });
-    }
-});
+// 🔹 Récupérer tous les blogs (avec pagination)
+router.get("/", getBlogsPaginated);
 
 // 🔹 Route pour récupérer les comments d'un blog avec pagination 
 router.get("/:blogId/comments", getCommentsPaginated);
@@ -63,8 +44,24 @@ router.put("/:blogId/comments/:commentId", authMiddleware, updateComment);
 // 🔹 Route pour supprimer un commentaire
 router.delete("/:blogId/comments/:commentId", authMiddleware, deleteComment);
 
+// Ajouter des tags à un blog spécifique
+router.put('/:id/tags', addTagsToBlog); // Route PUT pour ajouter des tags
+
 // 🔹 Route pour liker un blog (auth requis)
-router.post("/like/:blogId", authMiddleware, likeBlog); 
+router.post("/like/:blogId", authMiddleware, likeBlog);
+
+// 🔹 Récupérer un blog par ID
+router.get("/:id", getBlogById);
+
+
+// 🔹 Créer, modifier, supprimer un blog
+router.post("/", authMiddleware, createBlog);
+router.put("/:id", authMiddleware, updateBlog);
+router.delete("/:id", authMiddleware, deleteBlog);
+
+
+
+
 
 module.exports = router;
 

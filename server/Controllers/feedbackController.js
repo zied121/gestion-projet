@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 const Feedback = require("../models/Feedback");
-const Blog = require("../models/Blog");
+const { Blog } = require("../models/Blog");
 
-//// 🔹 Récupérer tous les feedbacks d'un blog
+//Fonction pour récupérer tous les feedbacks d'un blog
 const getFeedbacksByBlog = async (req, res) => {
   try {
-    // Récupération de l'ID du blog depuis les paramètres d'URL
+
     const { blogId } = req.params;
 
-    // Vérification si l'ID est un ObjectId valide (format MongoDB)
     if (!mongoose.Types.ObjectId.isValid(blogId)) {
       return res.status(400).json({ message: "ID de blog invalide" });
     }
@@ -20,7 +19,7 @@ const getFeedbacksByBlog = async (req, res) => {
     if (!feedbacks.length) {
       return res.status(404).json({ message: "Aucun feedback trouvé pour ce blog" });
     }
-    // Envoie des feedbacks trouvés en réponse
+
     res.json(feedbacks);
   } catch (err) {
     console.error("Erreur lors de la récupération des feedbacks :", err);
@@ -28,18 +27,18 @@ const getFeedbacksByBlog = async (req, res) => {
   }
 };
 
-// 🔹 Récupérer un feedback par ID
+// Fonction pour récupérer un feedback par ID
 const getFeedbackById = async (req, res) => {
   try {
+
 
     // Cherche le feedback dans la base de données par son ID
     const feedback = await Feedback.findById(req.params.id).populate("user", "username");
 
-    // Si aucun feedback n'est trouvé, on renvoie une réponse 404 (non trouvé)
     if (!feedback) {
       return res.status(404).json({ message: "Feedback non trouvé" });
     }
-    // Si tout est bon, on renvoie le feedback en réponse JSON
+
     res.json(feedback);
   } catch (err) {
     console.error("Erreur lors de la récupération du feedback :", err);
@@ -47,9 +46,10 @@ const getFeedbackById = async (req, res) => {
   }
 };
 
-// 🔹 Ajouter un feedback sur un blog
+// Fonction pour ajouter un feedback sur un blog
 const createFeedback = async (req, res) => {
   try {
+
     // Récupère le commentaire depuis le corps de la requête
     const { comment } = req.body;
 
@@ -61,7 +61,6 @@ const createFeedback = async (req, res) => {
       return res.status(400).json({ message: "Le commentaire est requis" });
     }
 
-    // Vérifie que l'ID du blog est valide (format ObjectId MongoDB)
     if (!mongoose.Types.ObjectId.isValid(blogId)) {
       return res.status(400).json({ message: "ID de blog invalide" });
     }
@@ -91,7 +90,7 @@ const createFeedback = async (req, res) => {
   }
 };
 
-// 🔹 Modifier un feedback
+// Fonction pour modifier un feedback
 const updateFeedback = async (req, res) => {
   try {
     const { comment } = req.body;
@@ -109,7 +108,7 @@ const updateFeedback = async (req, res) => {
   }
 };
 
-// 🔹 Supprimer un feedback
+//Fonction pour supprimer un feedback
 const deleteFeedback = async (req, res) => {
   try {
     const deletedFeedback = await Feedback.findByIdAndDelete(req.params.id);
@@ -123,7 +122,6 @@ const deleteFeedback = async (req, res) => {
   }
 };
 
-// Exportation des fonctions
 module.exports = {
   getFeedbacksByBlog,
   getFeedbackById,

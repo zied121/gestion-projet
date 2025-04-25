@@ -1,0 +1,13 @@
+<form (ngSubmit)="onSubmit()" class="feedback">
+  <textarea 
+    [(ngModel)]="feedback.content" 
+    name="content" 
+    required 
+    placeholder="Votre commentaire..."
+    rows="4">
+  </textarea>
+
+  <button type="submit" [disabled]="isSubmitting || !feedback.content.trim()">
+    {{ isSubmitting ? 'Ajout en cours...' : 'Ajouter un commentaire' }}
+  </button>
+</form>

@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const Blog = require("../models/Blog");
+const { Blog, blogValidationSchema } = require('../models/Blog');
 const User = require('../models/User');
+const yup = require("yup");
 
 
-
-///// Fonction pour trouver un blog par ID
+//Fonction pour trouver un blog par ID
 const findBlogById = async (blogId) => {
 
   //Vérification de la validité de l'ID du blog
@@ -12,10 +12,10 @@ const findBlogById = async (blogId) => {
     throw new Error("ID de blog invalide");
   }
 
-  // Recherche du blog dans la base de données par son ID
+  // on va rechercher le blog dans la BD par son ID
   const blog = await Blog.findById(blogId)
-    .populate("author", "username email")               // Remplir les informations de l'auteur (nom d'utilisateur et email)
-    .populate("comments.author", "username email");     // Remplir les informations de l'auteur des commentaires (nom d'utilisateur et email)
+    .populate("author", "username email")                 // on va remplir les infors de l'auteur (nom d'utilisateur et email)
+    .populate("comments.author", "username email");      // meme chose , remplir les informations de l'auteur des commentaires (nom d'utilisateur et email)
 
 
   // Si le blog n'est pas trouvé, lancer une erreur
@@ -26,79 +26,131 @@ const findBlogById = async (blogId) => {
 };
 
 
-//// Obtenir tous les blogs
+//Fonction pour Obtenir tous les blogs
 const getBlogs = async (req, res, next) => {
   try {
+    const blogs = await Blog.find()
+      .populate("author", "username") // pour afficher le nom de l'auteur
+      .populate("categorie", "nom"); // nom de la catégorie
 
-    // // Recherche tous les blogs dans la base de données
-    const blogs = await Blog.find().populate("author", "username");
-    res.json(blogs);
-  } catch (err) {               //try catch 	Pour capturer et gérer les erreurs
-    next(err); // Passer l'erreur au middleware d'erreur
+    res.json({
+      blogs,
+      currentPage: 1,
+      totalPages: 1,
+      totalBlogs: blogs.length,
+      hasPrevious: false,      
+      hasNext: false
+    });
+  } catch (err) {
+    next(err); 
   }
 };
 
-// Obtenir un blog par ID
+// Fonction pour Obtenir un blog par ID
 const getBlogById = async (req, res, next) => {
   try {
-    const blog = await findBlogById(req.params.id);
+    const blog = await Blog.findById(req.params.id)
+      .populate("author", "username")
+      .populate("categorie", "nom");
+    if (!blog) return res.status(404).json({ message: "Blog introuvable" });
+
     res.status(200).json({
       blog,
       message: "Blog récupéré avec succès"
     });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err);
   }
 };
 
-///// Créer un blog
-const createBlog = async (req, res, next) => {
+
+// Fonction pour créer un blog
+const createBlog = async (req, res) => {
   try {
-    const { title, content } = req.body;          //req.body Contient les données envoyées ,:ex: content
-    if (!title || !content) {
-      return res.status(400).json({ message: "Le titre et le contenu sont obligatoires" });
-    }
+
+    // Valider les données avec Yup
+    await blogValidationSchema.validate(req.body, { abortEarly: false });
+
+    const { title, content, tags, categorie } = req.body;
+    const author = req.user.id; 
 
     const newBlog = new Blog({
       title,
       content,
-      author: req.user.id,
+      tags,
+      categorie,
+      author
     });
 
     await newBlog.save();
-    res.status(201).json(newBlog);
-  } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    return res.status(201).json(newBlog);
+
+  } catch (error) {
+
+    if (error instanceof yup.ValidationError) {
+      const errors = error.inner?.map(err => ({
+        field: err.path,
+        message: err.message
+      })) || [{
+        field: error.path || "unknown",
+        message: error.message
+      }];
+
+      return res.status(400).json({ errors });
+    }
+
+    console.error("Erreur lors de la création du blog :", error);
+    return res.status(500).json({ message: "Une erreur est survenue lors de la création du blog." });
   }
 };
 
-//// Mettre à jour un blog
+//Fonction pour mettre à jour un blog
 const updateBlog = async (req, res, next) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags, categorie } = req.body;
 
-    if (!title || !content) {
-      return res.status(400).json({ message: "Le titre et le contenu sont obligatoires" });
+    // Vérification des champs obligatoires
+    if (!title || !content || !categorie) {
+      return res.status(400).json({
+        message: "Le titre, le contenu et la catégorie sont obligatoires."
+      });
+    }
+
+    if (tags && !Array.isArray(tags)) {
+      return res.status(400).json({
+        message: "Le champ 'tags' doit être un tableau de chaînes de caractères."
+      });
+    }
+
+    const updatedFields = {
+      title,
+      content,
+      categorie
+    };
+
+    if (tags) {
+      updatedFields.tags = tags;
     }
 
     const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id,
-      { title, content },
+      updatedFields,
       { new: true }
     );
 
     if (!updatedBlog) {
-      return res.status(404).json({ message: "Blog non trouvé" });
+      return res.status(404).json({ message: "Blog non trouvé." });
     }
 
-    res.json(updatedBlog);
+    res.status(200).json(updatedBlog);
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    console.error("Erreur lors de la mise à jour du blog :", err);
+    next(err);
   }
 };
 
 
-//// Supprimer un blog
+//Fonction pour supprimer un blog
 const deleteBlog = async (req, res, next) => {
   try {
     const deletedBlog = await Blog.findByIdAndDelete(req.params.id);
@@ -108,11 +160,12 @@ const deleteBlog = async (req, res, next) => {
 
     res.json({ message: "Blog supprimé avec succès !" });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err); 
   }
 };
 
-////// Ajouter un commentaire
+
+//Fonction pour ajouter un commentaire
 const addComment = async (req, res, next) => {
   try {
     const { blogId } = req.params;
@@ -134,11 +187,11 @@ const addComment = async (req, res, next) => {
 
     res.status(201).json({ message: 'Commentaire ajouté avec succès', blog });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err); 
   }
 };
 
-// Modifier un commentaire
+// Fonction pour modifier un commentaire
 const updateComment = async (req, res, next) => {
   try {
     const { blogId, commentId } = req.params;
@@ -166,7 +219,7 @@ const updateComment = async (req, res, next) => {
   }
 };
 
-// Supprimer un commentaire
+// Fonction pour  Supprimer un commentaire
 const deleteComment = async (req, res, next) => {
   try {
     const { blogId, commentId } = req.params;
@@ -189,19 +242,15 @@ const deleteComment = async (req, res, next) => {
   }
 };
 
-// Pagination des blogs
+
+//Fonction pour pagination des blogs
 const getBlogsPaginated = async (req, res, next) => {
   try {
 
-    //// Récupère la page actuelle à partir des paramètres de requête, avec une valeur par défaut de 1 si non spécifiée
     const page = parseInt(req.query.page) || 1;
-
-    //// Récupère le nombre d'éléments à afficher par page, avec une valeur par défaut de 10 si non spécifiée
+    
     const limit = parseInt(req.query.limit) || 10;
 
-
-    //// Calcule combien de documents doivent être ignorés pour obtenir la page souhaitée
-    // La première page (page = 1) commence à 0, la deuxième page commence à 'limit' documents
     const skip = (page - 1) * limit;
 
     const blogs = await Blog.find().skip(skip).limit(limit);
@@ -213,41 +262,35 @@ const getBlogsPaginated = async (req, res, next) => {
       currentPage: page,      // La page actuellement demandée
       totalPages,
       totalBlogs,
-      hasPrevious: page > 1,      // Indicateur si la page actuelle est supérieure à 1 (il y a une page précédente)
-      hasNext: page < totalPages        //// Indicateur si la page actuelle est inférieure au nombre total de pages (il y a une page suivante)
+      hasPrevious: page > 1,      
+      hasNext: page < totalPages 
     });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err); 
   }
 };
 
-// Pagination des commentaires
+
+
+// Fonction pour  Pagination des commentaires
 const getCommentsPaginated = async (req, res, next) => {
   try {
     const blogId = req.params.blogId;
 
-    // Récupère le numéro de la page à partir des paramètres de requête, avec une valeur par défaut de 1 si non spécifiée
     const page = parseInt(req.query.page) || 1;
-
-    //// Récupère le nombre d'éléments par page à partir des paramètres de requête, avec une valeur par défaut de 10 si non spécifiée
     const limit = parseInt(req.query.limit) || 10;
-
-    //// Calcule combien de documents doivent être ignorés pour obtenir la page souhaitée
     const skip = (page - 1) * limit;
 
 
-    // Cherche le blog par son ID et sélectionne uniquement le champ 'comments'
     const blog = await Blog.findById(blogId).select('comments');
     if (!blog) {
       return res.status(404).json({ message: 'Blog non trouvé' });
     }
 
 
-    //// Récupère le nombre total de commentaires du blog
     const totalComments = blog.comments.length;
-
-    // // Calcule le nombre total de pages en fonction du nombre total de commentaires et du nombre de commentaires par page
     const totalPages = Math.ceil(totalComments / limit);
+
     const comments = blog.comments.slice(skip, skip + limit);
 
     return res.status(200).json({
@@ -257,31 +300,24 @@ const getCommentsPaginated = async (req, res, next) => {
       currentPage: page,
     });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err);
   }
 };
 
-// Ajouter un like à un blogc(systéme de like)
+// Fonction pour ajouter un like à un blog (systéme de like)
 const likeBlog = async (req, res, next) => {
   try {
-
-    // Récupère l'ID du blog à partir des paramètres de la requête (URL)
     const { blogId } = req.params;
-
-    //// Récupère l'ID de l'utilisateur authentifié à partir de l'objet `user` attaché à la requête
     const userId = req.user.id;
 
-    // // Cherche le blog par son ID dans la base de données
     const blog = await findBlogById(blogId);
 
 
-    // Si l'utilisateur a déjà aimé ce blog, renvoie une erreur avec un message spécifique
     if (blog.likes.includes(userId)) {
       return res.status(400).json({ message: "Vous avez déjà aimé ce blog." });
     }
 
-
-    // // Ajoute l'ID de l'utilisateur à la liste des likes du blog
+    //ajoute l'ID de l'utilisateur à la liste des likes du blog
     blog.likes.push(userId);
 
     // Incrémente le compteur de likes du blog
@@ -291,9 +327,86 @@ const likeBlog = async (req, res, next) => {
 
     res.status(200).json({ message: "Blog aimé avec succès.", likeCount: blog.likeCount });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err); 
   }
 };
+
+
+
+
+// Fonction recommandation de blogs similaires par tags (recherche insensible à la casse)
+const getRecommendedBlogs = async (req, res) => {
+  const blogId = req.params.id;
+
+  try {
+    const currentBlog = await Blog.findById(blogId);
+    if (!currentBlog) {
+      return res.status(404).json({ message: "Blog non trouvé" });
+    }
+
+    const tags = currentBlog.tags;
+    if (!tags || tags.length === 0) {
+      return res.status(200).json([]); 
+    }
+
+    // Créer des regex insensibles à la casse pour chaque tag
+    const regexTags = tags.map(tag => new RegExp(`^${tag}$`, "i"));
+
+    // Recherche des blogs ayant AU MOINS UN tag en commun, excluant le blog courant
+    const recommendedBlogs = await Blog.find({
+      _id: { $ne: blogId },
+      tags: { $in: regexTags },
+    })
+      .limit(5)
+      .populate("author", "name")
+      .populate("categorie", "name");
+
+    res.status(200).json(recommendedBlogs);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des blogs recommandés :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+
+
+//Fonction pour les blogs les plus likés
+const getPopularBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ likeCount: { $gt: 0 } }) // uniquement ceux qui ont des likes
+      .sort({ likeCount: -1 }) // triés du plus liké au moins liké
+      .limit(10); // optionnel : les 10 plus populaires
+
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des blogs populaires :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+
+//Fonction pour ajouter un TAG
+const addTagsToBlog = async (req, res) => {
+  const { id } = req.params; 
+  const { tags } = req.body; 
+
+  try {
+    const blog = await Blog.findById(id);
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog non trouvé' });
+    }
+
+    // Ajouter les nouveaux tags (uniques)
+    blog.tags = [...new Set([...blog.tags, ...tags])];
+
+    await blog.save();
+    res.status(200).json(blog);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 
 module.exports = {
   getBlogs,
@@ -306,5 +419,9 @@ module.exports = {
   deleteComment,
   getBlogsPaginated,
   getCommentsPaginated,
-  likeBlog
+  likeBlog,
+  getRecommendedBlogs,
+  getPopularBlogs,
+  addTagsToBlog
+
 };

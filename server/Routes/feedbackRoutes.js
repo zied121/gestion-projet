@@ -1,3 +1,4 @@
+const Blog = require("../models/Blog");
 const express = require("express");
 const {
   getFeedbacksByBlog,

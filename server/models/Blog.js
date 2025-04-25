@@ -1,24 +1,48 @@
 const mongoose = require("mongoose");
+const yup = require("yup");
 
 
-//  Schéma pour un commentaire (sera intégré dans un blog)
+// Schéma de validation avec Yup
+const blogValidationSchema = yup.object({
+  title: yup.string().required("Le titre est obligatoire"),
+  content: yup.string().required("Le contenu est obligatoire"),
+  categorie: yup.string().required("La catégorie est obligatoire"),
+  tags: yup.array().of(yup.string()).optional()
+});
+
+
+//Schéma pour un commentaire dans un blog
 const CommentSchema = new mongoose.Schema({
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },  // L'utilisateur qui a écrit le commentaire
-  content: { type: String, required: true },  // Le contenu du commentaire
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },  // USER qui écrit le commentaire
+
+  content: {          //contenu du shéma
+    type: String,
+    required: true,
+    minlength: 3,     // Minimum 3 caractères
+    maxlength: 500    // Maximum 500 caractères
+  },
+
   createdAt: { type: Date, default: Date.now }  // Date de création
 });
 
-//le schéma pour un blog
-const BlogSchema = new mongoose.Schema({
-  title: { type: String, required: true },          // Le titre du blog est obligatoire
-  content: { type: String, required: true },      // Le contenu du blog est obligatoire
-  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },     // Référence vers l’auteur du blog
-  comments: [CommentSchema],                        // Tableau de commentaires
-  createdAt: { type: Date, default: Date.now },     // Date de création du blog
 
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],       // Liste des utilisateurs qui ont aimé
-  likeCount: { type: Number, default: 0 },                              // Compteur de likes, initialisé à 0
+// Schéma Mongoose pour un blog
+const BlogSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  categorie: { type: mongoose.Schema.Types.ObjectId, ref: 'Categorie', required: true },
+  comments: [], 
+  createdAt: { type: Date, default: Date.now },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  likeCount: { type: Number, default: 0 },
+  tags: [{ type: String }]
 });
 
 
-module.exports = mongoose.model("Blog", BlogSchema);
+
+// Export du modèle et du schéma de validation
+module.exports = {
+  Blog: mongoose.model("Blog", BlogSchema),
+  blogValidationSchema
+};

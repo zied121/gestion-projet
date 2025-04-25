@@ -1,29 +1,43 @@
 const express = require('express');
 const connectDb = require('./config/ConnectDb');
-const app = express();
 const cors = require('cors');
-
-const userRouter=require('./Routes/UserRoutes');
-const AuthRoutes=require('./Routes/AuthRoutes');
-const OrganisationRoutes=require('./Routes/OrganisationRoutes');
-const feedbackRoutes = require('./Routes/feedbackRoutes');
-const blogRoutes = require('./Routes/blogRoutes');
-
 require("dotenv").config({
     path: "./config/.env"
 });
 
-const port = process.env.port ||5000;
-app.listen(port, (error) => {
-    (error) ? console.log('server is failed'): console.log('server is running on port ' + port);
-});
+const app = express();
+
+// Importation des routes
+const userRouter = require('./Routes/UserRoutes');
+const AuthRoutes = require('./Routes/AuthRoutes');
+const OrganisationRoutes = require('./Routes/OrganisationRoutes');
+const feedbackRoutes = require('./Routes/feedbackRoutes');
+const blogRoutes = require('./Routes/blogRoutes');
+const categorieRoutes = require('./Routes/categorieRoutes');
+
+// Middleware
+app.use(express.json());  
+app.use(cors());  
+
+// Connexion à la base de données
 connectDb();
-app.use(express.json());
-app.use(cors());
 
 
-app.use('/api/organisation',OrganisationRoutes);
-app.use('/api',AuthRoutes);
-app.use('/api/users',userRouter);
+// Routes
+app.use('/api/organisation', OrganisationRoutes);
+app.use('/api', AuthRoutes);
+app.use('/api/users', userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use('/api/categories', categorieRoutes);
+
+
+// Démarrer le serveur
+const port = process.env.PORT || 5000;  // Assure-toi que la variable d'environnement PORT est définie
+app.listen(port, (error) => {
+    if (error) {
+        console.log('Le serveur a échoué à démarrer');
+    } else {
+        console.log('Le serveur fonctionne sur le port ' + port);
+    }
+});
