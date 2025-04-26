@@ -13,6 +13,8 @@
     const eventRoutes = require('./Routes/eventRoutes');
     const participantRoutes = require('./Routes/participantRoutes');
     const holidayRoutes = require('./Routes/holidayRoutes');
+    const chatbotRoutes = require('./Routes/chatbot');
+
 
 
     require("dotenv").config({
@@ -38,3 +40,4 @@
     app.use('/api/events', eventRoutes);
     app.use('/api', participantRoutes);
     app.use('/api/holiday', holidayRoutes);
+    app.use('/api', chatbotRoutes);

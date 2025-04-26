@@ -2,7 +2,7 @@
         const Participant = require('../models/Participant');
         const Event = require('../models/Event');
         const Utilisateur = require('../models/Usermodel');
-        const emailService = require('../config/emailservice');
+        const emailService = require('../config/nodemailer');
 
 
 

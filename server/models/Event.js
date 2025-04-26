@@ -52,8 +52,22 @@
         },
         type_recurrence: {
             type: String,
-            enum: ['daily', 'weekly', 'monthly', 'none'],
+            enum: ['daily', 'weekly', 'monthly', 'personnalise','none'],
             default: 'none'
+        },
+        rappel: {
+            type: [{
+                time: Number,
+                unit: {
+                    type: String,
+                    enum: ['minutes', 'hours', 'days']
+                },
+                sent: {
+                    type: Boolean,
+                    default: false
+                }
+            }],
+            default: []
         },
         status: {
             type: String,

@@ -14,9 +14,10 @@
     },
     organisateur_id: {
         type: Schema.Types.ObjectId,
-        ref: 'Event',
-        required: true
-    },
+            ref: 'Schema',
+            
+        },
+    
     reponse: {
         type: String,
         enum: ['accepter', 'refuser', 'en_attente'],
