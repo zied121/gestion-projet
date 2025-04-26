@@ -16,6 +16,10 @@ const blogRoutes = require('./Routes/blogRoutes');
 const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
+const eventRoutes = require('./Routes/eventRoutes');
+const participantRoutes = require('./Routes/participantRoutes');
+const chatbotRoutes = require('./Routes/chatbot');
+const holidayRoutes = require('./Routes/holidayRoutes');
 
 connectDb();
 app.use(express.json());
@@ -37,11 +41,14 @@ app.use('/api/users', userRouter);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/subscription', SubscriptionRoutes);
-
 app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
 app.use('/api', aiRoutes);
 app.use('/api', notificationRoutes);
+app.use('/api/events', eventRoutes);
+    app.use('/api', participantRoutes);
+    app.use('/api/holiday', holidayRoutes);
+    app.use('/api', chatbotRoutes);
 
 io.on('connection', (socket) => {
     console.log(`User connecté : ${socket.id}`);
