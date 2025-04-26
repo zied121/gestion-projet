@@ -58,4 +58,13 @@ verifyOtp(payload: { email: string; otp: string }): Observable<any> {
 forgetPassword(email: string): Observable<any> {
   return this.http.post(`${this.baseUrl}/forget`, { email });
 }
+
+googleRegister(token: string) {
+  return this.http.post(`${this.baseUrl}/google-register`, { token });
+}
+
+googleLogin(token: string) {
+  return this.http.post(`${this.baseUrl}/google-login`, { token });
+}
+
 }
