@@ -26,5 +26,6 @@ router.put("/:id", authMiddleware, updateFeedback);
 // 🔹 Supprimer un feedback (auth requis)
 router.delete("/:id", authMiddleware, deleteFeedback);
 
+
 // ✅ Exporter correctement le routeur
 module.exports = router;
