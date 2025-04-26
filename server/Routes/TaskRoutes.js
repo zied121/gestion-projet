@@ -1,19 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../Middleware/upload');
 const isAuth = require('../Middleware/isauth');
-const checkRole = require('../Middleware/checkRole');
-const checkProjectAccess = require('../Middleware/checkProjectAccess');
 const {
     createTask,
     getTasks,
     getTaskById,
     updateTask,
-    deleteTask
-} = require('../Controllers/taskController');
+    deleteTask,
+    addSubtask,
+    addCommentToTask
+} = require('../controllers/taskController');
 
-router.post('/tasks', isAuth, checkRole(['manager']), createTask);
-router.put('/tasks/:id', isAuth, checkProjectAccess, updateTask);
-router.delete('/tasks/:id', isAuth, checkRole(['manager']), deleteTask);
+router.post('/tasks', isAuth, upload.single('file'), createTask);
 router.get('/tasks', isAuth, getTasks);
 router.get('/tasks/:id', isAuth, getTaskById);
+router.put('/tasks/:id', isAuth, updateTask);
+router.delete('/tasks/:id', isAuth, deleteTask);
+router.post('/tasks/:parentTaskId/subtasks', isAuth, addSubtask);
+router.post('/tasks/:taskId/comments', isAuth, addCommentToTask);
+
 module.exports = router;
