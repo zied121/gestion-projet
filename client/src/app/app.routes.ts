@@ -73,6 +73,5 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: 'tasks', component: TaskListComponent },
-  { path: 'projects', component: ProjectListComponent }
+ 
 ];
