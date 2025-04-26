@@ -1,0 +1,21 @@
+<h1>Projects</h1>
+<table class="jira-table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Owner</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let project of projects" (click)="openProject(project._id)" class="clickable-row">
+    <td>{{ project.name }}</td>
+    <td>{{ project.description }}</td>
+    <td>{{ project.owner || '—' }}</td>
+    <td>{{ project.start_date | date }}</td>
+    <td>{{ project.end_date | date }}</td>
+  </tr>
+  </tbody>
+</table>

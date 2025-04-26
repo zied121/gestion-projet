@@ -72,5 +72,7 @@ export const routes: Routes = [
         component: SubscriptionComponent
       }
     ]
-  }
+  },
+  { path: 'tasks', component: TaskListComponent },
+  { path: 'projects', component: ProjectListComponent }
 ];
