@@ -140,7 +140,7 @@ function calculateReminderTime(eventDate, reminder, eventType) {
         let reminderTime = new Date(date.getTime() - offsetMs);
 
         if (['Deadline', 'Holiday'].includes(eventType)) {
-            reminderTime.setUTCHours(8, 23, 0, 0);
+            reminderTime.setUTCHours(14, 46, 0, 0);
         }
         
         // Add 30-second tolerance  

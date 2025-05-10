@@ -689,6 +689,7 @@ const generateJitsiLink = (titre, date) => {
     const roomName = `${titre.replace(/\s+/g, '_')}_${Date.now()}`;
     return `${baseUrl}/${roomName}`;
 };
+
 const searchEvents = async (req, res) => {
     try {
         const { type, search } = req.query; 
@@ -732,6 +733,25 @@ const searchEvents = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+const searchByUser = async (req, res) => {
+    try {
+
+        const { email } = req.query;
+        let userQuery = {};
+
+
+            // Recherche partielle insensible à la casse
+            userQuery.email = { $regex: email, $options: 'i' };
+        
+
+        const users = await Utilisateur.find(userQuery, 'nom prenom email');
+
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
 
 
 module.exports = {
@@ -742,5 +762,6 @@ module.exports = {
     deleteEvent,
     getEventsByOrganisateur,
     getEventsByParticipant,getEventsByUser,deleteHolidayAndDeadlineEvents, 
-    searchEvents
+    searchEvents,searchByUser
 };
+

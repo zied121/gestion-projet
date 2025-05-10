@@ -109,7 +109,7 @@ class ChatbotService {
 
         return {
             message: `Votre prochain événement est "${nextEvent.titre}" (${nextEvent.type})\n` +
-                    `Date : ${nextEvent.date_debut.toLocaleString('fr-FR')}\n` +
+                    `Date : ${nextEvent.date_debut.toLocaleString()}\n` +
                     `${nextEvent.organisateur_id?._id.toString() === userId.toString() ? 
                         'Vous êtes l\'organisateur' : 
                         `Organisé par : ${nextEvent.organisateur_id?.nom} ${nextEvent.organisateur_id?.prenom}`}`
@@ -130,7 +130,7 @@ class ChatbotService {
 
         return {
             message: `Le prochain jour férié est "${nextHoliday.titre}"\n` +
-                    `Date : ${nextHoliday.date_debut.toLocaleDateString('fr-FR')}\n` +
+                    `Date : ${nextHoliday.date_debut.toLocaleDateString()}\n` +
                     `Description : ${nextHoliday.description || 'Aucune description disponible'}`
         };
     }
@@ -151,7 +151,7 @@ class ChatbotService {
             const participants = await Participant.find({ event_id: event._id })
                 .populate('id_participant', 'nom email');
 
-            message += `${event.titre} (${event.date_debut.toLocaleDateString('fr-FR')}) :\n`;
+            message += `${event.titre} (${event.date_debut.toLocaleDateString()}) :\n`;
             if (participants.length === 0) {
                 message += "- Aucun participant\n";
             } else {
@@ -181,7 +181,7 @@ class ChatbotService {
             const participants = await Participant.find({ event_id: event._id })
                 .populate('id_participant', 'nom email');
 
-            message += `${event.titre} (${event.date_debut.toLocaleDateString('fr-FR')}) :\n`;
+            message += `${event.titre} (${event.date_debut.toLocaleDateString()}) :\n`;
             if (participants.length === 0) {
                 message += "- Aucun participant\n";
             } else {
@@ -216,7 +216,7 @@ class ChatbotService {
         let message = `Vos prochains ${type.toLowerCase()}s :\n\n`;
         events.forEach(event => {
             message += `- ${event.titre}\n`;
-            message += `  Date : ${event.date_debut.toLocaleString('fr-FR')}\n`;
+            message += `  Date : ${event.date_debut.toLocaleString()}\n`;
             message += `  ${event.organisateur_id?._id.toString() === userId.toString() ? 
                 'Vous êtes l\'organisateur' : 
                 `Organisé par : ${event.organisateur_id?.nom} ${event.organisateur_id?.prenom}`}\n\n`;
