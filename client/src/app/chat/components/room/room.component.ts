@@ -1,0 +1,180 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MessageService } from '../../services/message.service';
+import { Message } from '../../services/message.service';
+import { SocketService } from '../../../services/socket.service';  // Import du service WebSocket
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+
+@Component({
+  selector: 'app-room',
+  templateUrl: './room.component.html',
+  styleUrls: ['./room.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule] 
+})
+export class RoomComponent implements OnInit, OnDestroy {
+
+  currentRoomId: string = ''; 
+  messages: Message[] = [];  
+  messageText: string = '';  
+  selectedFile: File | null = null; 
+  currentUserId: string = ''; 
+  rooms: any[] = [];
+  private roomSubscription!: Subscription;
+
+  editingMessageId: string | null = null;
+  editedContent: string = '';
+  constructor(
+    private messageService: MessageService,
+    private socketService: SocketService, 
+    private route: ActivatedRoute
+  
+  ) {}
+
+  ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.currentUserId = user._id;
+
+    this.route.paramMap.subscribe(params => {
+      this.currentRoomId = params.get('id')!;
+      this.socketService.joinRoom(this.currentRoomId);
+      this.messageService.getMessagesByRoom(this.currentRoomId).subscribe((msgs) => {
+        this.messages = msgs;
+        console.log(this.messages);
+      });
+
+      // Souscrire aux nouveaux messages depuis WebSocket
+      this.socketService.listen('receiveMessage').subscribe((newMessage: Message) => {
+        this.messages.push(newMessage); // Ajouter le nouveau message à la liste
+      });
+      //update message
+      this.socketService.listen('messageUpdated').subscribe((updated: Message) => {
+        const index = this.messages.findIndex(m => m._id === updated._id);
+        if (index !== -1) {
+          this.messages[index] = updated;
+          this.messages = [...this.messages];
+        }
+});
+   this.roomSubscription = this.socketService.listenForNewRoom().subscribe((newRoom) => {
+      console.log('New room created:', newRoom);
+      this.rooms.push(newRoom);  // Add the new room to the list
+    });
+        // Écouter les messages supprimés via WebSocket
+        this.socketService.listen('messageDeleted').subscribe((deletedMessageId: string) => {
+          this.messages = this.messages.filter(m => m._id !== deletedMessageId); // Supprimer le message de la liste
+        });
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Désinscrire du WebSocket lorsque le composant est détruit
+    this.socketService.stopListening('receiveMessage');
+    this.socketService.stopListening('messageUpdated');
+    this.socketService.stopListening('messageDeleted');
+  }
+
+  // Méthode pour envoyer un message
+  sendMessage(): void {
+    const formData = new FormData();
+    formData.append('room', this.currentRoomId); // Append the room ID
+    formData.append('content', this.messageText); // Append the message content
+
+    // Append the selected file if any
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+    }
+
+    // Call the service to send the message with FormData
+    this.messageService.sendMessage(formData).subscribe((newMessage) => {
+      // Add the new message to the list of messages
+      this.messages.push(newMessage);
+
+      // Emit the new message to WebSocket for real-time updates
+      this.socketService.emit('sendMessage', newMessage);
+
+      // Reset the form fields
+      this.messageText = '';
+      this.selectedFile = null;
+    });
+  }
+
+  // Gérer la sélection du fichier
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+  startEditing(messageId: string, currentContent: string): void {
+    this.editingMessageId = messageId;
+    this.editedContent = currentContent;
+  }
+  
+ /* updateMessage(): void {
+    if (!this.editingMessageId) return;
+
+    this.messageService.updateMessage(this.editingMessageId, { content: this.editedContent })
+      .subscribe(updated => {
+        const index = this.messages.findIndex(m => m._id === updated._id);
+        if (index !== -1) {
+          this.messages[index] = updated;
+          this.messages = [...this.messages];
+        }
+        this.socketService.emit('updateMessage', updated);
+        this.editingMessageId = null;
+        this.editedContent = '';
+      });
+  }*/
+  updateMessage(): void {
+  if (!this.editingMessageId) return;
+
+  // Appel à la méthode de mise à jour du message via le service
+  this.messageService.updateMessage(this.editingMessageId, { content: this.editedContent })
+    .subscribe({
+      next: (updated) => {
+        const index = this.messages.findIndex(m => m._id === updated._id);
+        if (index !== -1) {
+          // Mettre à jour le message dans le tableau
+          this.messages[index] = updated;
+          // Forcer la mise à jour de la vue
+          this.messages = [...this.messages];  
+        }
+        this.socketService.emit('updateMessage', updated);
+
+        this.editingMessageId = null;
+        this.editedContent = '';
+      },
+      error: (err) => {
+        console.error("Erreur lors de la mise à jour du message:", err);
+      }
+    });
+}
+
+deleteMessage(messageId: string): void {
+  this.messageService.deleteMessage(messageId).subscribe(() => {
+   
+  });
+}
+toggleLike(messageId: string): void {
+  this.messageService.toggleLike(messageId).subscribe((updatedMsg) => {
+    const index = this.messages.findIndex(m => m._id === updatedMsg._id);
+    if (index !== -1) {
+      this.messages[index] = updatedMsg;
+      this.messages = [...this.messages];
+    }
+    this.socketService.emit('updateMessage', updatedMsg);
+  });
+}
+pinMessage(messageId: string): void {
+  this.messageService.pinMessage(messageId).subscribe((updatedMsg) => {
+    const index = this.messages.findIndex(m => m._id === updatedMsg._id);
+    if (index !== -1) {
+      this.messages[index] = updatedMsg;
+      this.messages = [...this.messages];
+    }
+    this.socketService.emit('updateMessage', updatedMsg);  // si besoin
+  });
+}
+}

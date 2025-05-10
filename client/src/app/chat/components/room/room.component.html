@@ -1,0 +1,38 @@
+<div class="chat-container">
+  <div class="messages">
+    <div *ngFor="let msg of messages" class="message-container">
+      <!-- Mode affichage -->
+      <div *ngIf="editingMessageId !== msg._id">
+        <div class="message-content">
+          <strong>{{ msg.sender || 'Utilisateur inconnu' }}</strong>: {{ msg.content }}
+          <div *ngIf="msg.file">
+            <a [href]="'http://localhost:5000/uploads/' + msg.file" target="_blank">📎 Voir le fichier</a>
+          </div>
+        </div>
+        <button class="edit-btn" (click)="startEditing(msg._id, msg.content)">Modifier</button>
+        <button (click)="deleteMessage(msg._id)">🗑 Supprimer</button>
+        <button (click)="toggleLike(msg._id)">
+          ❤️{{ msg.likes?.length || 0 }}
+          <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
+        </button>
+        
+        
+      </div>
+
+      <!-- Mode édition -->
+      <div *ngIf="editingMessageId === msg._id" class="edit-container">
+        <input [(ngModel)]="editedContent" class="edit-input" />
+        <button class="save-btn" (click)="updateMessage()">Enregistrer</button>
+        <button class="cancel-btn" (click)="editingMessageId = null">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire pour envoyer un message -->
+  <form (ngSubmit)="sendMessage()" class="send-message-form">
+    <input type="text" [(ngModel)]="messageText" name="message" class="message-input"
+      placeholder="Écrivez un message..." required />
+    <input type="file" (change)="onFileSelected($event)" class="file-input" />
+    <button type="submit" class="send-btn">Envoyer</button>
+  </form>
+</div>

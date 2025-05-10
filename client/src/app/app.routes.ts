@@ -41,6 +41,7 @@ export const routes: Routes = [
     path: 'cancel',
     component: FailPaiementComponent
   },
+ 
 
 
   // Protected routes with navbar via MainLayoutComponent

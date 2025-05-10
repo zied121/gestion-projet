@@ -1,0 +1,94 @@
+/* Container global du chat */
+.chat-container {
+    max-width: 800px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+    background-color: #f5f7fa;
+  }
+  
+  /* Liste des messages */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* Style d'un message */
+  .message-item {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  /* Formulaire d'envoi */
+  form {
+    display: flex;
+    padding: 15px;
+    gap: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+  }
+  
+  form input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+  }
+  
+  form input[type="file"] {
+    padding: 5px;
+  }
+  
+  form button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Style pour les boutons update/save/cancel */
+  button {
+    margin-top: 5px;
+    margin-right: 5px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Liens de fichiers */
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
