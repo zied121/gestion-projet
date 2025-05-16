@@ -31,7 +31,6 @@ const getFeedbacksByBlog = async (req, res) => {
 const getFeedbackById = async (req, res) => {
   try {
 
-
     // Cherche le feedback dans la base de données par son ID
     const feedback = await Feedback.findById(req.params.id).populate("user", "username");
 
@@ -41,6 +40,7 @@ const getFeedbackById = async (req, res) => {
 
     res.json(feedback);
   } catch (err) {
+
     console.error("Erreur lors de la récupération du feedback :", err);
     res.status(500).json({ message: "Erreur serveur lors de la récupération du feedback" });
   }
@@ -72,12 +72,9 @@ const createFeedback = async (req, res) => {
     }
 
     // Crée un nouveau document Feedback avec :
-    // - l'ID du blog concerné
-    // - l'utilisateur connecté (via req.user.id)
-    // - le commentaire
     const newFeedback = new Feedback({
       blog: blogId,
-      user: req.user.id, // Associe l'utilisateur actuel
+      user: req.user.id,
       comment,
     });
 

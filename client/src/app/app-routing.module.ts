@@ -1,15 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BlogListComponent } from './blog-list/blog-list.component';
-import { BlogFormComponent } from './blog-form/blog-form.component';
-import { BlogDetailComponent } from './blog-detail/blog-detail.component';
+
+import { BlogListComponent } from './blog/blog-list/blog-list.component';
+import { BlogDetailComponent } from './blog/blog-detail/blog-detail.component';
+import { BlogFormComponent } from './blog/blog-form/blog-form.component';
+import { FeedbackFormComponent } from './blog/feedback-form/feedback-form.component';
+import { BlogCategoryComponent } from './blog/blog-category/blog-category.component';
+import { CategorieListComponent } from './blog/categorie-list/categorie-list.component';
+
 
 const routes: Routes = [
-  { path: 'blogs/:page', component: BlogListComponent },  
-  { path: 'blog-form', component: BlogFormComponent },
-  { path: 'blog-detail/:id', component: BlogDetailComponent },
-  { path: '', redirectTo: '/blogs/1', pathMatch: 'full' },  // Redirection vers la première page de blogs
+  { path: 'blogs', component: BlogListComponent },
+  { path: 'blogs/create', component: BlogFormComponent },
+  { path: 'blogs/:id', component: BlogDetailComponent },
+  { path: '', redirectTo: 'blogs', pathMatch: 'full' },
+  { path: '**', redirectTo: 'blogs' }
 ];
+
 
 
 @NgModule({

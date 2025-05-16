@@ -1,13 +1,176 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" data-theme="light">
 <head>
+  <!-- Encodage & affichage -->
   <meta charset="utf-8">
-  <title>FrontendBlogs</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Titre et description -->
+  <title>Mon Blog Angular | Plateforme de publication moderne</title>
+  <meta name="description" content="Plateforme de blog moderne avec Angular. Articles sur le développement web, technologies et tendances numériques.">
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Couleurs du thème -->
+  <meta name="theme-color" content="#4361ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#2a3a8b" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Préconnexion & préchargement -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <!-- Feuilles de style chargées en différé -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" media="print" onload="this.media='all'">
+
+  <!-- Fallback JS désactivé -->
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+      .no-js-alert {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: #ff6b6b;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        z-index: 9999;
+      }
+    </style>
+  </noscript>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mon Blog Angular | Plateforme de publication moderne">
+  <meta property="og:description" content="Plateforme de blog moderne développée avec Angular">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://votreblog.com">
+  <meta property="og:image" content="https://votreblog.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:site_name" content="Mon Blog Angular">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@votrecompte">
+  <meta name="twitter:image:alt" content="Logo du Blog Angular">
+
+  <!-- Préchargement CSS & JS -->
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="preload" href="main.js" as="script">
+
+  <!-- Cloudinary Upload Widget -->
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript" defer></script>
+
+  <!-- Style critique -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #2b2d42;
+    }
+    .app-splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #ffffff;
+      z-index: 9998;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.8; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.8; transform: scale(0.95); }
+    }
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
 </head>
+
 <body>
-  <app-root></app-root>
+  <noscript>
+    <div class="no-js-alert">
+      JavaScript est désactivé. Pour une expérience optimale, veuillez l'activer.
+    </div>
+  </noscript>
+
+  <!-- Point d’ancrage Angular -->
+  <app-root>
+    <!-- Splash screen -->
+    <div class="app-splash">
+      <div style="text-align: center;">
+        <svg width="64" height="64" viewBox="0 0 24 24" style="animation: pulse 1.5s infinite; margin-bottom: 1rem;">
+          <path fill="#4361ee" d="M12 2L2 7v10l10 5l10-5V7L12 2z"/>
+        </svg>
+        <h1 style="color: #2b2d42; margin-bottom: 0.5rem;">Mon Blog Angular</h1>
+        <p style="color: #6c757d; font-size: 1.1rem; margin-bottom: 1.5rem;">Un espace pour partager mes idées.</p>
+      </div>
+    </div>
+  </app-root>
+
+  <!-- Suivi des performances et erreurs -->
+  <script>
+    (function() {
+      const start = window.performance.now();
+      const metrics = { load: 0 };
+
+      window.addEventListener('load', () => {
+        metrics.load = performance.now() - start;
+        if (navigator.sendBeacon) {
+          const data = new Blob([JSON.stringify(metrics)], { type: 'application/json' });
+          navigator.sendBeacon('/api/metrics', data);
+        }
+      });
+
+      window.addEventListener('error', (e) => {
+        const errorData = {
+          message: e.message,
+          stack: e.error?.stack,
+          filename: e.filename,
+          lineno: e.lineno,
+          colno: e.colno
+        };
+        if (navigator.sendBeacon) {
+          const data = new Blob([JSON.stringify(errorData)], { type: 'application/json' });
+          navigator.sendBeacon('/api/errors', data);
+        }
+      });
+    })();
+  </script>
+
+  <!-- Script Angular principal -->
+  <script src="main.js" defer></script>
 </body>
 </html>

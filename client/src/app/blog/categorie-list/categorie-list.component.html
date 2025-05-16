@@ -1,0 +1,7 @@
+<div class="category-grid">
+    <div *ngFor="let category of categories" class="category-card">
+      <h3>{{ category.name }}</h3>
+      <p>{{ category.description }}</p>
+      <a [routerLink]="['/blogs/category', category._id]">Voir les blogs</a>
+    </div>
+  </div>

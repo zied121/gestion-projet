@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-navbar',
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'

@@ -1,40 +1,48 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BlogListComponent } from './blog-list/blog-list.component';
-import { BlogDetailComponent } from './blog-detail/blog-detail.component';
-import { BlogFormComponent } from './blog-form/blog-form.component';
-import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
-import { MarkdownModule } from 'ngx-markdown';  
+import { BlogModule } from './blog/blog.module';
 
-import { RouterModule } from '@angular/router';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AuthInterceptor } from './services/auth.interceptor';
 
-import { HttpClientModule } from '@angular/common/http';  // pour les services HTTP
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 
 @NgModule({
   declarations: [
-
     AppComponent,
-    BlogListComponent,
-    BlogDetailComponent,
-    BlogFormComponent,
-    FeedbackFormComponent
 
   ],
 
   imports: [
-    CommonModule, 
     BrowserModule,
+    BlogModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    RouterModule,
-    MarkdownModule.forRoot()
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatProgressBarModule
+
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<div class="auth-container">
+    <div class="auth-card">
+      <!-- Contenu dynamique des routes -->
+      <router-outlet></router-outlet>
+    </div>
+    
+    <footer class="auth-footer">
+      &copy; {{ currentYear }} Votre Application
+    </footer>
+  </div>

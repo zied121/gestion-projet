@@ -1,1 +1,164 @@
-/* You can add global styles to this file, and also import other style files */
+/* ====================== */
+/* VARIABLES CSS          */
+/* ====================== */
+:root {
+  /* Couleurs */
+  --color-primary: #4361ee;
+  --color-primary-hover: #3a56d4;
+  --color-text: #2b2d42;
+  --color-text-light: #6c757d;
+  --color-bg: #ffffff;
+  --color-border: #e9ecef;
+
+  /* Typographie */
+  --font-base: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-alt: 'Arial', sans-serif;
+  --line-height: 1.6;
+
+  /* Espacements */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+
+  /* Bordures */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ====================== */
+/* BASE + RESET BOOTSTRAP */
+/* ====================== */
+body {
+  font-family: var(--font-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: var(--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+a:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+/* ====================== */
+/* TYPOGRAPHIE CUSTOM     */
+/* ====================== */
+h1, h2, h3, h4 {
+  line-height: 1.2;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+p {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-light);
+}
+
+/* ====================== */
+/* COMPOSANTS SPÉCIFIQUES */
+/* ====================== */
+
+/* === Splash Screen === */
+.app-splash {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  z-index: 9998;
+  text-align: center;
+}
+
+.app-splash h1 {
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.app-splash p {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-md);
+}
+
+/* === Tags === */
+.tag-container {
+  margin-top: var(--space-md);
+}
+
+.tag {
+  display: inline-block;
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--color-primary);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  margin-right: var(--space-xs);
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  background-color: rgba(67, 97, 238, 0.2);
+}
+
+/* === Animation === */
+@keyframes pulse {
+  0% { opacity: 0.8; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.8; transform: scale(0.95); }
+}
+
+.pulse {
+  animation: pulse 1.5s infinite;
+}
+
+/* ====================== */
+/* MÉDIAS QUERIES         */
+/* ====================== */
+@media (max-width: 768px) {
+  :root {
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+  }
+
+  .app-splash h1 {
+    font-size: 1.8rem;
+  }
+
+  .app-splash p {
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pulse {
+    animation: none;
+  }
+}

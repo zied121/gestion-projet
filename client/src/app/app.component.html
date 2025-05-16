@@ -1,9 +1,103 @@
-<nav>
-  <ul>
-    <li><a routerLink="/blogs/1" routerLinkActive="active">Blog List</a></li> 
-    <li><a routerLink="/blog-form" routerLinkActive="active">Create Blog</a></li>
-    <li><a routerLink="/blog-detail/1" routerLinkActive="active">Blog Detail</a></li>
-  </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Blog Angular</title>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky-top">
+    <div class="container py-2">
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand fw-bold text-primary d-flex align-items-center" routerLink="/">
+          MonBlog
+          <span class="dot bg-primary ms-1"></span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-<router-outlet></router-outlet>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" routerLink="/" routerLinkActive="active">
+                <i class="bi bi-house-door me-1"></i>
+                <span class="d-none d-md-inline">Accueil</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" routerLink="/blogs" routerLinkActive="active">
+                <i class="bi bi-book me-1"></i>
+                <span class="d-none d-md-inline">Blogs</span>
+              </a>
+            </li>
+          </ul>
+
+          <div class="d-flex ms-lg-3">
+            <!-- Bouton Créer un blog -->
+            <a routerLink="/blogs/create" class="btn btn-primary btn-sm me-2">
+              <i class="bi bi-plus-lg me-1"></i>
+              <span class="d-none d-md-inline">Créer un blog</span>
+            </a>
+
+            <div class="input-group d-none d-lg-flex">
+              <input type="text" class="form-control rounded-pill" placeholder="Rechercher...">
+              <button class="btn btn-outline-primary rounded-pill" type="button">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+            
+            <button class="btn btn-outline-secondary ms-2 d-lg-none">
+              <i class="bi bi-search"></i>
+            </button>
+
+            <a class="nav-link d-flex align-items-center ms-2" routerLink="/profil">
+              <i class="bi bi-person me-1"></i>
+              <span class="d-none d-md-inline">Profil</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container my-4">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Bouton flottant pour mobile -->
+  <a routerLink="/blogs/create" class="btn btn-primary rounded-circle floating-btn d-lg-none">
+    <i class="bi bi-plus-lg"></i>
+  </a>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+    
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  </style>
+</body>
+</html>

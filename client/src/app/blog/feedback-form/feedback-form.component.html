@@ -1,0 +1,89 @@
+<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="container py-4">
+  <h2 class="h3 mb-4 text-center fw-bold">
+    {{ isEditMode ? 'Modifier le Feedback' : 'Envoyer un Feedback' }}
+  </h2>
+  
+  <!-- Titre -->
+  <div class="mb-4">
+    <label for="feedback-title" class="form-label fw-semibold">Titre</label>
+    <input 
+      type="text" 
+      id="feedback-title" 
+      formControlName="title"
+      class="form-control form-control-lg"
+      [ngClass]="{
+        'is-invalid': feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched
+      }"
+    >
+    <div *ngIf="feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched" 
+         class="invalid-feedback">
+      <i class="bi bi-exclamation-circle me-1"></i>
+      Le titre est requis (minimum 5 caractères)
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <div class="mb-4">
+    <label for="feedback-content" class="form-label fw-semibold">Contenu</label>
+    <textarea 
+      id="feedback-content" 
+      formControlName="content" 
+      rows="6"
+      class="form-control"
+      [ngClass]="{
+        'is-invalid': feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched
+      }"
+    ></textarea>
+    <div *ngIf="feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched" 
+         class="invalid-feedback">
+      <i class="bi bi-exclamation-circle me-1"></i>
+      Le contenu est requis (minimum 10 caractères)
+    </div>
+  </div>
+
+  <!-- Catégorie et Tags -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <label for="feedback-category" class="form-label fw-semibold">Catégorie</label>
+      <select 
+        id="feedback-category" 
+        formControlName="category"
+        class="form-select"
+      >
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="feedback-tags" class="form-label fw-semibold">
+        Tags <small class="text-muted">(séparés par des virgules)</small>
+      </label>
+      <input 
+        type="text" 
+        id="feedback-tags" 
+        formControlName="tags"
+        class="form-control"
+        placeholder="ex: design, ergonomie, bug"
+      >
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="d-flex justify-content-end gap-3 pt-2">
+    <button 
+      type="button" 
+      class="btn btn-outline-secondary px-4"
+      (click)="resetForm()"
+    >
+      <i class="bi bi-x-circle me-2"></i>Annuler
+    </button>
+    <button 
+      type="submit" 
+      class="btn btn-primary px-4"
+      [disabled]="feedbackForm.invalid"
+      [class.btn-warning]="isEditMode"
+    >
+      <i class="bi" [class.bi-send]="!isEditMode" [class.bi-check-circle]="isEditMode"></i>
+      {{ isEditMode ? ' Mettre à jour' : ' Envoyer' }}
+    </button>
+  </div>
+</form>

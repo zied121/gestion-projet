@@ -2,23 +2,23 @@ const mongoose = require('mongoose');
 const { Blog, blogValidationSchema } = require('../models/Blog');
 const User = require('../models/User');
 const yup = require("yup");
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 
 //Fonction pour trouver un blog par ID
 const findBlogById = async (blogId) => {
-
-  //Vérification de la validité de l'ID du blog
+  //on va valider la validité de l'ID du blog
   if (!mongoose.Types.ObjectId.isValid(blogId)) {
     throw new Error("ID de blog invalide");
   }
 
-  // on va rechercher le blog dans la BD par son ID
+  //on va rechercher le blog dans la BD par son ID
   const blog = await Blog.findById(blogId)
     .populate("author", "username email")                 // on va remplir les infors de l'auteur (nom d'utilisateur et email)
-    .populate("comments.author", "username email");      // meme chose , remplir les informations de l'auteur des commentaires (nom d'utilisateur et email)
+    .populate("comments.author", "username email");       // meme chose , remplir les informations de l'auteur des commentaires (nom d'utilisateur et email)
 
-
-  // Si le blog n'est pas trouvé, lancer une erreur
   if (!blog) {
     throw new Error("Blog non trouvé");
   }
@@ -30,19 +30,19 @@ const findBlogById = async (blogId) => {
 const getBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog.find()
-      .populate("author", "username") // pour afficher le nom de l'auteur
-      .populate("categorie", "nom"); // nom de la catégorie
+      .populate("author", "username")        // pour afficher le nom de l'auteur
+      .populate("categorie", "nom");        // nom de la catégorie
 
     res.json({
       blogs,
       currentPage: 1,
       totalPages: 1,
       totalBlogs: blogs.length,
-      hasPrevious: false,      
+      hasPrevious: false,
       hasNext: false
     });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
 
@@ -64,43 +64,55 @@ const getBlogById = async (req, res, next) => {
 };
 
 
-// Fonction pour créer un blog
+//Fonction pout créer un blog 
 const createBlog = async (req, res) => {
   try {
+    // Récupération des données
+    const { title, content, tags, category, categorie: categorieBody } = req.body;
+    const categorie = categorieBody || category;
 
-    // Valider les données avec Yup
-    await blogValidationSchema.validate(req.body, { abortEarly: false });
-
-    const { title, content, tags, categorie } = req.body;
-    const author = req.user.id; 
-
-    const newBlog = new Blog({
+    // Validation
+    const validatedData = await blogValidationSchema.validate({
       title,
       content,
-      tags,
       categorie,
-      author
+      tags, // Peut être string ou array
+      imageUrl: req.file ? `/uploads/blog-images/${req.file.filename}` : null
+    }, { abortEarly: false });
+
+    // Création du blog avec les données validées (tags déjà transformés en array)
+    const newBlog = new Blog({
+      title: validatedData.title,
+      content: validatedData.content,
+      categorie: validatedData.categorie,
+      tags: validatedData.tags, // Utilise le tableau transformé
+      author: '65b8a1f2f8a1f2f8a1f2f8a1', // À remplacer par req.user._id
+      imageUrl: validatedData.imageUrl
     });
 
-    await newBlog.save();
-    return res.status(201).json(newBlog);
+    const savedBlog = await newBlog.save();
+
+    res.status(201).json({
+      success: true,
+      data: savedBlog,
+      message: "Blog créé avec succès"
+    });
 
   } catch (error) {
-
+    console.error("Erreur création blog:", error);
+    
     if (error instanceof yup.ValidationError) {
-      const errors = error.inner?.map(err => ({
-        field: err.path,
-        message: err.message
-      })) || [{
-        field: error.path || "unknown",
-        message: error.message
-      }];
-
-      return res.status(400).json({ errors });
+      return res.status(400).json({
+        success: false,
+        errors: error.errors,
+        type: "validation_error"
+      });
     }
 
-    console.error("Erreur lors de la création du blog :", error);
-    return res.status(500).json({ message: "Une erreur est survenue lors de la création du blog." });
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur lors de la création du blog"
+    });
   }
 };
 
@@ -135,7 +147,7 @@ const updateBlog = async (req, res, next) => {
     const updatedBlog = await Blog.findByIdAndUpdate(
       req.params.id,
       updatedFields,
-      { new: true }
+      { new: true }             //new: true signifie qu’on retourne le blog après modif et pas l'ancien
     );
 
     if (!updatedBlog) {
@@ -160,7 +172,7 @@ const deleteBlog = async (req, res, next) => {
 
     res.json({ message: "Blog supprimé avec succès !" });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
 
@@ -171,14 +183,14 @@ const addComment = async (req, res, next) => {
     const { blogId } = req.params;
     const { content } = req.body;
 
-    if (!req.user) {
-      return res.status(401).json({ message: 'Vous devez être connecté pour commenter' });
-    }
+    // if (!req.user) {
+    //   return res.status(401).json({ message: 'Vous devez être connecté pour commenter' });
+    // }
 
     const blog = await findBlogById(blogId);
 
     const newComment = {
-      author: req.user.id,
+      author: "67f7c565f989b5df2b2892ed",
       content
     };
 
@@ -187,7 +199,7 @@ const addComment = async (req, res, next) => {
 
     res.status(201).json({ message: 'Commentaire ajouté avec succès', blog });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
 
@@ -219,6 +231,7 @@ const updateComment = async (req, res, next) => {
   }
 };
 
+
 // Fonction pour  Supprimer un commentaire
 const deleteComment = async (req, res, next) => {
   try {
@@ -238,7 +251,7 @@ const deleteComment = async (req, res, next) => {
 
     res.status(200).json({ message: "Commentaire supprimé avec succès", blog });
   } catch (err) {
-    next(err); // Passer l'erreur au middleware d'erreur
+    next(err);        //gestion des errerus 
   }
 };
 
@@ -248,29 +261,28 @@ const getBlogsPaginated = async (req, res, next) => {
   try {
 
     const page = parseInt(req.query.page) || 1;
-    
+
     const limit = parseInt(req.query.limit) || 10;
 
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;   //ignore
 
     const blogs = await Blog.find().skip(skip).limit(limit);
     const totalBlogs = await Blog.countDocuments();
+
     const totalPages = Math.ceil(totalBlogs / limit);
 
     res.json({
       blogs,
-      currentPage: page,      // La page actuellement demandée
+      currentPage: page,
       totalPages,
       totalBlogs,
-      hasPrevious: page > 1,      
-      hasNext: page < totalPages 
+      hasPrevious: page > 1,
+      hasNext: page < totalPages
     });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
-
-
 
 // Fonction pour  Pagination des commentaires
 const getCommentsPaginated = async (req, res, next) => {
@@ -287,11 +299,9 @@ const getCommentsPaginated = async (req, res, next) => {
       return res.status(404).json({ message: 'Blog non trouvé' });
     }
 
-
     const totalComments = blog.comments.length;
     const totalPages = Math.ceil(totalComments / limit);
-
-    const comments = blog.comments.slice(skip, skip + limit);
+    const comments = blog.comments.slice(skip, skip + limit);    //slice() découpe les commentaires à partir de skip et en prend limi
 
     return res.status(200).json({
       comments,
@@ -304,14 +314,13 @@ const getCommentsPaginated = async (req, res, next) => {
   }
 };
 
-// Fonction pour ajouter un like à un blog (systéme de like)
+//Fonction pour ajouter un like à un blog (systéme de like)
 const likeBlog = async (req, res, next) => {
   try {
-    const { blogId } = req.params;
-    const userId = req.user.id;
+    const { id } = req.params;
+    const userId = "67f7c53df989b5df2b2892e8";
 
-    const blog = await findBlogById(blogId);
-
+    const blog = await findBlogById(id);
 
     if (blog.likes.includes(userId)) {
       return res.status(400).json({ message: "Vous avez déjà aimé ce blog." });
@@ -320,21 +329,19 @@ const likeBlog = async (req, res, next) => {
     //ajoute l'ID de l'utilisateur à la liste des likes du blog
     blog.likes.push(userId);
 
-    // Incrémente le compteur de likes du blog
+    //Incrémente le compteur de likes du blog
     blog.likeCount += 1;
 
     await blog.save();
 
     res.status(200).json({ message: "Blog aimé avec succès.", likeCount: blog.likeCount });
   } catch (err) {
-    next(err); 
+    next(err);
   }
 };
 
 
-
-
-// Fonction recommandation de blogs similaires par tags (recherche insensible à la casse)
+//Fonction recommandation de blogs similaires par tags (recherche insensible à la casse)
 const getRecommendedBlogs = async (req, res) => {
   const blogId = req.params.id;
 
@@ -344,9 +351,9 @@ const getRecommendedBlogs = async (req, res) => {
       return res.status(404).json({ message: "Blog non trouvé" });
     }
 
-    const tags = currentBlog.tags;
+    const tags = currentBlog.tags;       //réccupére tous les tags du blog actuel
     if (!tags || tags.length === 0) {
-      return res.status(200).json([]); 
+      return res.status(200).json([]);
     }
 
     // Créer des regex insensibles à la casse pour chaque tag
@@ -369,13 +376,12 @@ const getRecommendedBlogs = async (req, res) => {
 };
 
 
-
 //Fonction pour les blogs les plus likés
 const getPopularBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find({ likeCount: { $gt: 0 } }) // uniquement ceux qui ont des likes
       .sort({ likeCount: -1 }) // triés du plus liké au moins liké
-      .limit(10); // optionnel : les 10 plus populaires
+      .limit(10); // les 10 plus populaires
 
     res.status(200).json(blogs);
   } catch (error) {
@@ -385,10 +391,10 @@ const getPopularBlogs = async (req, res) => {
 };
 
 
-//Fonction pour ajouter un TAG
+//Fonction pour ajouter un TAG à un BLOG 
 const addTagsToBlog = async (req, res) => {
-  const { id } = req.params; 
-  const { tags } = req.body; 
+  const { id } = req.params;
+  const { tags } = req.body;
 
   try {
     const blog = await Blog.findById(id);
@@ -406,6 +412,9 @@ const addTagsToBlog = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
+
+
+
 
 
 module.exports = {

@@ -9,6 +9,9 @@ import { OrganisationProfileComponent } from './pages/organisation-profile/organ
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { BlogModule } from './blog/blog.module';
+
+
 
 export const routes: Routes = [
   {
@@ -43,17 +46,21 @@ export const routes: Routes = [
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [authGuard,adminGuard]
+        canActivate: [authGuard, adminGuard]
       },
       {
         path: 'profile/:id',
         component: ProfileDetailsComponent
       },
       {
-        path:'workspace/:id/profile',
+        path: 'workspace/:id/profile',
         canActivate: [adminGuard],
         component: OrganisationProfileComponent
-      }
+      },
+      {
+        path: 'Blog',
+        component: BlogModule
+      },
     ]
   }
 ];
