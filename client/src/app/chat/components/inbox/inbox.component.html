@@ -1,0 +1,43 @@
+<div class="flex flex-col h-screen w-72 bg-white border-r border-gray-200">
+  <!-- Header -->
+  <div class="p-4 border-b border-gray-100">
+    <h1 class="text-xl font-bold text-gray-800">Boîte de réception</h1>
+  </div>
+
+  <!-- Room List -->
+  <div class="flex-1 overflow-y-auto p-2">
+    <div *ngIf="rooms.length === 0" class="text-center p-4 text-gray-500">
+      Vous n'avez rejoint aucune room.
+    </div>
+
+    <div *ngFor="let room of rooms" 
+         (click)="selectRoom(room._id)"
+         class="p-3 rounded-lg cursor-pointer flex items-center hover:bg-gray-50"
+         [class.bg-blue-50]="room._id === selectedRoomId">
+         
+      <!-- Room avatar - shows image or initial -->
+      <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden mr-3">
+        <img *ngIf="room.image" [src]="room.image" alt="Room image" class="h-full w-full object-cover">
+        <span *ngIf="!room.image" class="text-blue-600 font-medium">
+          {{ room.name.charAt(0).toUpperCase() }}
+        </span>
+      </div>
+      
+      <div class="min-w-0">
+        <div class="font-medium truncate">{{ room.name }}</div>
+        <div *ngIf="room.lastMessage" class="text-sm text-gray-500 truncate">
+          {{ room.lastMessage.text }}
+        </div>
+      </div>
+      
+      <div class="ml-auto flex flex-col items-end">
+        <span *ngIf="room.lastMessage" class="text-xs text-gray-400">
+          {{ room.lastMessage.timestamp | date:'shortTime' }}
+        </span>
+        <span *ngIf="room.unreadCount" class="mt-1 h-5 w-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center">
+          {{ room.unreadCount }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

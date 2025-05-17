@@ -5,12 +5,15 @@ import { Observable } from 'rxjs';
 // Définition du modèle de Message 
 export interface Message {
   _id: string;           
-  sender: { name: string };
+  sender: { nom: string , _id: string }; 
+ // sender:String
+  SenderName: string;
   content: string;
   file?: string | null;
   likes?: string[]; 
   pinned?: boolean; 
-  
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Injectable({

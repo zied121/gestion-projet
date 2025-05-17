@@ -7,16 +7,16 @@ const validate = require('../Middleware/validate');
 const { ValideRoomSchema } = require("../models/Room");
 
 const {
-    getRooms,searchRooms, getRoomById,deleteRoom , createRoom , getProjectPerUser, createGoogleMeet , updateRoomsec , createRoomPerProject, createPrivateRoom
+    getRooms,searchRooms,getRoomsByUser, getRoomById,deleteRoom , createRoom , getProjectPerUser, createGoogleMeet , updateRoomsec , createRoomPerProject, createPrivateRoom
 } = require("../Controllers/roomController");
-
+  
 //Admin routes
 //router.post("/addRoom", isAuth,isAdmin, createRoom)
 //router.put("/UpdateRoom", isAuth,isAdmin, updateRoom)
 //router.get("/", isAuth, getRooms)
-router.get("/", isAuth, getRooms)  
+router.get("/", getRooms)  
 router.get("/getProjectPerUser", isAuth, getProjectPerUser)  
-router.get("/getRoomByID/:id", isAuth, getRoomById)  
+router.get("/getRoomByID/:id",isAuth, getRoomById)  
 router.post("/addRoom" , isAuth ,validate(ValideRoomSchema), createRoom) 
 router.post("/RoomForProject/:id" , isAuth ,validate(ValideRoomSchema), createRoomPerProject) 
 router.post('/CreatePrivateRoom', isAuth, createPrivateRoom); 
@@ -25,8 +25,6 @@ router.put("/UpdateRoom/:id" , isAuth ,validate(ValideRoomSchema), updateRoomsec
 router.delete("/DeleteRoom/:id", isAuth, deleteRoom)
 router.post('/:id/start-call', createGoogleMeet);
 router.get('/searchRoom',isAuth , searchRooms);
-
-
-
+router.get('/getRoomsPerUser', isAuth, getRoomsByUser);
 //User routes
 module.exports = router;

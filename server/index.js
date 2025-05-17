@@ -10,7 +10,10 @@ const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
-
+const roomRoutes = require('./Routes/RoomRoutes');
+const messageRoutes = require('./Routes/MessageRoute'); 
+const GoogleAuth = require('./Routes/GoogleAuthRoute')
+const path = require('path');
 require("dotenv").config({
     path: "./config/.env"
 });
@@ -36,10 +39,20 @@ io.on('connection', (socket) => {
     socket.join(roomId);
     console.log(`L'utilisateur ${socket.id} a rejoint la room ${roomId}`);
   });
+  /*  updated with service websocket 
   socket.on('sendMessage', (data) => {
     const { roomId, message } = data;
     io.to(roomId).emit('receiveMessage', message);
+  });*/
+  socket.on('sendMessage', (message) => {
+    const roomId = message.room;
+    io.to(roomId).emit('receiveMessage', message);
   });
+  socket.on('leaveRoom', (roomId) => {
+    socket.leave(roomId);
+    console.log(`L'utilisateur ${socket.id} a quitté la room ${roomId}`);
+  });  
+
   socket.onAny((event, ...args) => {
     console.log(`📡 Event: ${event}`, args);
   })
@@ -65,9 +78,10 @@ app.use('/api/users',userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use('/api/subscription', SubscriptionRoutes);
-
-
-
+app.use('/api/rooms', roomRoutes);
+app.use('/api/message', messageRoutes);
+app.use('/google', GoogleAuth);
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
 
 
 

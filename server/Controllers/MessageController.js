@@ -40,9 +40,14 @@ const createMessage = (io) => async (req, res) => {*/
 const createMessageWS = async (req, res) => {
   try {
     const { room, content } = req.body;
-    const file = req.file; // Utilisation de req.file pour récupérer le fichier
+    const file = req.file; 
     const sender = req.user?._id; 
-    console.log('Sender ID:', sender);
+
+     const SenderName = req.user?.nom; // Optional chaining to avoid crash
+
+    console.log('Sender ID:', SenderName);
+
+    //console.log('Sender ID:', sender);
     const existingRoom = await Room.findById(room);
     if (!existingRoom) {
       return res.status(404).json({ message: "Room non trouvée." });
@@ -50,6 +55,7 @@ const createMessageWS = async (req, res) => {
 
     const message = new Message({
       sender,
+      SenderName: SenderName,
       room,
       content,
     file: file ? file.filename : null
@@ -70,8 +76,12 @@ io.to(room).emit('receiveMessage', savedMessage);
 const createMessage = async (req, res) => {
   try {
     const { room, content } = req.body;
+    console.log('req userrrr :', req.user);
+
     const sender = req.user?._id; // Optional chaining to avoid crash
-    console.log('Sender ID:', sender);
+      const senderNom = req.user?.nom; // Optional chaining to avoid crash
+
+    console.log('Sender ID:', senderNom);
     const file = req.file;
 
     const existingRoom = await Room.findById(room);
@@ -100,7 +110,7 @@ const createMessage = async (req, res) => {
 };
 
 
-
+/*
 const getMessagesByRoom = async (req, res) => {
     try {
       const roomId = req.params.id;
@@ -118,7 +128,30 @@ const getMessagesByRoom = async (req, res) => {
       res.status(500).json({ message: 'Erreur récupération messages de la room', error: error.message });
     }
   };
- 
+ */
+  const getMessagesByRoom = async (req, res) => {
+    try {
+      const roomId = req.params.id;
+      if (!roomId) {
+        return res.status(400).json({ message: "ID de la room invalide" });
+      }
+  
+      const messages = await Message.find({ room: roomId });
+      if (!messages || messages.length === 0) {
+        return res.status(404).json({ message: "Aucun message trouvé pour cette room" });
+      }
+  
+      res.status(200).json(messages);
+    } catch (error) {
+      console.error("Erreur récupération messages de la room :", error);
+      res.status(500).json({ message: 'Erreur récupération messages de la room', error: error.message });
+    }
+  };
+  
+
+
+
+
   /*
   const updateMessage = async (req, res) => {
     try {

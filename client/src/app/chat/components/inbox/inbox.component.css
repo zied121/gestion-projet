@@ -1,0 +1,45 @@
+.inbox-container {
+    padding: 15px;
+    background-color: #fafafa;
+    height: 100%;
+    border-right: 1px solid #ddd;
+  }
+  
+  .inbox-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .room-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .room-item {
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .room-item:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .room-item.selected {
+    background-color: #d0ebff;
+    font-weight: bold;
+  }
+  
+  .no-rooms {
+    color: #777;
+    font-style: italic;
+    margin-top: 10px;
+  }
+  

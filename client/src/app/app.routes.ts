@@ -13,7 +13,10 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-
+import { RoomComponent } from './chat/components/room/room.component';
+import { InboxComponent } from './chat/components/inbox/inbox.component';
+import { ChatComponent } from './chat/components/chat/chat.component';
+import { PlaceholderComponent } from './chat/components/placeholder/placeholder.component';
 export const routes: Routes = [
   {
     path: '',
@@ -41,8 +44,28 @@ export const routes: Routes = [
     path: 'cancel',
     component: FailPaiementComponent
   },
- 
-
+  {
+    path: 'rooms/:id',
+    component: RoomComponent
+  },
+  {
+    path: 'inbox',
+    component: InboxComponent
+  },
+  {
+    path: 'chat',
+    component: ChatComponent,
+    children: [
+      {
+        path: '',
+        component: PlaceholderComponent // shows when no room is selected
+      },
+      {
+        path: ':id',
+        component: RoomComponent // shows the selected room
+      }
+    ]
+  },
 
   // Protected routes with navbar via MainLayoutComponent
   {

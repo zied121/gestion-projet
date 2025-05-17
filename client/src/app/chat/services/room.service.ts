@@ -19,5 +19,13 @@ export class RoomService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${this.apiUrl}`,  { headers });
   }
+  getRoomsByUser(): Observable<any[]> {
+    const token = localStorage.getItem('token'); 
 
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.apiUrl}/getRoomsPerUser`, { headers });
+  }
+  getRoomById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }  
 }

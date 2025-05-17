@@ -399,5 +399,21 @@ const searchRooms = async (req, res) => {
 };
 
 
+const getRoomsByUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
 
-module.exports = { getRooms, searchRooms, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec};
+    const rooms = await Room.find({ members: userId });
+
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({ message: 'Aucune room trouvée pour cet utilisateur' });
+    }
+
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des rooms :', error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+
+module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec};

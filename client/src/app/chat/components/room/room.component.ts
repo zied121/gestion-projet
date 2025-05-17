@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../services/message.service';
 import { Message } from '../../services/message.service';
-import { SocketService } from '../../../services/socket.service';  // Import du service WebSocket
+//import { SocketService } from '../../../services/socket.service';  // Import du service WebSocket
+import { SocketService } from '../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -15,6 +16,7 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, FormsModule] 
 })
 export class RoomComponent implements OnInit, OnDestroy {
+  @Input() roomId!: string;
 
   currentRoomId: string = ''; 
   messages: Message[] = [];  
@@ -26,6 +28,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   editingMessageId: string | null = null;
   editedContent: string = '';
+
   constructor(
     private messageService: MessageService,
     private socketService: SocketService, 
@@ -34,11 +37,13 @@ export class RoomComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.currentUserId = user._id;
 
     this.route.paramMap.subscribe(params => {
       this.currentRoomId = params.get('id')!;
+      this.messages = [];
       this.socketService.joinRoom(this.currentRoomId);
       this.messageService.getMessagesByRoom(this.currentRoomId).subscribe((msgs) => {
         this.messages = msgs;
@@ -47,7 +52,9 @@ export class RoomComponent implements OnInit, OnDestroy {
 
       // Souscrire aux nouveaux messages depuis WebSocket
       this.socketService.listen('receiveMessage').subscribe((newMessage: Message) => {
-        this.messages.push(newMessage); // Ajouter le nouveau message à la liste
+       if (!this.messages.some(m => m._id === newMessage._id)) {
+        this.messages.push(newMessage);
+      }
       });
       //update message
       this.socketService.listen('messageUpdated').subscribe((updated: Message) => {
@@ -81,7 +88,6 @@ export class RoomComponent implements OnInit, OnDestroy {
     formData.append('room', this.currentRoomId); // Append the room ID
     formData.append('content', this.messageText); // Append the message content
 
-    // Append the selected file if any
     if (this.selectedFile) {
       formData.append('file', this.selectedFile, this.selectedFile.name);
     }
@@ -89,7 +95,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     // Call the service to send the message with FormData
     this.messageService.sendMessage(formData).subscribe((newMessage) => {
       // Add the new message to the list of messages
-      this.messages.push(newMessage);
+      //this.messages.push(newMessage);
 
       // Emit the new message to WebSocket for real-time updates
       this.socketService.emit('sendMessage', newMessage);
@@ -177,4 +183,34 @@ pinMessage(messageId: string): void {
     this.socketService.emit('updateMessage', updatedMsg);  // si besoin
   });
 }
+
+ngOnChanges() {
+  if (this.roomId) {
+    this.messageService.getMessagesByRoom(this.roomId).subscribe();
+  }}
+  
+loadMessages(roomId: string) {
+  this.messages = []; // ✅ Clear first
+  this.messageService.getMessagesByRoom(roomId).subscribe({
+    next: (res) => {
+      this.messages = res;
+    },
+    error: (err) => {
+      console.error('Error loading messages:', err);
+    }
+  });
+}
+  /*
+loadMessages(roomId: string) {
+  this.messages = [];  // Clear old messages immediately
+  this.messageService.getMessagesByRoom(roomId).subscribe({
+    next: (res) => {
+      this.messages = res;
+    },
+    error: (err) => {
+      console.error('Error loading messages:', err);
+    }
+  });
+}
+*/
 }
