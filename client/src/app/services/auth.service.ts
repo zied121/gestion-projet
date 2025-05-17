@@ -39,7 +39,7 @@ export class AuthService {
     return localStorage.getItem('token');
   }
   getRole(): string | null {
-    return localStorage.getItem('role');  
+    return localStorage.getItem('role');
   }
 
 
@@ -54,4 +54,9 @@ export class AuthService {
 forgetPassword(email: string): Observable<any> {
   return this.http.post(`${this.baseUrl}/forget`, { email });
 }
+  getCurrentUserRole(): string {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user?.role || '';
+  }
+
 }

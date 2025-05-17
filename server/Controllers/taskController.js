@@ -65,13 +65,21 @@ const getTasks = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
-
 const getTaskById = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id).populate('project assignee');
 
-        if (!task || (!task.assignee.equals(req.user._id) && !task.createdBy.equals(req.user._id))) {
-            return res.status(404).json({ message: 'Task not found or access denied' });
+        if (!task) {
+            return res.status(404).json({ message: 'Tâche introuvable' });
+        }
+
+        const isAssignee = Array.isArray(task.assignee)
+            ? task.assignee.some(assignee => assignee.equals(req.user._id))
+            : task.assignee && task.assignee.equals(req.user._id);
+        const isCreator = task.createdBy && task.createdBy.equals(req.user._id);
+
+        if (!isAssignee && !isCreator) {
+            return res.status(403).json({ message: 'Accès refusé à cette tâche' });
         }
 
         res.status(200).json(task);
@@ -156,6 +164,41 @@ const addCommentToTask = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+const assignUsersToTask = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const { userIds } = req.body;
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        task.assignee = userIds;
+        await task.save();
+
+        const io = req.app.get('io');
+        io.emit('usersAssignedToTask', { taskId, userIds });
+
+        res.status(200).json({ message: 'Users assigned successfully', task });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+
+const getTasksByProject = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const tasks = await Task.find({ project: projectId })
+            .populate('assignee', 'nom email')
+            .populate('project', 'name');
+
+        res.status(200).json(tasks);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur lors de la récupération des tâches', error: err.message });
+    }
+};
+
 
 module.exports = {
     createTask,
@@ -164,5 +207,5 @@ module.exports = {
     updateTask,
     deleteTask,
     addSubtask,
-    addCommentToTask
+    addCommentToTask,assignUsersToTask,getTasksByProject
 };

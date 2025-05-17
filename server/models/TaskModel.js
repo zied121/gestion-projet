@@ -19,7 +19,7 @@ const taskSchema = new mongoose.Schema({
     status: { type: String, enum: ['To Do', 'In Progress', 'Done'], default: 'To Do' },
     priority: { type: String, enum: ['Low', 'Medium', 'High', 'Urgent'], default: 'Medium' },
     project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
-    assignee: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
+    assignee: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     startDate: Date,
     dueDate: Date,
@@ -39,7 +39,7 @@ const taskValidationSchema = yup.object({
     dueDate: yup.date().nullable(),
     labels: yup.array().of(yup.string()),
     project: yup.string().matches(/^[0-9a-fA-F]{24}$/),
-    assignee: yup.string().matches(/^[0-9a-fA-F]{24}$/),
+    assignee: yup.array().of(yup.string().matches(/^[0-9a-fA-F]{24}$/)),
     subtasks: yup.array().of(yup.string().matches(/^[0-9a-fA-F]{24}$/))
 });
 

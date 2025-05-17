@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
     import { BrowserModule } from '@angular/platform-browser';
-    import { HttpClientModule } from '@angular/common/http';
+    import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
     import { RouterModule } from '@angular/router';
     import { AppComponent } from './app.component';
-    import { TaskListComponent } from './components/task/task-list.component';
-    import { ProjectListComponent } from './components/project/project-list.component';
-    import { TaskService } from './services/task.service';
+   // import { TaskListComponent } from './components/task/task-list.component';
+    import { ProjectListComponent } from './components/project-task-management/project/project-list/project-list.component';
+   // import { TaskService } from './services/task.service';
     import { ProjectService } from './services/project.service';
     import { routes } from './app.routes';
 
@@ -15,9 +15,8 @@ import { NgModule } from '@angular/core';
         HttpClientModule,
         RouterModule.forRoot(routes),
         AppComponent,
-        TaskListComponent,
         ProjectListComponent
       ],
-      providers: [TaskService, ProjectService]
+      providers: [ProjectService]
     })
     export class AppModule { }

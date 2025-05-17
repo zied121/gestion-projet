@@ -5,8 +5,6 @@ import { ForgetpswdComponent } from './pages/forgetpswd/forgetpswd.component';
 import { WorkspaceformComponent } from './pages/workspaceform/workspaceform.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProfileDetailsComponent } from './pages/profile-details/profile-details.component';
-import { TaskListComponent } from './components/task/task-list.component';
-import { ProjectListComponent } from './components/project/project-list.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
@@ -17,7 +15,6 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-  // Auth routes without navbar
   {
     path: 'login',
     component: LoginComponent
@@ -30,12 +27,10 @@ export const routes: Routes = [
     path: 'forgetpswd',
     component: ForgetpswdComponent
   },
-
-  // Protected routes with navbar via MainLayoutComponent
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+
     children: [
       {
         path: 'workspaceform',
@@ -44,14 +39,36 @@ export const routes: Routes = [
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [authGuard,adminGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'workspace/:id/profile',
         component: ProfileDetailsComponent
+      },
+      {
+        path: 'projects',
+        loadChildren: () =>
+          import('./components/project-task-management/project/project.module').then(
+            (m) => m.ProjectModule
+          ),
+
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./components/project-task-management/task/task.module').then(
+            (m) => m.TaskModule
+          ),
       }
+      // Uncomment and adjust when ready
+      // {
+      //   path: 'admin/organizations',
+      //   loadChildren: () =>
+      //     import('./components/project-task-management/organizations/organization.module').then(
+      //       m => m.OrganizationModule
+      //     ),
+      //   canActivate: [adminGuard]
+      // },
     ]
-  },
-  { path: 'tasks', component: TaskListComponent },
-  { path: 'projects', component: ProjectListComponent }
+  }
 ];

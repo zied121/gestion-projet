@@ -24,7 +24,7 @@ import {
   HlmTabsTriggerDirective,
 } from '@spartan-ng/ui-tabs-helm';
 
-import {OrganisationService} from '../../services/organisation.service'; // adjust path if 
+import {OrganisationService} from '../../services/organisation.service'; // adjust path if
 import { Router } from '@angular/router';
 
 @Component({
@@ -32,9 +32,9 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,    
+    ReactiveFormsModule,
     HttpClientModule,
-    
+
     HlmTabsComponent,
     HlmTabsListComponent,
     HlmTabsTriggerDirective,
@@ -112,7 +112,8 @@ export class WorkspaceformComponent {
   ngOnInit(): void {
   this.organisationService.checkOrganisation().subscribe({
     next: (response: any) => {
-      console.log(response);
+      console.log(response.organisation);
+      localStorage.setItem('organisation', response.organisation);
       this.router.navigate(['/workspace/' + response.organisation]);
   },
   error: (err: any) => {

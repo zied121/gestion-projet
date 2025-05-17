@@ -1,5 +1,7 @@
 const User = require('../models/Usermodel');
 const { Project, projectValidationSchema } = require('../models/ProjectModel');
+const {Types} = require("mongoose");
+
 
 const createProject = async (req, res) => {
     try {
@@ -24,15 +26,17 @@ const getProjects = async (req, res) => {
         const { limit = 10, skip = 0, sort = '-createdAt' } = req.query;
 
         const projects = await Project.find({
-            $or: [
-                { owner: req.user._id },
-                { members: req.user._id }
-            ]
+            $or: [{ owner: req.user._id }, { members: req.user._id }]
         })
             .populate('owner members')
+            .populate({
+                path: 'tasks',
+                populate: { path: 'activityLogs.user', select: 'nom email' } // si activityLogs a des ref
+            })
             .sort(sort)
             .skip(Number(skip))
             .limit(Number(limit));
+
 
         res.status(200).json(projects);
     } catch (err) {
@@ -63,18 +67,32 @@ const getProjectById = async (req, res) => {
 };
 
 const updateProject = async (req, res) => {
+    const { id } = req.params;
+    const { name, description, status, start_date, end_date, members } = req.body;
+
     try {
-        await projectValidationSchema.validate(req.body);
-        const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, {
-            new: true
-        });
+        const project = await Project.findById(id);
+        if (!project) {
+            return res.status(404).json({ message: 'Projet non trouvé.' });
+        }
 
-        const io = req.app.get('io');
-        io.emit('projectUpdated', updatedProject);
+        // Mise à jour des attributs du projet
+        project.name = name;
+        project.description = description;
+        project.status = status;
+        project.start_date = start_date;
+        project.end_date = end_date;
 
-        res.status(200).json(updatedProject);
+        // Mise à jour des membres
+        if (Array.isArray(members)) {
+            project.members = members;
+        }
+
+        await project.save();
+
+        res.status(200).json({ message: 'Projet mis à jour avec succès.', project });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: 'Erreur lors de la mise à jour du projet.', error: err.message });
     }
 };
 
@@ -90,11 +108,58 @@ const deleteProject = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+const assignUsersToProject = async (req, res) => {
+    const { id } = req.params; // ID du projet
+    const { userIds } = req.body; // Liste des IDs des utilisateurs à assigner
 
+    // Vérification que `userIds` est un tableau valide contenant des ObjectId
+    if (!Array.isArray(userIds) || !userIds.every(Types.ObjectId.isValid)) {
+        return res.status(400).json({ message: 'Liste de membres invalide.' });
+    }
+
+    try {
+        // Recherche du projet par ID
+        const project = await Project.findById(id);
+        if (!project) {
+            return res.status(404).json({ message: 'Projet non trouvé.' });
+        }
+
+        // Mise à jour des membres du projet
+        project.members = userIds;
+        await project.save();
+
+        // Récupération des membres mis à jour avec leurs informations
+        const updated = await Project.findById(id).populate('members', 'nom email role');
+
+        res.status(200).json({
+            message: 'Utilisateurs assignés avec succès',
+            members: updated.members
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    }
+};
+const getProjectUsers = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const project = await Project.findById(id).populate({
+            path: 'members',
+            model: 'Utilisateur' // Assurez-vous que ce modèle est correct
+        });
+
+        if (!project) {
+            return res.status(404).json({ message: 'Projet non trouvé' });
+        }
+
+        res.status(200).json(project.members);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    }
+};
 module.exports = {
     createProject,
     getProjects,
     getProjectById,
     updateProject,
-    deleteProject
+    deleteProject,assignUsersToProject,getProjectUsers
 };

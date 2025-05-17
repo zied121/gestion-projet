@@ -39,12 +39,24 @@ export class OrganisationService {
   }
 
 
-  
+
   getAllUsersByOrganisation(organisationId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/getall/${organisationId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
+
+  getOrganizations():Observable<any> {
+    return this.http.get(`${this.baseUrl}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+    deleteOrganization(id: string): Observable<any> {
+      return this.http.delete(`${this.baseUrl}/${id}`, {
+        headers: this.getAuthHeaders()
+      });
+    }
 
 }

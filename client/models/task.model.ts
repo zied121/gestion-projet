@@ -4,7 +4,7 @@ export interface Task {
   description: string;
   status: 'To Do' | 'In Progress' | 'Done';
   project: string;
-  assignee?: string;
+  assignee?: any[];
   priority?: 'Lowest' | 'Low' | 'Medium' | 'High' | 'Highest' | 'Critical' | 'Blocker';
   dueDate?: Date;
 
