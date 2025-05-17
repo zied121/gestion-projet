@@ -8,7 +8,7 @@ const scheduledJobs = new Map();
 
 async function scheduleEventReminders(event) {
     try {
-        //console.log(`⏰ Planification des rappels pour: ${event.titre}`);
+        //console.log(` Planification des rappels pour: ${event.titre}`);
         //console.log(`Type: ${event.type}, ID: ${event._id}`);
         
         // Add default reminders if necessary
@@ -91,7 +91,7 @@ async function scheduleEventReminders(event) {
                         .exec();
 
                     if (!updatedEvent) {
-                        //console.error("❌ Événement non trouvé");
+                        //console.error(" Événement non trouvé");
                         return;
                     }
 
@@ -101,18 +101,18 @@ async function scheduleEventReminders(event) {
                         updatedEvent.rappel[index].sent = true;
                         await updatedEvent.save();
                         
-                        //console.log(`✅ Rappel envoyé avec succès pour: ${event.titre}`);
+                        //console.log(`Rappel envoyé avec succès pour: ${event.titre}`);
                     }
                 } catch (error) {
-                    //console.error('❌ Erreur lors de l\'exécution du rappel:', error);
+                    //console.error(' Erreur lors de l\'exécution du rappel:', error);
                 }
             });
 
             scheduledJobs.set(jobKey, job);
-            //console.log(`✅ Rappel programmé: ${jobKey}`);
+            //console.log(` Rappel programmé: ${jobKey}`);
         }
     } catch (error) {
-        //console.error('❌ Erreur lors de la planification des rappels:', error);
+        //console.error(' Erreur lors de la planification des rappels:', error);
     }
 }
 
@@ -133,7 +133,7 @@ function calculateReminderTime(eventDate, reminder, eventType) {
                 offsetMs = reminder.time * 24 * 60 * 60 * 1000;
                 break;
             default:
-                //console.error('❌ Unité de temps non reconnue:', reminder.unit);
+                //console.error('Unité de temps non reconnue:', reminder.unit);
                 return null;
         }
         
@@ -147,14 +147,14 @@ function calculateReminderTime(eventDate, reminder, eventType) {
         const tolerance = 30 * 1000;
         return reminderTime > new Date(now.getTime() - tolerance) ? reminderTime : null;
     } catch (error) {
-        //console.error('❌ Erreur lors du calcul du temps de rappel:', error);
+        //console.error(' Erreur lors du calcul du temps de rappel:', error);
         return null;
     }
 }
 
 async function sendReminderEmail(event, reminder) {
     try {
-        //console.log(`📧 Début d'envoi des rappels pour ${event.titre}`);
+        //console.log(` Début d'envoi des rappels pour ${event.titre}`);
         
         const timeLeft = `${reminder.time} ${
             reminder.unit === 'minutes' ? 'minute(s)' : 
@@ -169,7 +169,7 @@ async function sendReminderEmail(event, reminder) {
         if (organizer?.email) {
             const organizerEmail = emailService.getReminderEmail(event, timeLeft, organizer.email);
             await emailService.sendEmail(organizer.email, organizerEmail);
-            //console.log(`✅ Email envoyé à l'organisateur: ${organizer.email}`);
+            //console.log(` Email envoyé à l'organisateur: ${organizer.email}`);
         }
 
         if (['Réunion', 'Événement','Deadline', 'Holiday'].includes(event.type)) {
@@ -178,7 +178,7 @@ async function sendReminderEmail(event, reminder) {
                 .populate('id_participant', 'email nom')
                 .exec();
 
-            //console.log(`👥 ${participants.length} participants trouvés`);
+            //console.log(` ${participants.length} participants trouvés`);
 
             for (const participant of participants) {
                 if (participant.id_participant?.email && 
@@ -190,15 +190,15 @@ async function sendReminderEmail(event, reminder) {
                             participant.id_participant.email
                         );
                         await emailService.sendEmail(participant.id_participant.email, participantEmail);
-                        //console.log(`↗️ Email envoyé à: ${participant.id_participant.email}`);
+                        //console.log(` Email envoyé à: ${participant.id_participant.email}`);
                     } catch (error) {
-                        //console.error(`❌ Échec envoi à ${participant.id_participant.email}:`, error);
+                        //console.error(` Échec envoi à ${participant.id_participant.email}:`, error);
                     }
                 }
             }
         }
     } catch (error) {
-        //console.error('❌ Erreur critique dans sendReminderEmail:', error);
+        //console.error(' Erreur critique dans sendReminderEmail:', error);
         throw error;
     }
 }
@@ -221,12 +221,12 @@ function cancelScheduledReminders(eventId) {
 async function loadPendingReminders() {
     try {
         const now = new Date();
-        //console.log(`🕒 Heure actuelle (UTC): ${now.toISOString()}`);
+        //console.log(` Heure actuelle (UTC): ${now.toISOString()}`);
         
         const threeDaysFromNow = new Date(now);
         threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
         
-        //console.log(`🔍 Recherche des événements jusqu'au: ${threeDaysFromNow.toISOString()}`);
+        //console.log(` Recherche des événements jusqu'au: ${threeDaysFromNow.toISOString()}`);
 
         const events = await Event.find({
             status: { $ne: 'Annule' },
@@ -254,10 +254,10 @@ async function loadPendingReminders() {
         .populate('organisateur_id')
         .exec();
 
-        //console.log(`📋 Nombre d'événements trouvés: ${events.length}`);
+        //console.log(` Nombre d'événements trouvés: ${events.length}`);
         
         for (const event of events) {
-            //console.log(`\n📅 Traitement de l'événement:`);
+            //console.log(`\n Traitement de l'événement:`);
             //console.log(`   Titre: ${event.titre}`);
             //console.log(`   Type: ${event.type}`);
             //console.log(`   Date: ${event.type === 'Deadline' || event.type === 'Holiday' ? event.date_fin : event.date_debut}`);
@@ -265,7 +265,7 @@ async function loadPendingReminders() {
             await scheduleEventReminders(event);
         }
     } catch (error) {
-        //console.error('❌ Erreur lors du chargement des rappels en attente:', error);
+        //console.error(' Erreur lors du chargement des rappels en attente:', error);
     }
 }
 

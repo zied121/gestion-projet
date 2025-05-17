@@ -3,9 +3,6 @@ const router = express.Router();
 const isAuth = require('../Middleware/isauth');
 const upload = require('../Middleware/upload');
 const validateEvent = require('../Middleware/eventValidation');
-
-
-
 const {
   getEvents,
     getEventById,
@@ -15,13 +12,11 @@ const {
     getEventsByOrganisateur,
     getEventsByParticipant,getEventsByUser,deleteHolidayAndDeadlineEvents,searchEvents,searchByUser
 } = require('../Controllers/eventController');
-
 // Routes protégées nécessitant une authentification
 router.use(isAuth);
-
 // Routes pour la gestion des événements
-
 router.post('/create',isAuth,upload.single('file'),validateEvent, createEvent);
+router.get('/get/:id', getEventById);
 router.get('/list', getEvents);
 router.put('/update/:id',validateEvent, updateEvent);
 router.delete('/delete/:id', deleteEvent);
@@ -29,14 +24,8 @@ router.get('/search_user', searchByUser);
 router.get('/event_participant/', getEventsByParticipant);
 router.get('/event_org/', getEventsByOrganisateur);
 router.get('/search', searchEvents); 
-
-
-
-
 router.get('/', getEventsByUser);
-
 router.delete('/cleanup', deleteHolidayAndDeadlineEvents);
-
 module.exports = router;
 
 

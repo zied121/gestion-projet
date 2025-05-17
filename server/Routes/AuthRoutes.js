@@ -22,3 +22,4 @@ router.post("/google-login", googleLogin)
 router.post("/google-register", googleRegister)
 
 module.exports = router;
+

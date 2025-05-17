@@ -13,7 +13,7 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-
+import {CalendarComponent} from './pages/calendar/calendar.component';
 export const routes: Routes = [
   {
     path: '',
@@ -74,4 +74,8 @@ export const routes: Routes = [
     ]
   },
  
+  {
+    path: 'calendar',
+    component: CalendarComponent,
+  }
 ];

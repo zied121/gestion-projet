@@ -522,17 +522,23 @@ const deleteEvent = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
-
 const getEventsByOrganisateur = async (req, res) => {
     try {
+        if (!req.user || !req.user._id) {
+            return res.status(400).json({ message: 'Utilisateur non authentifié.' });
+        }
+
+        // Récupérer les événements où l'utilisateur est organisateur
         const events = await Event.find({ organisateur_id: req.user._id })
             .populate('organisateur_id', 'nom prenom email')
             .lean();
 
+        // Récupérer tous les participants associés à ces événements
         const allParticipants = await Participant.find({
             event_id: { $in: events.map(e => e._id) }
         }).populate('id_participant', 'nom email').lean();
 
+        // Organiser les participants par événement
         const participantsByEvent = allParticipants.reduce((acc, p) => {
             if (!acc[p.event_id]) {
                 acc[p.event_id] = [];
@@ -546,14 +552,17 @@ const getEventsByOrganisateur = async (req, res) => {
             return acc;
         }, {});
 
-       
+        // Ajouter les participants aux événements
+        const eventsWithParticipants = events.map(event => ({
+            ...event,
+            participants: participantsByEvent[event._id] || []
+        }));
 
         res.status(200).json(eventsWithParticipants);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
-
 const getEventsByParticipant = async (req, res) => {
     try {
         const participations = await Participant.find({ id_participant: req.user._id })
@@ -580,74 +589,81 @@ const getEventsByParticipant = async (req, res) => {
     }
 };
 
-
-
-
-
 const getEventsByUser = async (req, res) => {
     try {
-        // Synchroniser les événements
-        await Promise.all([
-            syncHolidayEvents(),
-            syncDeadlineEvents()
-        ]);
-
-        // Récupérer les événements où l'utilisateur est organisateur
-        const organizerEvents = await Event.find({ organisateur_id: req.user._id })
-            .populate('organisateur_id', 'nom prenom email')
-            .lean();
-
-        // Récupérer les événements où l'utilisateur est participant
-        const participantEvents = await Participant.find({ id_participant: req.user._id })
-            .populate({
-                path: 'event_id',
-                populate: { path: 'organisateur_id', select: 'nom prenom email' }
-            })
-            .lean();
-
-        // Récupérer les événements Holiday
-        const holidayEvents = await Event.find({ type: 'Holiday' })
-            .populate('organisateur_id', 'nom prenom email')
-            .lean();
-
-        // Combiner tous les événements
-        const allEvents = [
-            ...organizerEvents,
-            ...participantEvents.map(p => p.event_id),
-            ...holidayEvents
-        ];
-
-        // Récupérer tous les participants
-        const allParticipants = await Participant.find({
-            event_id: { $in: allEvents.map(e => e._id) }
-        }).populate('id_participant', 'nom email').lean();
-
-        const participantsByEvent = allParticipants.reduce((acc, p) => {
-            if (!acc[p.event_id]) {
-                acc[p.event_id] = [];
-            }
-            acc[p.event_id].push({
-                id: p.id_participant._id,
-                nom: p.id_participant.nom,
-                email: p.id_participant.email,
-                reponse: p.reponse
-            });
-            return acc;
-        }, {});
-
-        const eventsWithParticipants = allEvents.map(event => ({
-            ...event,
-            participants: participantsByEvent[event._id] || []
-        }));
-
-        
-
-        res.status(200).json(uniqueEvents);
+      const userId = req.user?._id;
+      if (!userId) {
+        return res.status(400).json({ message: 'Utilisateur non authentifié.' });
+      }
+  
+      // Paralléliser les recherches
+      const [organizerEvents, participantLinks, holidayEvents] = await Promise.all([
+        Event.find({ organisateur_id: userId }, '_id titre description date_debut date_fin organisateur_id type')
+          .populate('organisateur_id', 'nom prenom email')
+          .lean(),
+  
+        Participant.find({ id_participant: userId }, 'event_id')
+          .populate({
+            path: 'event_id',
+            select: '_id titre description date_debut date_fin organisateur_id type',
+            populate: { path: 'organisateur_id', select: 'nom prenom email' }
+          })
+          .lean(),
+  
+        Event.find({ type: 'Holiday' }, '_id titre description date_debut date_fin organisateur_id type')
+          .populate('organisateur_id', 'nom prenom email')
+          .lean()
+      ]);
+  
+      // Éviter les doublons avec une map par _id
+      const eventMap = new Map();
+  
+      for (const e of [...organizerEvents, ...holidayEvents]) {
+        eventMap.set(e._id.toString(), { ...e });
+      }
+  
+      for (const p of participantLinks) {
+        const event = p.event_id;
+        if (event && !eventMap.has(event._id.toString())) {
+          eventMap.set(event._id.toString(), { ...event });
+        }
+      }
+  
+      const allEvents = Array.from(eventMap.values());
+  
+      // Charger les participants uniquement pour ces événements
+      const allParticipants = await Participant.find(
+        { event_id: { $in: allEvents.map(e => e._id) } },
+        'event_id id_participant reponse'
+      )
+        .populate('id_participant', 'nom email')
+        .lean();
+  
+      // Grouper les participants par event_id
+      const participantsByEvent = allParticipants.reduce((acc, p) => {
+        const id = p.event_id.toString();
+        if (!acc[id]) acc[id] = [];
+        acc[id].push({
+          id: p.id_participant._id,
+          nom: p.id_participant.nom,
+          email: p.id_participant.email,
+          reponse: p.reponse
+        });
+        return acc;
+      }, {});
+  
+      const finalEvents = allEvents.map(event => ({
+        ...event,
+        participants: participantsByEvent[event._id.toString()] || []
+      }));
+  
+      res.status(200).json(finalEvents);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+      console.error('Erreur dans getEventsByUser:', err);
+      res.status(500).json({ message: 'Erreur serveur.' });
     }
-};
-
+  };
+  
 const deleteHolidayAndDeadlineEvents = async (req, res) => {
     try {
         // Trouver tous les événements à supprimer
@@ -675,12 +691,7 @@ const deleteHolidayAndDeadlineEvents = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-/*
-const generateGoogleMeetLink = (eventTitle) => {
-    const baseUrl = "https://meet.google.com/";
-    const meetingId = eventTitle.split(' ').join('-').toLowerCase(); // Générer un ID de réunion à partir du titre
-    return baseUrl + meetingId;
-};*/
+
 
 
 
