@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+const yup = require('yup');
 const userSchema = new mongoose.Schema({
     nom: {
         type: String,
@@ -53,4 +53,23 @@ const userSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-module.exports = mongoose.model('Utilisateur', userSchema);
+
+const userYupSchema = yup.object().shape({
+    nom: yup.string().required(),
+    prenom: yup.string(),
+    dateDeNaissance: yup.date(),
+    image: yup.string(),
+    email: yup.string().email().required(),
+    motDePasse: yup.string().required(),
+    Organisation_id: yup.string(),
+    role: yup.string(),
+    Status: yup.string().default('inactive'),
+    otpCode: yup.string(),
+    otpExpires: yup.date()
+});
+const User = mongoose.model('Utilisateur', userSchema);
+
+module.exports = {
+    User,
+    userYupSchema
+};

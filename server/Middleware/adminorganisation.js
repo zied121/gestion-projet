@@ -1,5 +1,5 @@
-const User = require('../models/Usermodel');
-const Organisation = require('../models/OrganisationModel'); 
+const { User } = require('../models/Usermodel');
+const {Organisation} = require('../models/OrganisationModel'); 
 
 const adminOrganisationMiddleware = async (req, res, next) => {
     try {

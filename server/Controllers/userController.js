@@ -1,6 +1,6 @@
-const User = require('../models/Usermodel');
+const {User} = require('../models/Usermodel');
 const bcrypt = require('bcrypt');
-const Organisation = require('../models/OrganisationModel');
+const {Organisation} = require('../models/OrganisationModel');
 const { sendOrganiastionCodeEmail } = require('../config/nodemailer');
 const cloudinary = require('../config/cloudinary'); // adjust path if needed
 const streamifier = require('streamifier');
@@ -131,10 +131,6 @@ const deleteUser = async (req, res) => {
         });
     }
 }
-
-
-
-
 
 module.exports = {
     createUser,

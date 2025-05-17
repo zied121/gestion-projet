@@ -84,8 +84,11 @@ export class WorkspaceformComponent {
     if (this.createWorkspaceForm.valid) {
       this.organisationService.onCreateWorkspace(this.createWorkspaceForm.value).subscribe({
         next: (response: any) => {
+          console.log("reponse", response); 
           this.showSuccess = true;
           this.susccessMessage = response.message;
+          
+          this.router.navigate(['/workspace/' + response.organisation._id ]);
         },
         error: (err: any) => {
           this.showError = true;

@@ -1,0 +1,129 @@
+<div class="overflow-x-auto mt-6 p-8">
+
+    <!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8 mt-10">
+  <div class="p-6 bg-white shadow rounded">
+    <h3 class="text-gray-600 text-sm font-medium">Total Organisations</h3>
+    <p class="text-2xl font-semibold">{{ analyticsData.totalOrganisations || 0 }}</p>
+  </div>
+  <div class="p-6 bg-white shadow rounded">
+    <h3 class="text-gray-600 text-sm font-medium">Total Users</h3>
+    <p class="text-2xl font-semibold">{{ analyticsData.totalUsers || 0 }}</p>
+  </div>
+</div>
+  <h2 class="text-2xl font-semibold mb-6">Manage Organisations</h2>
+
+ <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+  <thead class="bg-gray-50">
+    <tr>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Logo</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Nom</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Matricule Fiscal</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Type</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Description</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Location</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Users</th>
+      <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody class="bg-white divide-y divide-gray-200">
+    <tr *ngFor="let org of listOfOrganisations" class="hover:bg-gray-50">
+      <!-- Logo -->
+      <td class="px-4 py-4">
+        <img [src]="org.image || 'https://via.placeholder.com/40'" alt="Logo" class="w-10 h-10 rounded-full object-cover" />
+      </td>
+
+      <!-- Organisation Name -->
+      <td class="px-4 py-4 text-sm text-gray-800">{{ org.nom }}</td>
+
+      <!-- Matricule Fiscal -->
+      <td class="px-4 py-4 text-sm text-gray-800">{{ org.matricule_fiscal }}</td>
+
+      <!-- Type -->
+      <td class="px-4 py-4 text-sm text-gray-800">{{ org.type }}</td>
+
+      <!-- Description -->
+      <td class="px-4 py-4 text-sm text-gray-800">{{ org.description }}</td>
+
+      <!-- Location -->
+      <td class="px-4 py-4 text-sm text-gray-800">{{ org.location }}</td>
+
+      <!-- Users -->
+      <td class="px-4 py-4">
+        <div class="flex -space-x-3">
+          <ng-container *ngFor="let user of org.users.slice(0, 5)">
+            <img
+              [src]="user.image || 'https://ui-avatars.com/api/?name=' + user.nom"
+              class="w-8 h-8 border-2 border-white rounded-full object-cover"
+              [alt]="user.nom"
+              [title]="user.nom"
+            />
+          </ng-container>
+          <span *ngIf="org.users.length > 5"
+                class="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-700 text-xs font-medium border-2 border-white rounded-full">
+            +{{ org.users.length - 5 }}
+          </span>
+        </div>
+      </td>
+
+      <!-- Actions -->
+      <td class="px-4 py-4 text-sm">
+        <hlm-dialog>
+          <button brnDialogTrigger (click)="editOrganisation(org)" title="Edit" class="text-yellow-600 hover:underline">   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg></button>
+          <hlm-dialog-content *brnDialogContent="let ctx">
+            <hlm-dialog-header>
+              <h3 hlmDialogTitle>Edit Organisation</h3>
+              <p hlmDialogDescription>Update the selected organisation details.</p>
+            </hlm-dialog-header>
+            <div class="grid gap-4 py-4">
+              <label>Nom <input hlmInput [(ngModel)]="editOrganisationData.nom" /></label>
+              <label>Matricule Fiscal <input hlmInput [(ngModel)]="editOrganisationData.matricule_fiscal" /></label>
+              <label>Type <input hlmInput [(ngModel)]="editOrganisationData.type" /></label>
+              <label>Description <input hlmInput [(ngModel)]="editOrganisationData.description" /></label>
+              <label>Location <input hlmInput [(ngModel)]="editOrganisationData.location" /></label>
+            </div>
+            <hlm-dialog-footer>
+              <button hlmBtn (click)="updateOrganisation(); ctx.close()">Save</button>
+            </hlm-dialog-footer>
+          </hlm-dialog-content>
+        </hlm-dialog>
+
+        <hlm-alert-dialog>
+          <button brnAlertDialogTrigger title="Delete" class="text-red-600 hover:underline"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg></button>
+       
+          <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+            <hlm-alert-dialog-header>
+              <h3 hlmAlertDialogTitle>Are you sure?</h3>
+              <p hlmAlertDialogDescription>This will permanently delete the organisation.</p>
+            </hlm-alert-dialog-header>
+            <hlm-alert-dialog-footer>
+              <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
+              <button hlmAlertDialogAction (click)="deleteOrganisationById(org._id); ctx.close()">Delete</button>
+            </hlm-alert-dialog-footer>
+          </hlm-alert-dialog-content>
+        </hlm-alert-dialog>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+
+
+<!-- Doughnut Chart -->
+<div class="bg-white shadow rounded p-6 mb-10">
+  <h3 class="text-lg font-semibold mb-4">Organisations by Category</h3>
+  <div style="height: 300px;">
+    <canvas
+      baseChart
+      [type]="'doughnut'"
+      [data]="doughnutChartData"
+      [options]="doughnutChartOptions"
+    ></canvas>
+  </div>
+</div>

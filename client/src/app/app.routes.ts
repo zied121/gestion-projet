@@ -13,7 +13,9 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-
+import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
+import { ownerGuard } from './guards/owner.guard';
+{ownerGuard}
 export const routes: Routes = [
   {
     path: '',
@@ -35,13 +37,17 @@ export const routes: Routes = [
   },
   {
     path: 'success',
-    component: SuccessPaiementComponent
+    component: SuccessPaiementComponent,
   },
   {
     path: 'cancel',
-    component: FailPaiementComponent
+    component: FailPaiementComponent,
   },
-
+  {
+    path: 'workspaceform',
+    component: WorkspaceformComponent,
+    canActivate: [authGuard]
+  },
 
   // Protected routes with navbar via MainLayoutComponent
   {
@@ -49,10 +55,6 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      {
-        path: 'workspaceform',
-        component: WorkspaceformComponent
-      },
       {
         path: 'workspace/:id',
         component: DashboardComponent,
@@ -70,6 +72,11 @@ export const routes: Routes = [
       {
         path: 'subscription',
         component: SubscriptionComponent
+      },
+      {
+        path: 'backoffice',
+        component: AdminApplicationDashboardComponent,
+        canActivate: [ownerGuard]
       }
     ]
   }

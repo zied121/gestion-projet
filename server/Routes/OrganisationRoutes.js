@@ -13,7 +13,8 @@ const {
     getOrganisationById,
     joinOrganisation,
     checkUserOrganisation,
-    getAllUsersOfOrganization
+    getAllUsersOfOrganization,
+    analytics
 
 } = require("../Controllers/organisationController");
 
@@ -26,10 +27,12 @@ router.post("/add", isAuth, addOrganisation);
 
 router.get("/organisations", isAuth, getAllOrganisations);
 
+router.get("/analytics", isAuth, analytics);
+
 //check if user has an organisation
 router.get("/check", isAuth, checkUserOrganisation)
 
-router.delete("/delete", isAuth, deleteOrganisation);
+router.delete("/delete/:id", isAuth, deleteOrganisation);
 
 router.put("/edit/:id", isAuth,upload.single('image'), editOrganisation);
 
