@@ -82,7 +82,7 @@ const SendOtpMail = async (to, subject, otp) => {
 module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
-    SendOtpMail
+    SendOtpMail,
     ForgetPasswordEmail,
     sendTaskCreatedNotification
 };

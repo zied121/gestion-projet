@@ -17,16 +17,6 @@ const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
 
-require("dotenv").config({
-    path: "./config/.env"
-});
-
-const port = process.env.port ||5000;
-app.listen(port, (error) => {
-    (error) ? console.log('server is failed'): console.log('server is running on port ' + port);
-
-
-});
 connectDb();
 app.use(express.json());
 app.use(cors());
@@ -40,7 +30,6 @@ const io = new Server(server, {
 });
 
 app.set('io', io);
-
 
 app.use('/api/organisation',OrganisationRoutes);
 app.use('/api',AuthRoutes);
