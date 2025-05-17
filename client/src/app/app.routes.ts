@@ -22,7 +22,6 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-  // Auth routes without navbar
   {
     path: 'login',
     component: LoginComponent
@@ -53,12 +52,12 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+
     children: [
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [authGuard,adminGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'profile/:id',
@@ -77,6 +76,21 @@ export const routes: Routes = [
         path: 'backoffice',
         component: AdminApplicationDashboardComponent,
         canActivate: [ownerGuard]
+      },
+      {
+        path: 'projects',
+        loadChildren: () =>
+          import('./components/project-task-management/project/project.module').then(
+            (m) => m.ProjectModule
+          ),
+
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./components/project-task-management/task/task.module').then(
+            (m) => m.TaskModule
+          ),
       }
     ]
   }

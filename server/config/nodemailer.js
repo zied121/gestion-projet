@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: "ziedbensalah10@gmail.com",
-        pass: "lchyusmmdsmeelbl"
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -38,7 +38,34 @@ const ForgetPasswordEmail = async (email, password) => {
     }catch (err){
         console.log(err);
     }
-}   
+}
+
+
+const sendTaskCreatedNotification = async (managerEmail, managerName, taskTitle, projectName, priority, status) => {
+    if (!managerEmail) {
+        console.log('❗ Email manquant pour envoyer la notification.');
+        return;
+    }
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: managerEmail,
+            subject: `Nouvelle tâche dans votre projet "${projectName}"`,
+            html: `
+                <p>Bonjour <strong>${managerName || 'Manager'}</strong>,</p>
+                <p>Une nouvelle tâche a été créée dans votre projet <strong>${projectName}</strong>.</p>
+                <ul>
+                    <li><strong>Tâche :</strong> ${taskTitle}</li>
+                    <li><strong>Priorité :</strong> ${priority}</li>
+                    <li><strong>Statut :</strong> ${status}</li>
+                </ul>
+                <p>Cordialement,<br/>L'équipe Jira Clone</p>
+            `
+        });
+    } catch (err) {
+        console.log("sendTaskCreatedNotification error:", err);
+    }
+};
 
 const SendOtpMail = async (to, subject, otp) => {
     try {
@@ -55,5 +82,7 @@ const SendOtpMail = async (to, subject, otp) => {
 module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
-    SendOtpMail 
+    SendOtpMail
+    ForgetPasswordEmail,
+    sendTaskCreatedNotification
 };

@@ -1,0 +1,24 @@
+<div class="modal-header bg-info text-white">
+  <h5 class="modal-title">Détails de la tâche</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <p><strong>Titre :</strong> {{ task.title }}</p>
+  <p><strong>Description :</strong> {{ task.description }}</p>
+  <p><strong>Statut :</strong> {{ task.status }}</p>
+  <p><strong>Date de début :</strong> {{ task.startDate | date }}</p>
+  <p><strong>Date de fin :</strong> {{ task.dueDate | date }}</p>
+  <p><strong>Utilisateurs assignés :</strong> {{assignee}}</p>
+  <ul>
+    <li *ngFor="let user of task.users">{{ user.name }} ({{ user.email }})</li>
+  </ul>
+  <p><strong>Sous-tâches :</strong></p>
+  <ul>
+    <li *ngFor="let sub of task.subtasks">{{ sub.title }} - {{ sub.status }}</li>
+  </ul>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-secondary" (click)="activeModal.dismiss()">Fermer</button>
+</div>

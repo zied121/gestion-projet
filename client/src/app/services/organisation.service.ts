@@ -12,7 +12,7 @@ export class OrganisationService {
   constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -37,7 +37,7 @@ export class OrganisationService {
       headers: this.getAuthHeaders()
     });
   }
-  
+
   updateOrganisationById(id: string, data: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/edit/${id}`, data, {
       headers: this.getAuthHeaders()
@@ -48,7 +48,7 @@ export class OrganisationService {
     return this.http.get(`${this.baseUrl}/organisations`, {
       headers: this.getAuthHeaders()
     });
-  } 
+  }
 
   deleteOrganisationById(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/delete/${id}`, {
@@ -67,5 +67,24 @@ getOrganisationAnalytics(): Observable<any> {
     headers: this.getAuthHeaders()
   });
 }
+
+  // getAllUsersByOrganisation(organisationId: string): Observable<any> {
+  //   return this.http.get(`${this.baseUrl}/getall/${organisationId}`, {
+  //     headers: this.getAuthHeaders()
+  //   });
+  // }
+
+
+  getOrganizations():Observable<any> {
+    return this.http.get(`${this.baseUrl}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+    deleteOrganization(id: string): Observable<any> {
+      return this.http.delete(`${this.baseUrl}/${id}`, {
+        headers: this.getAuthHeaders()
+      });
+    }
 
 }

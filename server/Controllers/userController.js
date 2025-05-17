@@ -9,6 +9,12 @@ const getOneUser = async (req, res) => {
     const id = req.user;
     try {
         const user = await User.findById(id).populate('Organisation_id');
+        if (!user.Organisation_id) {
+            return res.status(200).json({
+                user,
+                msg: "Aucune organisation associée à cet utilisateur."
+            });
+        }
         console.log("user",user)
 
         if (!user) {
@@ -78,7 +84,7 @@ const createUser = async (req, res) => {
     try {
         const salt = await bcrypt.genSalt(10);
         user.motDePasse = await bcrypt.hash(user.motDePasse, salt);
-        
+
         const newUser = new User({ ...user, Organisation_id: req.params.organisationId });
         await newUser.save();
 
@@ -86,9 +92,9 @@ const createUser = async (req, res) => {
             req.params.organisationId,
             { $push: { membres: newUser._id } },
             { new: true }
-          );
+        );
         await sendOrganiastionCodeEmail(user.email, user.motDePasse);
-        
+
         res.status(200).json({
             msg: 'user created successfully'
         });
@@ -100,6 +106,7 @@ const createUser = async (req, res) => {
     }
 
 };
+
 
 const deleteUser = async (req, res) => {
     const id = req.params.id;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -8,7 +8,7 @@ const API_URL = 'http://localhost:5000/api/users';
   providedIn: 'root'
 })
 export class UserService {
-
+  userProfileSubject = new BehaviorSubject<any>(null);
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
@@ -17,11 +17,26 @@ export class UserService {
       'Authorization': `Bearer ${token}`
     });
   }
-  getProfile(): Observable<any> {
-    return this.http.get(`${API_URL}/getone`, {
-      headers: this.getAuthHeaders()
-    });
-  }
+
+getProfile(email: string, motDePasse: string): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  const params = { email, motDePasse };
+  return this.http.get<any>(`${API_URL}/getone`, { headers, params }).pipe(
+    tap((response) => {
+      this.userProfileSubject.next(response);
+      console.log(this.userProfileSubject);
+    }),
+    catchError((error) => {
+      console.error('Erreur lors de la requête :', error);
+      return throwError(error);
+    })
+  );
+}
+
 
   addUser(userData: any,organisationid:any): Observable<any> {
     return this.http.post(`${API_URL}/add/${organisationid}`, userData, {
@@ -40,10 +55,14 @@ export class UserService {
       headers: this.getAuthHeaders()
     });
   }
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
 
 
-  
 
 
 }
