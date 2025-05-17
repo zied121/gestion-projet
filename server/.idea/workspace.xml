@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fdfbf12d-efb9-4534-b9aa-d4eeb18e19e4" name="Changes" comment="add start,end attributes">
+      <change afterPath="$PROJECT_DIR$/../client/models/project.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/models/task.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/app.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-detail.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-detail.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-detail.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/project/project-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/task/task-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/task/task-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/components/task/task-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/services/project.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../client/src/app/services/task.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controllers/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/Controllers/projectController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/ProjectModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/ProjectModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/TaskModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/TaskModel.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="chaima" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2umSC4kyFk5dkhFE4t0dQ6p0AXe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Node.js.ConnectDb.js.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.ProjectRoutes.js.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.index.js.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/personal/PI/gestion-projet&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fdfbf12d-efb9-4534-b9aa-d4eeb18e19e4" name="Changes" comment="" />
+      <created>1742852126130</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1742852126130</updated>
+      <workItem from="1742852127372" duration="1280000" />
+      <workItem from="1742895574070" duration="905000" />
+      <workItem from="1742900350576" duration="591000" />
+      <workItem from="1742904087575" duration="287000" />
+      <workItem from="1742904383842" duration="4000" />
+      <workItem from="1742991713494" duration="1970000" />
+      <workItem from="1743119637907" duration="581000" />
+      <workItem from="1743120234037" duration="5089000" />
+      <workItem from="1743169597087" duration="1184000" />
+      <workItem from="1743581469727" duration="16000" />
+      <workItem from="1743892127125" duration="6064000" />
+      <workItem from="1743933162449" duration="63000" />
+      <workItem from="1744150379324" duration="7000" />
+    </task>
+    <task id="LOCAL-00001" summary="project/task init">
+      <option name="closed" value="true" />
+      <created>1743895226434</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1743895226434</updated>
+    </task>
+    <task id="LOCAL-00002" summary="add start,end attributes">
+      <option name="closed" value="true" />
+      <created>1743897065737</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1743897065737</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="project/task init" />
+    <MESSAGE value="add start,end attributes" />
+    <option name="LAST_COMMIT_MESSAGE" value="add start,end attributes" />
+  </component>
+</project>
