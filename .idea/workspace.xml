@@ -5,15 +5,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="a">
+      <change afterPath="$PROJECT_DIR$/client/models/blog.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/models/categorie.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/models/feedback.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/blog.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/categorie.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Controllers/categorieController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Middleware/authMiddleware.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Routes/categorieRoutes.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/models/Categorie.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/angular.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/user.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/config/nodemailer.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/config/nodemailer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/blogController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/blogController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/feedbackController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/feedbackController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/blogRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/blogRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Blog.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Blog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Feedback.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Feedback.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,11 +97,14 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="project_task_managment" />
+        <entry key="$PROJECT_DIR$" value="TASKO" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/client/package.json" />
@@ -66,31 +120,38 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "javascript.nodejs.core.library.configured.version": "16.16.0",
-    "javascript.nodejs.core.library.typings.version": "16.18.126",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "javascript.nodejs.core.library.configured.version": "22.14.0",
+    "javascript.nodejs.core.library.typings.version": "22.14.1",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task",
+    "last_opened_file_path": "C:/Users/Rim/Desktop/tasko/gestion-projet/client/src/app/services",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "C:\\Program Files\\nodejs\\npm.cmd",
     "npm.dev.executor": "Run",
     "npm.start.executor": "Run",
-    "ts.external.directory.path": "C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "C:\\Users\\Rim\\Desktop\\tasko\\gestion-projet\\client\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task" />
-      <recent name="C:\personal\PI\gestion-projet\client\src\app\services" />
-      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project" />
-      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\task" />
-      <recent name="C:\personal\PI\gestion-projet\server" />
+      <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\client\src\app\services" />
+      <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\server\Middleware" />
+      <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\client\src\app\components" />
+      <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\client\models" />
+      <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\server\Routes" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task_detail" />
@@ -107,7 +168,7 @@
       <scripts>
         <script value="dev" />
       </scripts>
-      <node-interpreter value="$PROJECT_DIR$/../../../nvm4w/nodejs/node" />
+      <node-interpreter value="$PROJECT_DIR$/../../../../../Program Files/nodejs/node" />
       <envs />
       <method v="2" />
     </configuration>
@@ -130,14 +191,6 @@
         <item itemvalue="npm.start" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -178,6 +231,7 @@
       <workItem from="1747488334426" duration="3456000" />
       <workItem from="1747492096760" duration="800000" />
       <workItem from="1747492913072" duration="475000" />
+      <workItem from="1747496014663" duration="6230000" />
     </task>
     <task id="LOCAL-00001" summary="test first api">
       <option name="closed" value="true" />

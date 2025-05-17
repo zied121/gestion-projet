@@ -6,6 +6,7 @@ import { ProjectDetailComponent } from '../project-detail/project-detail.compone
 @Component({
   selector: 'app-project-card',
   templateUrl: './project-card.component.html',
+  standalone: true,
   styleUrls: ['./project-card.component.scss']
 })
 export class ProjectCardComponent {

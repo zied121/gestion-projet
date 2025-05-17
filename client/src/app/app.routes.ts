@@ -15,6 +15,7 @@ import { SuccessPaiementComponent } from './components/success-paiement/success-
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
+import {BlogModule} from './components/blog/blog.module';
 {ownerGuard}
 export const routes: Routes = [
   {
@@ -91,7 +92,14 @@ export const routes: Routes = [
           import('./components/project-task-management/task/task.module').then(
             (m) => m.TaskModule
           ),
-      }
+      },
+      {
+        path: 'blogs',
+        loadChildren: () =>
+          import('./components/blog/blog.module').then(
+            (m) => m.BlogModule
+          ),
+      },
     ]
   }
 ];

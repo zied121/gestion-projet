@@ -13,6 +13,7 @@ import {OrganisationService} from '../../../../services/organisation.service';
     NgClass,
     NgForOf
   ],
+  standalone: true,
   templateUrl: './project-modal.component.html'
 })
 export class ProjectModalComponent implements OnInit {

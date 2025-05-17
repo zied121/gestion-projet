@@ -22,7 +22,8 @@ declare const google: any;
   imports: [CommonModule, FormsModule, HttpClientModule, HlmAlertDescriptionDirective, HlmAlertDirective, HlmAlertIconDirective, HlmAlertTitleDirective],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  providers: [provideIcons({ lucideTriangleAlert })],
+  providers: [provideIcons({lucideTriangleAlert})],
+  standalone: true
 })
 export class LoginComponent implements OnInit {
   email: string = '';
@@ -57,7 +58,7 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        this.router.navigate(['/workspaceform']);
+        this.router.navigate(['/blogs']);
       },
       error: (err) => {
         this.showError = true;

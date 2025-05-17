@@ -21,6 +21,7 @@ import {Router, RouterLink} from '@angular/router';
     RouterLink,
     DatePipe
   ],
+  standalone: true,
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {

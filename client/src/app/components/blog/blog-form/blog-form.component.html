@@ -1,0 +1,64 @@
+<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="feedback-form" enctype="multipart/form-data">
+  <h2 class="form-title">{{ isEditMode ? 'Modifier le Blog' : 'Créer un Nouveau Blog' }}</h2>
+  
+  <!-- Section Image -->
+  <div class="form-group">
+    <label class="form-label">Image du Blog</label>
+    <input 
+      type="file" 
+      #fileInput
+      (change)="onFileSelected($event)"
+      accept="image/jpeg, image/jpg, image/png"
+      class="form-control"
+    >
+    <div *ngIf="imagePreview" class="image-preview">
+      <img [src]="imagePreview" alt="Aperçu de l'image">
+      <button type="button" class="remove-image" (click)="removeImage()">
+        ×
+      </button>
+    </div>
+    <small *ngIf="!isEditMode" class="form-text text-muted">L'image est obligatoire pour un nouveau blog</small>
+  </div>
+
+  <div class="form-group">
+    <label for="feedback-title" class="form-label">Titre*</label>
+    <input type="text" id="feedback-title" formControlName="title" class="form-control">
+    <div *ngIf="feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched" class="error-message">
+      <span *ngIf="feedbackForm.get('title')?.errors?.['required']">Le titre est requis</span>
+      <span *ngIf="feedbackForm.get('title')?.errors?.['minlength']">Minimum 5 caractères</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="feedback-content" class="form-label">Contenu*</label>
+    <textarea id="feedback-content" formControlName="content" rows="6" class="form-control"></textarea>
+    <div *ngIf="feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched" class="error-message">
+      <span *ngIf="feedbackForm.get('content')?.errors?.['required']">Le contenu est requis</span>
+      <span *ngIf="feedbackForm.get('content')?.errors?.['minlength']">Minimum 10 caractères</span>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="feedback-category" class="form-label">Catégorie</label>
+      <select id="feedback-category" formControlName="category" class="form-control">
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="feedback-tags" class="form-label">Tags (séparés par des virgules)</label>
+      <input type="text" id="feedback-tags" formControlName="tags" class="form-control">
+      <small class="form-text text-muted">Ex: angular, web, programmation</small>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="goBack()">Retour</button>
+    <button type="button" class="btn btn-warning" (click)="resetForm()">Réinitialiser</button>
+    <button type="submit" [disabled]="feedbackForm.invalid || isLoading" class="btn btn-primary">
+      <span *ngIf="!isLoading">{{ isEditMode ? 'Mettre à jour' : 'Publier' }}</span>
+      <span *ngIf="isLoading">Envoi en cours...</span>
+    </button>
+  </div>
+</form>

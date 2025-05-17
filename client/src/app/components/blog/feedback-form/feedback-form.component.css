@@ -1,0 +1,49 @@
+/* Style personnalisé pour le formulaire */
+form {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+}
+
+/* Animation pour les champs invalides */
+.is-invalid {
+  border-left: 3px solid #dc3545 !important;
+  transition: border-left 0.3s ease;
+}
+
+.invalid-feedback {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* Style pour le bouton en mode édition */
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  form {
+    padding: 1.5rem;
+  }
+  
+  .d-flex.justify-content-end {
+    flex-direction: column-reverse;
+    gap: 1rem !important;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}

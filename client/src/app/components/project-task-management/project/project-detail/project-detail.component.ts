@@ -11,6 +11,7 @@ import {Project} from '../../../../../../models/project.model';
     DatePipe,
     NgIf
   ],
+  standalone: true,
   styleUrls: ['./project-detail.component.scss']
 })
 export class ProjectDetailComponent implements OnInit {
