@@ -1,7 +1,7 @@
 <div class="flex flex-col h-screen w-72 bg-white border-r border-gray-200">
   <!-- Header -->
   <div class="p-4 border-b border-gray-100">
-    <h1 class="text-xl font-bold text-gray-800">Boîte de réception</h1>
+    <h1 class="text-xl font-bold text-gray-800">Rooms</h1>
   </div>
 
   <!-- Room List -->
@@ -26,7 +26,7 @@
       <div class="min-w-0">
         <div class="font-medium truncate">{{ room.name }}</div>
         <div *ngIf="room.lastMessage" class="text-sm text-gray-500 truncate">
-          {{ room.lastMessage.text }}
+          {{ room.lastMessage.content }}
         </div>
       </div>
       

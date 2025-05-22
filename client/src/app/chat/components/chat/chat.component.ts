@@ -4,14 +4,14 @@ import { RoomComponent } from '../room/room.component';
 import { InboxComponent } from '../inbox/inbox.component';
 import { Router, RouterOutlet } from '@angular/router';
 @Component({
-  imports: [CommonModule, InboxComponent, RoomComponent, RouterOutlet],
+  imports: [CommonModule, InboxComponent, RouterOutlet],
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
   standalone: true,
 })
 export class ChatComponent {
-  selectedRoomId: string | null = "67fad9e1bfb6b540ae96665d";
+  selectedRoomId: string | null = "";
 
   onRoomSelected(roomId: string) {
     this.selectedRoomId = roomId;

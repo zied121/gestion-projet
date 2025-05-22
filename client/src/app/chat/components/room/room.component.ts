@@ -7,6 +7,7 @@ import { SocketService } from '../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { Room, RoomService } from '../../services/room.service';
 
 @Component({
   selector: 'app-room',
@@ -20,6 +21,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   currentRoomId: string = ''; 
   messages: Message[] = [];  
+  room: Room | null = null;
   messageText: string = '';  
   selectedFile: File | null = null; 
   currentUserId: string = ''; 
@@ -32,19 +34,22 @@ export class RoomComponent implements OnInit, OnDestroy {
   constructor(
     private messageService: MessageService,
     private socketService: SocketService, 
-    private route: ActivatedRoute
-  
+    private route: ActivatedRoute,
+    private roomService: RoomService 
+
   ) {}
 
   ngOnInit(): void {
     
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.currentUserId = user._id;
-
     this.route.paramMap.subscribe(params => {
       this.currentRoomId = params.get('id')!;
       this.messages = [];
       this.socketService.joinRoom(this.currentRoomId);
+      this.roomService.getRoomById(this.currentRoomId).subscribe(room => {
+        this.room = room;
+      });
       this.messageService.getMessagesByRoom(this.currentRoomId).subscribe((msgs) => {
         this.messages = msgs;
         console.log(this.messages);

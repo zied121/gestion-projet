@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+export interface Room {
+  name: string;           
+  owner: { nom: string , _id: string }; 
 
+}
 @Injectable({
   providedIn: 'root'
 })
