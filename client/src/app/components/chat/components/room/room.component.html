@@ -4,8 +4,8 @@
   <div class="messages">
     <div *ngFor="let msg of messages"   [ngClass]="{
       'message': true,
-      'other-message': msg.sender._id !== currentUserId,
-      'my-message': msg.sender._id === currentUserId,
+      'other-message': msg.sender !== currentUserId,
+      'my-message': msg.sender === currentUserId,
 
     }">
       <!-- Mode affichage -->
