@@ -47,8 +47,12 @@ const getProjects = async (req, res) => {
 
 const getProjectById = async (req, res) => {
     try {
-        const project = await Project.findById(req.params.id).populate('owner members');
-
+        const project = await Project.findById(req.params.id)
+            .populate('owner members')
+            .populate({
+                path: 'tasks',
+                populate: { path: 'assignee', select: 'nom email' }
+            });
         if (!project) {
             return res.status(404).json({ message: 'Project not found' });
         }
@@ -156,10 +160,40 @@ const getProjectUsers = async (req, res) => {
         res.status(500).json({ message: 'Erreur serveur', error: err.message });
     }
 };
+
+const getProjectsForMember = async (req, res) => {
+    try {
+        const userId = req.params.id; // Correction ici : utilisation de req.params.id
+
+        if (!userId) {
+            return res.status(400).json({ message: 'ID utilisateur manquant.' });
+        }
+
+        const projects = await Project.find({ members: userId })
+            .populate('members', 'nom email')
+            .populate('owner', 'nom email')
+            .populate({
+                    path: 'tasks',
+                    populate: { path: 'activityLogs.user', select: 'nom email' }
+                });
+
+        if (!projects || projects.length === 0) {
+            return res.status(404).json({ message: 'Aucun projet trouvé pour cet utilisateur.' });
+        }
+
+        res.status(200).json(projects);
+    } catch (err) {
+        res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    }
+};
+
 module.exports = {
     createProject,
     getProjects,
     getProjectById,
     updateProject,
-    deleteProject,assignUsersToProject,getProjectUsers
+    deleteProject,
+    assignUsersToProject,
+    getProjectUsers,
+    getProjectsForMember
 };

@@ -1,0 +1,14 @@
+<div class="container mt-3">
+  <div class="form-group">
+    <label for="projectSelect"><strong>Choisir un projet :</strong></label>
+    <select id="projectSelect" class="form-control" (change)="onProjectChange($event)">
+      <option *ngFor="let p of projects" [value]="p._id" [selected]="p._id === selectedProjectId">
+        {{ p.name }}
+      </option>
+    </select>
+  </div>
+
+  <hr>
+
+  <app-kanban-board *ngIf="selectedProjectId" [projectId]="selectedProjectId"></app-kanban-board>
+</div>

@@ -35,6 +35,17 @@ export class NavbarComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem('users') || '[]').map((user: any) => user.user)[0];
+    //this.userData = JSON.parse(localStorage.getItem('users') || '[]').map((user: any) => user.user)[0];
+     this.userService.getProfile().subscribe(
+       (data) => {
+
+         console.log('userData', data.user.nom);
+         this.userData = data.user;
+       },
+       (error) => {
+         console.error('Error fetching user data:', error);
+       }
+     );
+
   }
 }
