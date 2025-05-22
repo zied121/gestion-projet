@@ -1,5 +1,4 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { TaskModalComponent } from '../../task/task-modal/task-modal.component';
 import { TaskService } from '../../../../services/task.service';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';

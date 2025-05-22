@@ -12,8 +12,14 @@ const routes: Routes = [
       import('./blog-list/blog-list.component').then(m => m.BlogListComponent),
 
   },
-  { path: 'blogs/create', component: BlogFormComponent },
-  { path: 'blogs/:id', component: BlogDetailComponent },
+  // { path: 'blogs/create', component: BlogFormComponent },
+  // { path: 'blogs/:id', component: BlogDetailComponent },
+  {
+    path: ':id',
+    loadComponent: () =>
+      import('./blog-detail/blog-detail.component').then(m => m.BlogDetailComponent),
+
+  }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

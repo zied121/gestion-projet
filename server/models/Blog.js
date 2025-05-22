@@ -45,7 +45,7 @@ const blogValidationSchema = yup.object({
 const CommentSchema = new mongoose.Schema({
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Utilisateur",
     required: true,
   },
   content: {
@@ -64,7 +64,7 @@ const BlogSchema = new mongoose.Schema(
     content: { type: String, required: true },
     author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Utilisateur",
       required: true,
     },
     categorie: {
@@ -85,7 +85,7 @@ const BlogSchema = new mongoose.Schema(
     },
     comments: [CommentSchema],
     createdAt: { type: Date, default: Date.now },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Utilisateur" }],
     likeCount: { type: Number, default: 0 },
     tags: [{ type: String }],
     imageUrl: { type: String },

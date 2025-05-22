@@ -113,16 +113,15 @@ export const routes: Routes = [
           import('./components/project-task-management/member/member.module').then(
             (m) => m.MemberModule),
         canActivate: [memberGuard]
-      }
-
       },
+
+
       {
         path: 'blogs',
         loadChildren: () =>
           import('./components/blog/blog.module').then(
-            (m) => m.BlogModule
-          ),
+            (m) => m.BlogModule),
       },
     ]
   }
-];
+  ]
