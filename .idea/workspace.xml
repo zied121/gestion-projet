@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="merge zied+malek">
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/ member-routing.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/guards/member.guard.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/assets/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/assets/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-modal.component.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-modal.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/profile-details/profile-details.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/profile-details/profile-details.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/services/project.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/project.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/services/task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/task.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/projectController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/taskController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/taskController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/ProjectRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/ProjectRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/ProjectModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/ProjectModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/TaskModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/TaskModel.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="chaima" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="project_task_managment" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/client/package.json" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2vLnTxCRbNtf7pv7xtaqvqQRI9B" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;16.16.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;16.18.126&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\services" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\task" />
+      <recent name="C:\personal\PI\gestion-projet\server" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\personal\PI\gestion-projet\client\src" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task_detail" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task-list" />
+      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\project\project-list" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.start">
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/server/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="$PROJECT_DIR$/../../../nvm4w/nodejs/node" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/client/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
+        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="" />
+      <created>1743933232805</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743933232805</updated>
+      <workItem from="1743933233934" duration="10687000" />
+      <workItem from="1744017248170" duration="8000" />
+      <workItem from="1744150402315" duration="1014000" />
+      <workItem from="1744151452784" duration="3387000" />
+      <workItem from="1744185698498" duration="1397000" />
+      <workItem from="1744269969224" duration="1006000" />
+      <workItem from="1744289397854" duration="3028000" />
+      <workItem from="1744386463203" duration="6788000" />
+      <workItem from="1744546345921" duration="6116000" />
+      <workItem from="1744558060788" duration="6790000" />
+      <workItem from="1744617523058" duration="847000" />
+      <workItem from="1744646113493" duration="8748000" />
+      <workItem from="1744739116468" duration="3624000" />
+      <workItem from="1745623563127" duration="11201000" />
+      <workItem from="1745827544645" duration="585000" />
+      <workItem from="1745922336183" duration="6227000" />
+      <workItem from="1745998218866" duration="2260000" />
+      <workItem from="1746224980387" duration="102000" />
+      <workItem from="1746261681196" duration="4883000" />
+      <workItem from="1746287281145" duration="8043000" />
+      <workItem from="1746434932507" duration="16000" />
+      <workItem from="1746798657288" duration="4264000" />
+      <workItem from="1747036736104" duration="7580000" />
+      <workItem from="1747077944658" duration="7604000" />
+      <workItem from="1747121645605" duration="16835000" />
+      <workItem from="1747219357841" duration="19192000" />
+      <workItem from="1747297594666" duration="9996000" />
+      <workItem from="1747381120723" duration="18843000" />
+      <workItem from="1747488334426" duration="3456000" />
+      <workItem from="1747492096760" duration="800000" />
+      <workItem from="1747492913072" duration="475000" />
+      <workItem from="1747729774569" duration="3576000" />
+      <workItem from="1747740922096" duration="9237000" />
+      <workItem from="1747821603794" duration="15104000" />
+      <workItem from="1747855141471" duration="5005000" />
+      <workItem from="1747903998359" duration="1425000" />
+    </task>
+    <task id="LOCAL-00001" summary="test first api">
+      <option name="closed" value="true" />
+      <created>1744469280786</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1744469280786</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix commits and remotes">
+      <option name="closed" value="true" />
+      <created>1744469756491</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744469756491</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix commits and remotes">
+      <option name="closed" value="true" />
+      <created>1744470375074</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744470375074</updated>
+    </task>
+    <task id="LOCAL-00004" summary="git add .gitignore">
+      <option name="closed" value="true" />
+      <created>1744470951094</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744470951094</updated>
+    </task>
+    <task id="LOCAL-00005" summary="git add .gitignore">
+      <option name="closed" value="true" />
+      <created>1744471329699</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744471329699</updated>
+    </task>
+    <task id="LOCAL-00006" summary="git add .gitignore">
+      <option name="closed" value="true" />
+      <created>1744472059503</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744472059503</updated>
+    </task>
+    <task id="LOCAL-00007" summary="git add .gitignore">
+      <option name="closed" value="true" />
+      <created>1744473343486</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744473343486</updated>
+    </task>
+    <task id="LOCAL-00008" summary="update model">
+      <option name="closed" value="true" />
+      <created>1744473746291</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1744473746291</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update user model">
+      <option name="closed" value="true" />
+      <created>1744549371383</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1744549371383</updated>
+    </task>
+    <task id="LOCAL-00010" summary="API Cohere">
+      <option name="closed" value="true" />
+      <created>1744561627994</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1744561627994</updated>
+    </task>
+    <task id="LOCAL-00011" summary="first merge">
+      <option name="closed" value="true" />
+      <created>1744652838914</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1744652838914</updated>
+    </task>
+    <task id="LOCAL-00012" summary="changing aicontroller &amp;&amp; add features">
+      <option name="closed" value="true" />
+      <created>1745674739210</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1745674739210</updated>
+    </task>
+    <task id="LOCAL-00013" summary="packagejson for front">
+      <option name="closed" value="true" />
+      <created>1745674852028</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1745674852028</updated>
+    </task>
+    <task id="LOCAL-00014" summary="packagejson for front">
+      <option name="closed" value="true" />
+      <created>1745676854275</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1745676854275</updated>
+    </task>
+    <task id="LOCAL-00015" summary="packagejson for front">
+      <option name="closed" value="true" />
+      <created>1745676944699</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1745676944699</updated>
+    </task>
+    <task id="LOCAL-00016" summary="packagejson for front">
+      <option name="closed" value="true" />
+      <created>1745922678167</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1745922678167</updated>
+    </task>
+    <task id="LOCAL-00017" summary="project admin module">
+      <option name="closed" value="true" />
+      <created>1747490265084</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1747490265084</updated>
+    </task>
+    <task id="LOCAL-00018" summary="project admin module">
+      <option name="closed" value="true" />
+      <created>1747491886787</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1747491886787</updated>
+    </task>
+    <task id="LOCAL-00019" summary="a">
+      <option name="closed" value="true" />
+      <created>1747492185118</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1747492185118</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="Eya" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="test first api" />
+    <MESSAGE value="fix commits and remotes" />
+    <MESSAGE value="git add .gitignore" />
+    <MESSAGE value="update model" />
+    <MESSAGE value="update user model" />
+    <MESSAGE value="API Cohere" />
+    <MESSAGE value="first merge" />
+    <MESSAGE value="changing aicontroller &amp;&amp; add features" />
+    <MESSAGE value="packagejson for front" />
+    <MESSAGE value="project admin module" />
+    <MESSAGE value="a" />
+    <MESSAGE value="merge zied+malek" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge zied+malek" />
+  </component>
+</project>

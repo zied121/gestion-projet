@@ -35,24 +35,17 @@ export class NavbarComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-    
-      this.getConnectedUser();
-    });
-  }
+    //this.userData = JSON.parse(localStorage.getItem('users') || '[]').map((user: any) => user.user)[0];
+     this.userService.getProfile().subscribe(
+       (data) => {
 
+         console.log('userData', data.user.nom);
+         this.userData = data.user;
+       },
+       (error) => {
+         console.error('Error fetching user data:', error);
+       }
+     );
 
-  getOrganisationById(id: string): void {
-    this.organisationService.getOrganisationById(id).subscribe({
-      next: (org) => this.organisationData = org,
-      error: (err) => console.error('Error fetching organisation:', err)
-    });
-  }
-  getConnectedUser(): void {
-    this.userService.getProfile().subscribe({
-      next: (res) => this.userData = res.user,
-      
-      error: (err) => console.error('Error fetching user:', err)
-    });
   }
 }

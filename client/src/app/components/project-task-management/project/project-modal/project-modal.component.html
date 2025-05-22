@@ -1,0 +1,64 @@
+<div class="modal-header bg-primary text-white">
+  <h5 class="modal-title">{{ project ? 'Modifier le projet' : 'Ajouter un projet' }}</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="mb-3">
+    <label for="organisation" class="form-label">Organisation</label>
+    <input type="text" id="organisation" formControlName="organisation" class="form-control" [value]="organisationId" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">Nom du projet</label>
+      <input type="text" id="name" formControlName="name" class="form-control" [ngClass]="{'is-invalid': form.get('name')?.invalid && form.get('name')?.touched}">
+      <div class="invalid-feedback" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        Le nom est requis.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Statut</label>
+      <select id="status" formControlName="status" class="form-select">
+        <option value="Planned">À faire</option>
+        <option value="Active">En cours</option>
+        <option value="Completed">Terminé</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="mb-3 col-md-6">
+        <label for="start_date" class="form-label">Date de début</label>
+        <input type="date" id="start_date" formControlName="start_date" class="form-control">
+      </div>
+
+      <div class="mb-3 col-md-6">
+        <label for="end_date" class="form-label">Date de fin</label>
+        <input type="date" id="end_date" formControlName="end_date" class="form-control">
+      </div>
+    </div>
+    <div>
+      <label>Membres</label>
+      <div *ngFor="let member of members">
+        <input
+          type="checkbox"
+          [value]="member._id"
+          (change)="onMemberChange($event, member._id)"
+        />
+        {{ member.nom }}
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Annuler</button>
+  <button type="submit" class="btn btn-success" [disabled]="form.invalid" (click)="submit()">Enregistrer</button>
+</div>

@@ -1,0 +1,69 @@
+<div class="dashboard-container">
+  <h2 class="dashboard-title">Dashboard</h2>
+  <p class="dashboard-subtitle">Analyze and manage everything on an overview</p>
+
+  <div class="grid-layout">
+
+    <!-- Tasks Overview Chart -->
+    <div class="card chart-card">
+      <h5>Tasks Overview</h5>
+      <canvas baseChart
+              [data]="statusChartData"
+              [type]="'doughnut'"
+              [options]="doughnutOptions">
+      </canvas>
+      <div class="stats-summary">
+        <p><strong>+{{ completionRate }}%</strong> Completed tasks increased</p>
+        <ul>
+          <li *ngFor="let s of statusBreakdown">
+            <span [style.background]="s.color" class="status-dot"></span>{{ s.label }} - {{ s.count }} tasks
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Tasks per Project Chart -->
+    <div class="card chart-card">
+      <h5>Tâches par projet</h5>
+      <canvas baseChart
+              [data]="barChartData"
+              [type]="'bar'"
+              [options]="barOptions">
+      </canvas>
+    </div>
+
+    <!-- Needs Action -->
+    <div class="card wide-card">
+      <h5>Needs Action</h5>
+      <table class="needs-table">
+        <thead>
+        <tr>
+          <th>Task</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Due</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let task of tasks">
+          <td>{{ task.title }}</td>
+          <td>{{ task.status }}</td>
+          <td><span class="priority" [ngClass]="task.priority.toLowerCase()">{{ task.priority }}</span></td>
+          <td>{{ task.dueDate | date:'MMM d' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Employees List -->
+    <div class="card small-card">
+      <h5>Employees</h5>
+      <ul class="employee-list">
+        <li *ngFor="let emp of employees">
+          {{ emp.name }} <span class="location">{{ emp.location }}</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>

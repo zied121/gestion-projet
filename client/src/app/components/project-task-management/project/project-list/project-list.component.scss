@@ -1,0 +1,39 @@
+.project-list {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    th, td {
+      vertical-align: middle;
+    }
+
+    button {
+      margin-right: 5px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+  }
+  td {
+    ul {
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+      li {
+        list-style-type: circle;
+      }
+    }
+
+    h6 {
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+  }
+
+}
+

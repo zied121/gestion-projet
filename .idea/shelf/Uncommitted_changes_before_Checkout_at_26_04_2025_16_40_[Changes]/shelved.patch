@@ -1,0 +1,21 @@
+Index: server/config/ConnectDb.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const mongose = require('mongoose');\r\nrequire(\"dotenv\").config();\r\nconst connectDb = async () => {\r\n\r\n    try {\r\n        \r\n        await mongose.connect(process.env.URL);\r\n        console.log('MongoDB Connected');\r\n        \r\n\r\n    } catch (error) {\r\n        console.log(\"MongoDB Connected Error\", error);\r\n    }\r\n\r\n\r\n};\r\nmodule.exports = connectDb;
+===================================================================
+diff --git a/server/config/ConnectDb.js b/server/config/ConnectDb.js
+--- a/server/config/ConnectDb.js	(revision 16b549547a5739c758671720466e8206a659a6b9)
++++ b/server/config/ConnectDb.js	(date 1745678385982)
+@@ -3,10 +3,10 @@
+ const connectDb = async () => {
+ 
+     try {
+-        
++
+         await mongose.connect(process.env.URL);
+         console.log('MongoDB Connected');
+-        
++
+ 
+     } catch (error) {
+         console.log("MongoDB Connected Error", error);

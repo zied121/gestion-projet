@@ -17,13 +17,17 @@ import { RoomComponent } from './components/chat/components/room/room.component'
 import { InboxComponent } from './components/chat/components/inbox/inbox.component';
 import { ChatComponent } from './components/chat/components/chat/chat.component';
 import { PlaceholderComponent } from './components/chat/components/placeholder/placeholder.component';
+import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
+import { ownerGuard } from './guards/owner.guard';
+import { memberGuard } from './guards/member.guard';
+import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
+{ownerGuard}
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
   },
-  // Auth routes without navbar
   {
     path: 'login',
     component: LoginComponent
@@ -38,11 +42,16 @@ export const routes: Routes = [
   },
   {
     path: 'success',
-    component: SuccessPaiementComponent
+    component: SuccessPaiementComponent,
   },
   {
     path: 'cancel',
-    component: FailPaiementComponent
+    component: FailPaiementComponent,
+  },
+  {
+    path: 'workspaceform',
+    component: WorkspaceformComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'rooms/:id',
@@ -71,16 +80,12 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+
     children: [
-      {
-        path: 'workspaceform',
-        component: WorkspaceformComponent
-      },
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [authGuard,adminGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'profile/:id',
@@ -94,7 +99,47 @@ export const routes: Routes = [
       {
         path: 'subscription',
         component: SubscriptionComponent
+      },
+      {
+        path: 'backoffice',
+        component: AdminApplicationDashboardComponent,
+        canActivate: [ownerGuard]
+      },
+      {
+        path: 'projects',
+        loadChildren: () =>
+          import('./components/project-task-management/project/project.module').then(
+            (m) => m.ProjectModule
+          ),
+        canActivate: [adminGuard]
+
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./components/project-task-management/task/task.module').then(
+            (m) => m.TaskModule
+          ),
+        canActivate: [adminGuard]
+      },
+
+    ]
+  },
+
+
+  {
+    path: '',
+    component: FrontofficelayoutComponent,
+
+    children: [
+      {
+        path: 'member',
+        loadChildren: () =>
+          import('./components/project-task-management/member/member.module').then(
+            (m) => m.MemberModule),
+        canActivate: [memberGuard]
       }
+
     ]
   }
 ];

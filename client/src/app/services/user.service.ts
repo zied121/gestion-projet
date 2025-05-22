@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -8,7 +8,7 @@ const API_URL = 'http://localhost:5000/api/users';
   providedIn: 'root'
 })
 export class UserService {
-
+  userProfileSubject = new BehaviorSubject<any>(null);
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
@@ -17,6 +17,7 @@ export class UserService {
       'Authorization': `Bearer ${token}`
     });
   }
+
   getProfile(): Observable<any> {
     return this.http.get(`${API_URL}/getone`, {
       headers: this.getAuthHeaders()
@@ -40,10 +41,14 @@ export class UserService {
       headers: this.getAuthHeaders()
     });
   }
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 
 
 
-  
 
 
 }
