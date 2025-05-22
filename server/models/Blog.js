@@ -48,12 +48,6 @@ const CommentSchema = new mongoose.Schema({
     ref: "Utilisateur",
     required: true,
   },
-  content: {
-    type: String,
-    required: true,
-    minlength: 3,
-    maxlength: 500,
-  },
   createdAt: { type: Date, default: Date.now },
 });
 

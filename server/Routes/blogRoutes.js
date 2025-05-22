@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const authMiddleware = require("../middleware/authMiddleware");
+const isAuth = require('../Middleware/isauth');
 
 // ✅ Vérification/Création sécurisée du dossier d'upload
 const uploadDir = path.join(__dirname, '..', 'uploads', 'blog-images');
@@ -56,23 +56,23 @@ const {
 } = require("../Controllers/blogController");
 
 // Routes publiques (inchangées)
-router.get("/", getBlogsPaginated);
-router.get("/popular", getPopularBlogs);
-router.get("/:id", getBlogById);
-router.get("/:id/recommendations", getRecommendedBlogs);
-router.get("/:blogId/comments", getCommentsPaginated);
+router.get("/", isAuth, getBlogsPaginated);
+router.get("/popular", isAuth, getPopularBlogs);
+router.get("/:id", isAuth, getBlogById);
+router.get("/:id/recommendations", isAuth, getRecommendedBlogs);
+router.get("/:blogId/comments", isAuth, getCommentsPaginated);
 
 // Routes protégées (commentaire conservé)
 //router.use(authMiddleware);
 
 // Gestion des commentaires (inchangée)
-router.post("/:blogId/comments", addComment);
-router.put("/:blogId/comments/:commentId", updateComment);
-router.delete("/:blogId/comments/:commentId", deleteComment);
+router.post("/:blogId/comments", isAuth, addComment);
+router.put("/:blogId/comments/:commentId", isAuth, updateComment);
+router.delete("/:blogId/comments/:commentId", isAuth, deleteComment);
 
 // Gestion des likes et tags (inchangée)
-router.post("/like/:id", likeBlog);
-router.put('/:id/tags', addTagsToBlog);
+router.post("/like/:id", isAuth, likeBlog);
+router.put('/:id/tags', isAuth, addTagsToBlog);
 
 // Gestion des blogs (CRUD) - Middleware d'upload ajouté
 const handleFileUpload = (req, res, next) => {
@@ -92,8 +92,8 @@ const handleFileUpload = (req, res, next) => {
   });
 };
 
-router.post("/", handleFileUpload, createBlog);
-router.put("/:id", handleFileUpload, updateBlog);
-router.delete("/:id", deleteBlog);
+router.post("/", isAuth, handleFileUpload, createBlog);
+router.put("/:id", isAuth, handleFileUpload, updateBlog);
+router.delete("/:id", isAuth, deleteBlog);
 
 module.exports = router;
