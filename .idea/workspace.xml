@@ -5,51 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="merge zied+malek">
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/ member-routing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/guards/member.guard.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/assets/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/assets/logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-list.component.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-modal.component.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/organizations/organization-modal.component.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/chat-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/chat-routing.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/chat.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/chat.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/pages/profile-details/profile-details.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/profile-details/profile-details.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/project.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/project.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/task.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/projectController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/taskController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/taskController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/ProjectRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/ProjectRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/ProjectModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/ProjectModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/TaskModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/TaskModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/RoomController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/RoomController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/ProjectModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/ProjectModal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,27 +64,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;16.16.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;16.18.126&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "javascript.nodejs.core.library.configured.version": "18.19.1",
+    "javascript.nodejs.core.library.typings.version": "18.19.103",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.dev.executor": "Run",
+    "npm.start.executor": "Run",
+    "ts.external.directory.path": "C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task" />
@@ -136,7 +101,7 @@
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\project\project-list" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/server/package.json" />
       <command value="run" />
@@ -159,8 +124,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />

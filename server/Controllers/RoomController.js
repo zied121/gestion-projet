@@ -1,5 +1,5 @@
 const { Room , RoomSchema , validateRoomSchema} = require("../models/Room");
-const Project = require ("../models/ProjectModal")
+const { Project, projectValidationSchema } = require('../models/ProjectModel');
 const { Utilisateur } = require("../models/Usermodel")
 const { google } = require('googleapis');
 const { oauth2Client } = require('../config/googleAuth');

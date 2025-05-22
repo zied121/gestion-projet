@@ -61,20 +61,7 @@ export const routes: Routes = [
     path: 'inbox',
     component: InboxComponent
   },
-  {
-    path: 'chat',
-    component: ChatComponent,
-    children: [
-      {
-        path: '',
-        component: PlaceholderComponent // shows when no room is selected
-      },
-      {
-        path: ':id',
-        component: RoomComponent // shows the selected room
-      }
-    ]
-  },
+
 
   // Protected routes with navbar via MainLayoutComponent
   {
@@ -138,7 +125,13 @@ export const routes: Routes = [
           import('./components/project-task-management/member/member.module').then(
             (m) => m.MemberModule),
         canActivate: [memberGuard]
-      }
+      },
+      {
+        path: 'chat',
+        loadChildren: () =>
+          import('./components/chat/chat.module').then(
+            (m) => m.ChatModule),
+      },
 
     ]
   }
