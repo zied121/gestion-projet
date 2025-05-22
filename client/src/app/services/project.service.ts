@@ -51,5 +51,8 @@ export class ProjectService {
     return this.http.post(`${API_URL}/${projectId}/assign-users`, { userIds }, { headers: this.getAuthHeaders() });
   }
 
+  getProjectsForCurrentMember(userId: string): Observable<any> {
+    return this.http.get<any[]>(`${API_URL}/member/${userId}`, { headers: this.getAuthHeaders() });
+  }
 
 }

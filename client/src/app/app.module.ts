@@ -8,10 +8,12 @@ import { NgModule } from '@angular/core';
    // import { TaskService } from './services/task.service';
     import { ProjectService } from './services/project.service';
     import { routes } from './app.routes';
+import {NgChartsModule} from 'ng2-charts';
 
     @NgModule({
       imports: [
         BrowserModule,
+        NgChartsModule,
         HttpClientModule,
         RouterModule.forRoot(routes),
         AppComponent,

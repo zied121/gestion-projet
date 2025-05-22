@@ -16,16 +16,21 @@ import {OrganisationService} from '../../../../services/organisation.service';
   standalone: true,
   templateUrl: './project-modal.component.html'
 })
+
 export class ProjectModalComponent implements OnInit {
   @Input() project: any;
   form: FormGroup;
   members: any[] = [];
+  protected organisationId= localStorage.getItem('organisation') || '';
+
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private projectService: ProjectService,private organisationService:OrganisationService
   ) {
+
     this.form = this.fb.group({
+      organisation: [''],
       name: ['', Validators.required],
       description: [''],
       status: ['Planned', Validators.required],
@@ -37,11 +42,13 @@ export class ProjectModalComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.organisationId);
+    this.form.patchValue({ organisation: this.organisationId });
     if (this.project) {
       this.form.patchValue(this.project);
     }
-    const organisationId =localStorage.getItem('organisation') || '';
-    this.organisationService.getAllUsersByOrganisation(organisationId).subscribe({
+
+    this.organisationService.getAllUsersByOrganisation(this.organisationId).subscribe({
       next: (response) => {
         this.members = response.users;
         console.log(this.members);

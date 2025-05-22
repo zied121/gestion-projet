@@ -1,0 +1,34 @@
+<div class="kanban-board">
+  <div class="kanban-column" *ngFor="let column of columns">
+    <div class="kanban-header">
+      <span class="status-icon" [ngClass]="column.iconClass"></span>
+      {{ column.label }}
+    </div>
+
+    <div
+      class="kanban-task-list"
+      cdkDropList
+      [cdkDropListData]="getTasksByStatus(column.status)"
+      [cdkDropListConnectedTo]="dropListIds"
+      [id]="getDropListId(column.status)"
+      (cdkDropListDropped)="drop($event, column.status)"
+    >
+
+      <div
+        class="kanban-task"
+        *ngFor="let task of getTasksByStatus(column.status)"
+        cdkDrag
+        (click)="openTaskModal(task)"
+      >
+        <div class="task-header">
+          <h5>{{ task.title }}</h5>
+          <span class="priority" [ngClass]="task.priority.toLowerCase()">{{ task.priority }}</span>
+        </div>
+        <p class="description">{{ task.description }}</p>
+        <div class="footer">
+          <small>📅 {{ task.startDate | date: 'shortDate' }} → {{ task.dueDate | date: 'shortDate' }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

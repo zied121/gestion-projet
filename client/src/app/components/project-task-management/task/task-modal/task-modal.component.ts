@@ -14,13 +14,14 @@ export class TaskModalComponent implements OnInit {
   @Input() task: any;
   form: FormGroup;
   @Input() projectId!: string;
-
+  protected organisationId= localStorage.getItem('organisation') || '';
   constructor(
     public activeModal: NgbActiveModal,
     private fb: FormBuilder,
     private taskService: TaskService
   ) {
     this.form = this.fb.group({
+      organisation: [''],
       title: ['', Validators.required],
       description: [''],
       status: ['To Do'],
@@ -30,6 +31,7 @@ export class TaskModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.form.patchValue({ organisation: this.organisationId });
     if (this.task) {
       this.form.patchValue(this.task);
     }
