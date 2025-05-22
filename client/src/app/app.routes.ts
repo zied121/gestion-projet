@@ -13,10 +13,10 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-import { RoomComponent } from './chat/components/room/room.component';
-import { InboxComponent } from './chat/components/inbox/inbox.component';
-import { ChatComponent } from './chat/components/chat/chat.component';
-import { PlaceholderComponent } from './chat/components/placeholder/placeholder.component';
+import { RoomComponent } from './components/chat/components/room/room.component';
+import { InboxComponent } from './components/chat/components/inbox/inbox.component';
+import { ChatComponent } from './components/chat/components/chat/chat.component';
+import { PlaceholderComponent } from './components/chat/components/placeholder/placeholder.component';
 export const routes: Routes = [
   {
     path: '',

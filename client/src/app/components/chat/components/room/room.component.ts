@@ -14,17 +14,17 @@ import { Room, RoomService } from '../../services/room.service';
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule] 
+  imports: [CommonModule, FormsModule]
 })
 export class RoomComponent implements OnInit, OnDestroy {
   @Input() roomId!: string;
 
-  currentRoomId: string = ''; 
-  messages: Message[] = [];  
+  currentRoomId: string = '';
+  messages: Message[] = [];
   room: Room | null = null;
-  messageText: string = '';  
-  selectedFile: File | null = null; 
-  currentUserId: string = ''; 
+  messageText: string = '';
+  selectedFile: File | null = null;
+  currentUserId: string = '';
   rooms: any[] = [];
   private roomSubscription!: Subscription;
 
@@ -33,14 +33,14 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   constructor(
     private messageService: MessageService,
-    private socketService: SocketService, 
+    private socketService: SocketService,
     private route: ActivatedRoute,
-    private roomService: RoomService 
+    private roomService: RoomService
 
   ) {}
 
   ngOnInit(): void {
-    
+
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.currentUserId = user._id;
     this.route.paramMap.subscribe(params => {
@@ -49,6 +49,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.socketService.joinRoom(this.currentRoomId);
       this.roomService.getRoomById(this.currentRoomId).subscribe(room => {
         this.room = room;
+        console.log("aaaaa",this.room);
       });
       this.messageService.getMessagesByRoom(this.currentRoomId).subscribe((msgs) => {
         this.messages = msgs;
@@ -122,7 +123,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.editingMessageId = messageId;
     this.editedContent = currentContent;
   }
-  
+
  /* updateMessage(): void {
     if (!this.editingMessageId) return;
 
@@ -150,7 +151,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           // Mettre à jour le message dans le tableau
           this.messages[index] = updated;
           // Forcer la mise à jour de la vue
-          this.messages = [...this.messages];  
+          this.messages = [...this.messages];
         }
         this.socketService.emit('updateMessage', updated);
 
@@ -165,7 +166,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
 deleteMessage(messageId: string): void {
   this.messageService.deleteMessage(messageId).subscribe(() => {
-   
+
   });
 }
 toggleLike(messageId: string): void {
@@ -193,7 +194,7 @@ ngOnChanges() {
   if (this.roomId) {
     this.messageService.getMessagesByRoom(this.roomId).subscribe();
   }}
-  
+
 loadMessages(roomId: string) {
   this.messages = []; // ✅ Clear first
   this.messageService.getMessagesByRoom(roomId).subscribe({

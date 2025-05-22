@@ -1,6 +1,6 @@
 <div class="chat-container">
   <div class="header" >
-    <h1 class="text-2xl font-bold">{{ room?.name }} NA</h1></div>
+    <h1 class="text-2xl font-bold">{{ room?.name }}</h1></div>
   <div class="messages">
     <div *ngFor="let msg of messages"   [ngClass]="{
       'message': true,
@@ -22,8 +22,8 @@
           ❤️{{ msg.likes?.length || 0 }}
           <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
         </button>
-        
-        
+
+
       </div>
 
       <!-- Mode édition -->
