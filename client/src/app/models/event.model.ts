@@ -58,7 +58,9 @@ export interface EventModel {
 
   export interface UpdateEventModel {
     _id: string;
-    type?: EventType;
+    //type?: EventType;
+    type: 'Évenement' | 'Réunion' | 'Tâche' | 'Deadline' | 'Holiday';
+
     titre?: string;
     description?: string;
     date_debut?: string;
@@ -71,8 +73,12 @@ export interface EventModel {
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
     file?: string;
-    participants?: string[];
-
+    participants?: string[] | {  
+        participant_id: string;
+        accept: boolean;
+        refuse: boolean;
+        message?: string;
+    }[];
 }
 
   

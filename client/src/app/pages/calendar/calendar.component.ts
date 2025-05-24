@@ -1,5 +1,4 @@
 // calendar.component.ts
-import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { CreateEventModel, EventModel, EventType, UpdateEventModel } from '../../models/event.model';
 import { UserService } from '../../services/user.service';
@@ -8,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { CalendarGridComponent } from './calendar-grid/calendar-grid.component';
 import { EventFormDialogComponent } from './event-form-dialog/event-form-dialog.component';
-
+import { Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit } from '@angular/core';
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -27,6 +26,8 @@ export class CalendarComponent implements OnInit {
   users: any[] = [];
   showForm = false;
   selectedEvent: EventModel | null = null;
+  @Output() close = new EventEmitter<void>();
+  @Output() submitSuccess = new EventEmitter<void>()
 
   constructor(
     private eventService: EventService,

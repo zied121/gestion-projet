@@ -22,6 +22,6 @@
   </div>
 </section>
 
-<app-event-form-dialog *ngIf="showForm" [event]="compatibleSelectedEvent" [users]="users" (close)="showForm = false"
+<app-event-form-dialog *ngIf="showForm" [event]="selectedEvent" [users]="users" (close)="showForm = false"
   (submitSuccess)="onSubmitSuccess()">
 </app-event-form-dialog>

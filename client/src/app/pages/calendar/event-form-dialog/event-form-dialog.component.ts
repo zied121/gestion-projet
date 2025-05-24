@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit } from '@angular/core';
-import { CreateEventModel, UpdateEventModel, EventType } from '../../../models/event.model';
+import { CreateEventModel, UpdateEventModel, EventType, EventModel } from '../../../models/event.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
@@ -8,28 +8,22 @@ import { EventService } from '../../../services/event.service';
 @Component({
     selector: 'app-event-form-dialog',
     standalone: true,
-    imports: [
-        FormsModule,
-        CommonModule
-    ],
+    imports: [FormsModule, CommonModule],
     templateUrl: './event-form-dialog.component.html',
     styleUrls: ['./event-form-dialog.component.css'],
 })
 export class EventFormDialogComponent implements OnInit, OnChanges {
-    @Input() event: CreateEventModel | UpdateEventModel | null = null;
+    @Input() event: EventModel | null = null;
     @Input() users: any[] = [];
     @Output() close = new EventEmitter<void>();
     @Output() submitSuccess = new EventEmitter<void>();
 
-    formData: CreateEventModel | UpdateEventModel = this.getDefaultFormData();
+    formData: Partial<CreateEventModel | UpdateEventModel> = this.getDefaultFormData();
     selectedParticipants: string[] = [];
     eventTypeList: EventType[] = Object.values(EventType);
-
-    // Enhanced participant selection properties
     participantSearchTerm: string = '';
     showParticipantDropdown: boolean = false;
     filteredUsers: any[] = [];
-
     constructor(private userService: UserService, private eventService: EventService) { }
 
     ngOnInit(): void {
@@ -37,31 +31,47 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(): void {
+        console.log('Input event changed:', this.event);
+        
         if (this.event) {
+            // Mode édition
             this.formData = {
-                ...this.event,
-                date_debut: this.formatDateTimeLocal(new Date(this.event.date_debut ?? '')),
-                date_fin: this.formatDateTimeLocal(new Date(this.event.date_fin ?? '')),
+                _id: this.event._id,
+                type: this.event.type,
+                titre: this.event.titre,
+                description: this.event.description,
+                date_debut: this.formatDateTimeLocal(new Date(this.event.date_debut)),
+                date_fin: this.formatDateTimeLocal(new Date(this.event.date_fin)),
+                emplacement: this.event.emplacement,
+                lien: this.event.lien,
+                status: this.event.status,
+                isRecurring: this.event.isRecurring,
+                type_recurrence: this.event.type_recurrence,
+                rappel: this.event.rappel ? [...this.event.rappel] : []
             };
             
-            // Initialiser les participants sélectionnés
+            // Gestion des participants
             this.selectedParticipants = [];
-            if (this.event.participants) {
-                this.event.participants.forEach(p => {
-                    if (typeof p === 'object' && 'participant_id' in p) {
-                        this.selectedParticipants.push((p as { participant_id: string }).participant_id);
-                    } else if (typeof p === 'string') {
-                        this.selectedParticipants.push(p);
+            if (this.event.participants && this.event.participants.length > 0) {
+                this.selectedParticipants = this.event.participants.map(p => {
+                    if (typeof p.participant_id === 'string') {
+                        return p.participant_id;
+                    } else {
+                        return p.participant_id;
                     }
                 });
             }
         } else {
+            // Mode création
             this.formData = this.getDefaultFormData();
             this.selectedParticipants = [];
         }
-    
+        
         this.updateFilteredUsers();
     }
+
+    // FIX: Méthodes de gestion des changements plus robustes
+  
 
     private loadUsers(): void {
         this.userService.getAllUsers().subscribe({
@@ -116,30 +126,6 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     getFilteredUsers(): any[] {
         return this.filteredUsers.slice(0, 10); // Limit to 10 results for better UX
     }
@@ -150,13 +136,11 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             this.participantSearchTerm = '';
             this.showParticipantDropdown = false;
             this.updateFilteredUsers();
+            console.log('Participant ajouté:', user._id, 'Liste:', this.selectedParticipants);
         }
     }
 
-    removeParticipant(participantId: string): void {
-        this.selectedParticipants = this.selectedParticipants.filter(id => id !== participantId);
-        this.updateFilteredUsers();
-    }
+
 
     getSelectedParticipants(): any[] {
         return this.users.filter(user => this.selectedParticipants.includes(user._id));
@@ -188,170 +172,97 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         }
     }
 
+    // FIX: Méthode de formatage améliorée
     formatDateTimeLocal(date: Date): string {
+        if (!date || isNaN(date.getTime())) {
+            return '';
+        }
+        
         const pad = (num: number) => num.toString().padStart(2, '0');
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
 
+    // FIX: Méthode onSubmit complètement remaniée
     onSubmit(): void {
-        // Validate required fields
+        console.log('Form submitted with data:', this.formData);
+        console.log('Selected participants:', this.selectedParticipants);
+    
+        // Validation
         if (!this.formData.titre?.trim()) {
-            this.showValidationError('Please enter an event title.');
+            alert('Veuillez saisir un titre pour l\'événement.');
             return;
         }
     
-        if (!this.formData.date_debut) {
-            this.showValidationError('Please select a start date and time.');
+        if (!this.formData.date_debut || !this.formData.date_fin) {
+            alert('Veuillez sélectionner des dates de début et de fin.');
             return;
         }
     
-        if (!this.formData.date_fin) {
-            this.showValidationError('Please select an end date and time.');
-            return;
-        }
-    
-        if (!this.formData.type) {
-            this.showValidationError('Please select an event type.');
-            return;
-        }
-    
-        // Validate date logic
         const startDate = new Date(this.formData.date_debut);
         const endDate = new Date(this.formData.date_fin);
     
-        if (endDate <= startDate) {
-            this.showValidationError('End date must be after start date.');
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            alert('Dates invalides. Veuillez vérifier les dates saisies.');
             return;
         }
     
-        // ✅ FIX: Prepare participants data according to backend expectations
-        if (this.selectedParticipants.length > 0) {
-            // For updates, send participants as array of IDs (backend will handle the format conversion)
-            this.formData.participants = this.selectedParticipants;
-        } else {
-            this.formData.participants = [];
+        if (endDate <= startDate) {
+            alert('La date de fin doit être postérieure à la date de début.');
+            return;
         }
     
-        // If location is empty but link is provided, set location to "Online"
-        if (!this.formData.emplacement && this.formData.lien) {
-            this.formData.emplacement = 'En ligne'; // Use French as backend expects
-        }
-    
-        // Clean up empty reminder arrays
-        if (this.formData.rappel && this.formData.rappel.length === 0) {
-            this.formData.rappel = [];
-        }
+        const eventData: any = {
+            ...this.formData,
+            participants: [...this.selectedParticipants]
+        };
 
-        // ✅ FIX: Handle recurrence properly
-        if (this.formData.type_recurrence && this.formData.type_recurrence !== 'none') {
-            this.formData.isRecurring = true;
-        } else {
-            this.formData.isRecurring = false;
-            this.formData.type_recurrence = 'none';
-        }
-    
-        // Check if this is an update or create operation
-         if (this.event && this.event._id) {
-    // Update existing event - DON'T include participants
-    this.updateExistingEvent();
-  } else {
-    // Create new event - participants can be included for creation
-    if (this.selectedParticipants.length > 0) {
-      this.formData.participants = this.selectedParticipants;
-    } else {
-      this.formData.participants = [];
-    }
-    this.createNewEvent();
-  }
-}
-    private createNewEvent(): void {
-        console.log('Creating event with data:', this.formData);
-    
-        this.eventService.createEvent(this.formData as CreateEventModel).subscribe({
-            next: () => {
-                console.log('Event created successfully.');
-                this.submitSuccess.emit(); // Notify parent component
-                this.close.emit(); // Close the dialog
+        // Conversion des dates
+        eventData.date_debut = new Date(eventData.date_debut).toISOString();
+        eventData.date_fin = new Date(eventData.date_fin).toISOString();
+
+        if (this.event?._id) {
+           // Mode update
+           this.eventService.updateEvent(this.event._id, eventData).subscribe({
+            next: (response) => {
+                console.log('Update successful:', response);
+                alert('Événement mis à jour avec succès');
+                this.submitSuccess.emit();
+                this.close.emit();
             },
             error: (err) => {
-                console.error('Error creating event:', err);
-                const errorMessage = err.error?.message || 'Failed to create the event. Please try again.';
-                this.showValidationError(errorMessage);
+                console.error('Update error:', err);
+                alert('Erreur lors de la mise à jour: ' + (err.error?.message || err.message));
             }
         });
+        } else {
+            // Create mode
+            this.eventService.createEvent(eventData as CreateEventModel).subscribe({
+                next: (response) => {
+                    console.log('Create successful:', response);
+                    alert('Événement créé avec succès.');
+                    this.submitSuccess.emit();
+                    this.close.emit();
+                },
+                error: (err) => {
+                    console.error('Create error:', err);
+                    alert('Erreur lors de la création: ' + (err.error?.message || err.message));
+                }
+            });
+        }
     }
-    
-// Updated updateExistingEvent method in your component
-private updateExistingEvent(): void {
-    if (!this.event?._id) {
-      this.showValidationError('Event ID is missing.');
-      return;
-    }
-  
-    // Create update data object - EXCLUDE participants completely
-    const updateData: any = {
-      titre: this.formData.titre,
-      description: this.formData.description,
-      type: this.formData.type,
-      date_debut: this.formData.date_debut,
-      date_fin: this.formData.date_fin,
-      emplacement: this.formData.emplacement,
-      lien: this.formData.lien,
-      status: this.formData.status,
-      type_recurrence: this.formData.type_recurrence,
-      isRecurring: this.formData.isRecurring,
-      rappel: this.formData.rappel
-    };
-  
-    // Clean undefined values but keep participants completely out
-    Object.keys(updateData).forEach(key => {
-      if (updateData[key] === undefined || updateData[key] === null) {
-        delete updateData[key];
-      }
-    });
-  
-    console.log('Update data (no participants):', updateData);
-  
-    this.eventService.updateEvent(this.event._id, updateData).subscribe({
-      next: (response) => {
-        console.log('Event updated successfully:', response);
-        this.submitSuccess.emit();
+
+    closeDialog(): void {
+        console.log('Fermeture du dialog');
         this.close.emit();
-      },
-      error: (err) => {
-        console.error('Error updating event:', err);
-        console.error('Error details:', err.error);
-        const errorMessage = err.error?.message || 'Failed to update the event. Please try again.';
-        this.showValidationError(errorMessage);
-      }
-    });
-  }
-  
-  // Remove the participant-related helper methods since we're not updating participants
-  // Keep only the main update method
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
     private showValidationError(message: string): void {
-        // You can replace this with a proper toast notification or modal
-        alert(message);
+        console.log('Message affiché:', message);
+        alert(message); // Remplacez par votre système de notification préféré
+    }
+    removeParticipant(participantId: string): void {
+        this.selectedParticipants = this.selectedParticipants.filter(id => id !== participantId);
+        this.updateFilteredUsers();
     }
 
     // Utility method to get participant count for display
