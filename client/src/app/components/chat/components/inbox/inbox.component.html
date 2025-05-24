@@ -1,43 +1,127 @@
-<div class="flex flex-col h-screen w-72 bg-white border-r border-gray-200">
+<div class="messages-sidebar">
   <!-- Header -->
-  <div class="p-4 border-b border-gray-100">
-    <h1 class="text-xl font-bold text-gray-800">Rooms</h1>
+  <div class="sidebar-header">
+    <div class="header-content">
+      <h1 class="sidebar-title">Messages</h1>
+      <span class="room-count">({{ rooms.length }})</span>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <div class="search-icon">
+        <svg class="search-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <input type="text" 
+             placeholder="Search here..." 
+             class="search-input">
+    </div>
   </div>
 
   <!-- Room List -->
-  <div class="flex-1 overflow-y-auto p-2">
-    <div *ngIf="rooms.length === 0" class="text-center p-4 text-gray-500">
-      Vous n'avez rejoint aucune room.
-    </div>
-
-    <div *ngFor="let room of rooms" 
-         (click)="selectRoom(room._id)"
-         class="p-3 rounded-lg cursor-pointer flex items-center hover:bg-gray-50"
-         [class.bg-blue-50]="room._id === selectedRoomId">
-         
-      <!-- Room avatar - shows image or initial -->
-      <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden mr-3">
-        <img *ngIf="room.image" [src]="room.image" alt="Room image" class="h-full w-full object-cover">
-        <span *ngIf="!room.image" class="text-blue-600 font-medium">
-          {{ room.name.charAt(0).toUpperCase() }}
-        </span>
-      </div>
+  <div class="room-list">
+    
+    <!-- Favorites Section -->
+    <div class="section">
+      <h2 class="section-title">Rooms</h2>
       
-      <div class="min-w-0">
-        <div class="font-medium truncate">{{ room.name }}</div>
-        <div *ngIf="room.lastMessage" class="text-sm text-gray-500 truncate">
-          {{ room.lastMessage.content }}
+      <!-- Room Items -->
+      <div *ngFor="let room of rooms" 
+           (click)="selectRoom(room._id)"
+           class="room-item"
+           [class.room-item-selected]="room._id === selectedRoomId">
+           
+        <!-- Avatar -->
+        <div class="avatar-container">
+          <!-- Room Image -->
+          <img *ngIf="room.image" 
+               [src]="room.image" 
+               [alt]="room.name"
+               class="avatar-image">
+          
+          <!-- Default Avatar with Initials -->
+          <div *ngIf="!room.image" 
+               class="avatar-default">
+            {{ room.name?.charAt(0)?.toUpperCase() || 'R' }}
+          </div>
+          
+          <!-- Online Status (static for now) -->
+          <div class="status-indicator status-online"></div>
+        </div>
+        
+        <!-- Room Info -->
+        <div class="room-info">
+          <div class="room-header">
+            <h3 class="room-name">{{ room.name }}</h3>
+            <!-- Static unread count for demo -->
+            <span class="unread-badge">
+            <!--    {{ room.unreadCount || (Math.floor(Math.random() * 20) + 1) }}  -->
+                 2
+            </span>
+          </div>
+          <p class="room-message">
+            {{ room.lastMessage?.content || 'Hey, how are you doing today?' }}
+          </p>
         </div>
       </div>
-      
-      <div class="ml-auto flex flex-col items-end">
-        <span *ngIf="room.lastMessage" class="text-xs text-gray-400">
-          {{ room.lastMessage.timestamp | date:'shortTime' }}
-        </span>
-        <span *ngIf="room.unreadCount" class="mt-1 h-5 w-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center">
-          {{ room.unreadCount }}
-        </span>
+    </div>
+
+    <!-- Direct Messages Section -->
+    <div class="section" *ngIf="rooms.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">Direct Messages</h2>
+        <button class="add-button">
+          <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
       </div>
+      
+      <!-- Additional Room Items -->
+      <div *ngFor="let room of rooms.slice(0, 4)" 
+           (click)="selectRoom(room._id)"
+           class="room-item">
+           
+        <!-- Avatar -->
+        <div class="avatar-container">
+          <!-- Room Image -->
+          <img *ngIf="room.image" 
+               [src]="room.image" 
+               [alt]="room.name"
+               class="avatar-image">
+          
+          <!-- Default Avatar with Initials -->
+          <div *ngIf="!room.image" 
+               class="avatar-default avatar-default-gray">
+            {{ room.name?.charAt(0)?.toUpperCase() || 'R' }}
+          </div>
+          
+          <!-- Offline Status for direct messages -->
+          <div class="status-indicator status-offline"></div>
+        </div>
+        
+        <!-- Room Info -->
+        <div class="room-info">
+          <h3 class="room-name">{{ room.name }}</h3>
+          <p class="room-message">
+            {{ room.lastMessage?.content || 'Start a conversation' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="rooms.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <svg class="empty-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+        </svg>
+      </div>
+      <h3 class="empty-title">No conversations</h3>
+      <p class="empty-description">
+        You haven't joined any rooms yet. Start a new conversation to get started.
+      </p>
     </div>
   </div>
 </div>

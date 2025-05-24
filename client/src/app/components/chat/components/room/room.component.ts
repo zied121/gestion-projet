@@ -41,8 +41,9 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.currentUserId = user._id;
+    const userId = localStorage.getItem('userId');
+    this.currentUserId = userId ? userId : '';
+    console.log("currentUserId", this.currentUserId);
     this.route.paramMap.subscribe(params => {
       this.currentRoomId = params.get('id')!;
       this.messages = [];
@@ -219,4 +220,19 @@ loadMessages(roomId: string) {
   });
 }
 */
+getUserColor(username: string): string {
+  if (!username) return '#cccccc'; // Default gray for unknown users
+  
+  // Simple hash function to convert name to color
+  const colors = [
+    '#FFB6C1', '#FFD700', '#98FB98', '#87CEFA', 
+    '#FFA07A', '#9370DB', '#20B2AA', '#F08080'
+  ];
+  
+  const hash = username.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc);
+  }, 0);
+  
+  return colors[Math.abs(hash) % colors.length];
+}
 }
