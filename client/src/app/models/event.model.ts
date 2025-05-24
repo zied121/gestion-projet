@@ -71,12 +71,8 @@ export interface EventModel {
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
     file?: string;
-    participants?: string[] | {  
-        participant_id: string;
-        accept: boolean;
-        refuse: boolean;
-        message?: string;
-    }[];
+    participants?: string[];
+
 }
 
   

@@ -94,7 +94,11 @@ export class CalendarComponent implements OnInit {
 
   get compatibleSelectedEvent(): CreateEventModel | UpdateEventModel | null {
     if (this.selectedEvent && this.selectedEvent._id) {
-      return { ...this.selectedEvent, _id: this.selectedEvent._id };
+      return { 
+        ...this.selectedEvent, 
+        _id: this.selectedEvent._id, 
+        participants: this.selectedEvent.participants?.map(p => p.participant_id) 
+      };
     }
     return this.selectedEvent as CreateEventModel | null;
   }

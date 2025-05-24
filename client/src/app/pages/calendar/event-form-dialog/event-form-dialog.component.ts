@@ -49,7 +49,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             if (this.event.participants) {
                 this.event.participants.forEach(p => {
                     if (typeof p === 'object' && 'participant_id' in p) {
-                        this.selectedParticipants.push(p.participant_id);
+                        this.selectedParticipants.push((p as { participant_id: string }).participant_id);
                     } else if (typeof p === 'string') {
                         this.selectedParticipants.push(p);
                     }
@@ -251,15 +251,19 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         }
     
         // Check if this is an update or create operation
-        if (this.event && this.event._id) {
-            // Update existing event
-            this.updateExistingEvent();
-        } else {
-            // Create new event
-            this.createNewEvent();
-        }
-    }   
-    
+         if (this.event && this.event._id) {
+    // Update existing event - DON'T include participants
+    this.updateExistingEvent();
+  } else {
+    // Create new event - participants can be included for creation
+    if (this.selectedParticipants.length > 0) {
+      this.formData.participants = this.selectedParticipants;
+    } else {
+      this.formData.participants = [];
+    }
+    this.createNewEvent();
+  }
+}
     private createNewEvent(): void {
         console.log('Creating event with data:', this.formData);
     
@@ -277,43 +281,54 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         });
     }
     
-    private updateExistingEvent(): void {
-        if (!this.event?._id) {
-            this.showValidationError('Event ID is missing.');
-            return;
-        }
-    
-        // ✅ FIX: Clean the update data - remove undefined/null values
-        const updateData: any = {};
-        
-        // Only include fields that have been modified or are required
-        if (this.formData.titre !== undefined) updateData.titre = this.formData.titre;
-        if (this.formData.description !== undefined) updateData.description = this.formData.description;
-        if (this.formData.type !== undefined) updateData.type = this.formData.type;
-        if (this.formData.date_debut !== undefined) updateData.date_debut = this.formData.date_debut;
-        if (this.formData.date_fin !== undefined) updateData.date_fin = this.formData.date_fin;
-        if (this.formData.emplacement !== undefined) updateData.emplacement = this.formData.emplacement;
-        if (this.formData.lien !== undefined) updateData.lien = this.formData.lien;
-        if (this.formData.status !== undefined) updateData.status = this.formData.status;
-        if (this.formData.type_recurrence !== undefined) updateData.type_recurrence = this.formData.type_recurrence;
-        if (this.formData.isRecurring !== undefined) updateData.isRecurring = this.formData.isRecurring;
-        if (this.formData.rappel !== undefined) updateData.rappel = this.formData.rappel;
-        
-        
-        this.eventService.updateEvent(this.event._id, updateData).subscribe({
-            next: (response) => {
-                console.log('Event updated successfully:', response);
-                this.submitSuccess.emit();
-                this.close.emit();
-            },
-            error: (err) => {
-                console.error('Error updating event:', err);
-                console.error('Error details:', err.error);
-                const errorMessage = err.error?.message || 'Failed to update the event. Please try again.';
-                this.showValidationError(errorMessage);
-            }
-        });
+// Updated updateExistingEvent method in your component
+private updateExistingEvent(): void {
+    if (!this.event?._id) {
+      this.showValidationError('Event ID is missing.');
+      return;
     }
+  
+    // Create update data object - EXCLUDE participants completely
+    const updateData: any = {
+      titre: this.formData.titre,
+      description: this.formData.description,
+      type: this.formData.type,
+      date_debut: this.formData.date_debut,
+      date_fin: this.formData.date_fin,
+      emplacement: this.formData.emplacement,
+      lien: this.formData.lien,
+      status: this.formData.status,
+      type_recurrence: this.formData.type_recurrence,
+      isRecurring: this.formData.isRecurring,
+      rappel: this.formData.rappel
+    };
+  
+    // Clean undefined values but keep participants completely out
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined || updateData[key] === null) {
+        delete updateData[key];
+      }
+    });
+  
+    console.log('Update data (no participants):', updateData);
+  
+    this.eventService.updateEvent(this.event._id, updateData).subscribe({
+      next: (response) => {
+        console.log('Event updated successfully:', response);
+        this.submitSuccess.emit();
+        this.close.emit();
+      },
+      error: (err) => {
+        console.error('Error updating event:', err);
+        console.error('Error details:', err.error);
+        const errorMessage = err.error?.message || 'Failed to update the event. Please try again.';
+        this.showValidationError(errorMessage);
+      }
+    });
+  }
+  
+  // Remove the participant-related helper methods since we're not updating participants
+  // Keep only the main update method
 
 
 
