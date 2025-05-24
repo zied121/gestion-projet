@@ -1,0 +1,23 @@
+<div class="backoffice-container">
+        <h1 class="title">Gestion des Rooms</h1>
+        <button class="btn btn-primary" (click)="openModal()">Ajouter une Room</button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Projet</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let room of rooms">
+              <td>{{ room.name }}</td>
+              <td>{{ room.project?.name }}</td>
+              <td>
+                <button class="btn btn-sm btn-warning" (click)="openModal(room)">Modifier</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteRoom(room._id)">Supprimer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
