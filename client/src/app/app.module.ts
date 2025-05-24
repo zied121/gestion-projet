@@ -9,11 +9,13 @@ import { NgModule } from '@angular/core';
     import { ProjectService } from './services/project.service';
     import { routes } from './app.routes';
 import {NgChartsModule} from 'ng2-charts';
+import {NgbModalModule} from '@ng-bootstrap/ng-bootstrap';
 
     @NgModule({
       imports: [
         BrowserModule,
         NgChartsModule,
+        NgbModalModule,
         HttpClientModule,
         RouterModule.forRoot(routes),
         AppComponent,

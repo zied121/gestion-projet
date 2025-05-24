@@ -13,15 +13,19 @@ const RoomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Utilisateur',
     },
+        projectID: {
+            type: String,
+            //required: true
+        },
+
     members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Utilisateur'
     }],
-    projectID: {
-        type: String,
-        //required: true
-    },
+        project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
+
 },
+
 
 
 );

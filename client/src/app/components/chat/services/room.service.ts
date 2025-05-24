@@ -23,22 +23,33 @@ export class RoomService {
   }
   // Pour récupérer toutes les rooms
   getRooms(): Observable<any[]> {
-    const staticToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjljOTk4ZjdiYzQzZTJlMWJhYTQ5OCIsImlhdCI6MTc0NjI4Mjc3OCwiZXhwIjoxNzQ2MzE4Nzc4fQ.LiJBu6W9UIHst1XlYTigG7QlqEnquz6Tq2sukiT2_sY';
-        const token = localStorage.getItem('token') || staticToken;
-
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>(`${this.apiUrl}`,  { headers });
+    return this.http.get<any[]>(`${this.apiUrl}`, { headers: this.getAuthHeaders() });
+  }
+  getallRooms(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/allrooms`, { headers: this.getAuthHeaders() });
   }
   getRoomsByUser(): Observable<any[]> {
-    const token = localStorage.getItem('token');
-
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>(`${this.apiUrl}/getRoomsPerUser`, { headers });
+    return this.http.get<any[]>(`${this.apiUrl}/getRoomsPerUser`, { headers: this.getAuthHeaders() });
+  }
+  getRoomsPerowner(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/getRoomsPerowner`, { headers: this.getAuthHeaders() });
   }
 
   getRoomById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/getRoomById/${id}`,{
       headers: this.getAuthHeaders()
     });
+  }
+
+  createRoom(data: any,projectId:string  ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/RoomForProject/${projectId}`, data, { headers: this.getAuthHeaders() });
+  }
+
+  updateRoom(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/UpdateRoom/${id}`, data, { headers: this.getAuthHeaders() });
+  }
+
+  deleteRoom(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/deleteRoom/${id}`, { headers: this.getAuthHeaders() });
   }
 }
