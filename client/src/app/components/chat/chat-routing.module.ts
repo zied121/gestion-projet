@@ -7,14 +7,20 @@ import {RoomComponent} from './components/room/room.component';
 
 const routes: Routes = [
 
+  {
+    path: '',
+    component: ChatComponent,
+    children: [
       {
         path: '',
-        component: ChatComponent // shows when no room is selected
+        component: PlaceholderComponent // shows when no room is selected
       },
       {
         path: ':id',
         component: RoomComponent // shows the selected room
       }
+    ]
+  }
 
 
 ];
