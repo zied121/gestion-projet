@@ -11,6 +11,7 @@ const {
     getOneUser,
     deleteUser,
     updateUser,
+    getAllUsers
 } = require("../Controllers/userController");
 
 router.post("/add/:organisationId",isAuth,isAdmin, createUser)
@@ -23,5 +24,8 @@ router.put("/update/:id", isAuth,upload.single('image'), updateUser)
 
 //get connteted user data
 router.get("/getone", isAuth, getOneUser)
+
+//get all users
+router.get("/getall", isAuth, getAllUsers)
 
 module.exports = router;

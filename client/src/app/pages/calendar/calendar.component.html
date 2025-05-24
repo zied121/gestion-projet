@@ -1,105 +1,27 @@
-<div class="flex justify-between items-center mb-6 px-4">
-    <h2 class="text-2xl font-semibold text-gray-900">Calendar</h2>
-    <button (click)="onCreateEventClick()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-      + Create Event
-    </button>
+<!-- calendar.component.html -->
+<div class="flex justify-between items-center mb-6 px-4 container my-8">
+  <h2 class="text-2xl font-semibold text-gray-900">Calendar</h2>
+  <button (click)="onCreateEvent()"
+    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-md">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd"
+        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+    </svg>
+    Create Event
+  </button>
+</div>
+
+<section class="relative py-4 px-4">
+  <div class="max-w-7xl mx-auto">
+    <app-calendar-header [currentMonth]="currentMonth" (monthChange)="onMonthChange($event)">
+    </app-calendar-header>
+
+    <app-calendar-grid [currentMonth]="currentMonth" [events]="events" (editEvent)="onEditEvent($event)"
+      (deleteEvent)="onDeleteEvent($event)" (createEventForDay)="onCreateEventForDay($event)">
+    </app-calendar-grid>
   </div>
-  
-  <section class="relative py-4 px-4">
-    <div class="max-w-7xl mx-auto">
-      <!-- Month & Navigation -->
-      <div class="flex justify-between items-center mb-4">
-        <h5 class="text-xl font-semibold text-gray-800">{{ selectedMonthLabel }}</h5>
-        <div class="flex gap-2">
-          <button (click)="prevMonth()" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">&larr;</button>
-          <button (click)="nextMonth()" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">&rarr;</button>
-        </div>
-      </div>
-  
-      <!-- Weekday Labels -->
-      <div class="grid grid-cols-7 text-center border-b border-gray-300 mb-2">
-        <div *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']"
-             class="py-2 text-sm font-medium text-gray-500">
-          {{ day }}
-        </div>
-      </div>
-  
-      <!-- Calendar Grid -->
-      <div *ngFor="let week of daysInMonth" class="grid grid-cols-7 gap-px border-b border-gray-200">
-        <div *ngFor="let day of week"
-             class="min-h-[100px] p-2 border border-gray-200 flex flex-col justify-between"
-             [class.bg-gray-50]="!isCurrentMonth(day)"
-             [class.bg-indigo-100]="isToday(day)">
-          <div class="text-xs font-semibold text-gray-700">{{ day.getDate() }}</div>
-  
-          <div *ngFor="let event of getEventsForDay(day)" class="mt-1">
-            <div class="text-xs text-indigo-600 truncate flex items-center justify-between">
-              • {{ event.titre }}
-              <div class="flex gap-1 ml-2">
-                <button (click)="onEditEvent(event)" class="text-blue-500 hover:underline text-xs">Edit</button>
-                <button (click)="onDeleteEvent(event._id!)" class="text-red-500 hover:underline text-xs">Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Modal Form -->
-  <div *ngIf="showForm" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded shadow-lg w-[90%] max-w-xl max-h-[90vh] overflow-y-auto">
-      <h3 class="text-lg font-semibold mb-4">{{ selectedEvent ? 'Edit Event' : 'Create Event' }}</h3>
-  
-      <div class="space-y-3">
-        <input [(ngModel)]="formData.titre" type="text" placeholder="Title" class="w-full border px-3 py-2 rounded text-sm" required />
-        <textarea [(ngModel)]="formData.description" placeholder="Description"
-                  class="w-full border px-3 py-2 rounded text-sm"></textarea>
-  
-        <select [(ngModel)]="formData.type" class="w-full border px-3 py-2 rounded text-sm">
-          <option value="Évenement">Évenement</option>
-          <option value="Réunion">Réunion</option>
-          <option value="Tâche">Tâche</option>
-          <option value="Deadline">Deadline</option>
-          <option value="Holiday">Holiday</option>
-        </select>
-  
-        <input [(ngModel)]="formData.date_debut" type="datetime-local" class="w-full border px-3 py-2 rounded text-sm" />
-        <input [(ngModel)]="formData.date_fin" type="datetime-local" class="w-full border px-3 py-2 rounded text-sm" />
-  
-        <input [(ngModel)]="formData.emplacement" type="text" placeholder="Location"
-               class="w-full border px-3 py-2 rounded text-sm" />
-  
-        <input [(ngModel)]="formData.lien" type="text" placeholder="Link"
-               class="w-full border px-3 py-2 rounded text-sm" />
-  
-        <select [(ngModel)]="formData.type_recurrence" class="w-full border px-3 py-2 rounded text-sm">
-          <option value="none">No recurrence</option>
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-          <option value="personnalise">Personnalised</option>
-        </select>
-  
-        <label class="flex items-center gap-2">
-          <input [(ngModel)]="formData.isRecurring" type="checkbox" />
-          <span class="text-sm">Is Recurring?</span>
-        </label>
-  
-        <select [(ngModel)]="formData.status" class="w-full border px-3 py-2 rounded text-sm">
-          <option value="En_attente">En attente</option>
-          <option value="Confirme">Confirmé</option>
-          <option value="Annule">Annulé</option>
-          <option value="Terminé">Terminé</option>
-        </select>
-      </div>
-  
-      <div class="flex justify-end gap-2 mt-6">
-        <button (click)="showForm = false" class="px-4 py-2 text-gray-600 hover:underline">Cancel</button>
-        <button (click)="submitForm()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          {{ selectedEvent ? 'Update' : 'Create' }}
-        </button>
-      </div>
-    </div>
-  </div>
-  
+</section>
+
+<app-event-form-dialog *ngIf="showForm" [event]="compatibleSelectedEvent" [users]="users" (close)="showForm = false"
+  (submitSuccess)="onSubmitSuccess()">
+</app-event-form-dialog>

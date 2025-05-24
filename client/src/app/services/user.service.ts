@@ -9,7 +9,7 @@ const API_URL = 'http://localhost:5000/api/users';
 })
 export class UserService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token'); // assuming you store token here
@@ -23,7 +23,7 @@ export class UserService {
     });
   }
 
-  addUser(userData: any,organisationid:any): Observable<any> {
+  addUser(userData: any, organisationid: any): Observable<any> {
     return this.http.post(`${API_URL}/add/${organisationid}`, userData, {
       headers: this.getAuthHeaders()
     });
@@ -35,15 +35,20 @@ export class UserService {
     });
   }
 
-  deleteUser(userId: string,organisationid:any): Observable<any> {
+  deleteUser(userId: string, organisationid: any): Observable<any> {
     return this.http.delete(`${API_URL}/delete/${organisationid}/${userId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get(`${API_URL}/getall`, {
       headers: this.getAuthHeaders()
     });
   }
 
 
 
-  
 
 
 }

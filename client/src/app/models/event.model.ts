@@ -1,7 +1,15 @@
- import { ParticipantModel } from './participant.model';
+
+export enum EventType {
+    EVENEMENT = 'Évenement',
+    REUNION = 'Réunion',
+    TACHE = 'Tâche',
+    DEADLINE = 'Deadline',
+    HOLIDAY = 'Holiday',
+}
+
 export interface EventModel {
     _id?: string;
-    type: 'Évenement' | 'Réunion' | 'Tâche' | 'Deadline' | 'Holiday';
+    type: EventType;
     titre: string;
     description?: string;
     date_debut: string;
@@ -20,8 +28,55 @@ export interface EventModel {
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
     file?: string;
-    participants?: ParticipantModel[];
+    participants?: {
+      participant_id: string;
+      accept: boolean;
+      refuse: boolean;
+      message?: string;
+    }[];
     updatedAt?: string;
     createdAt?: string;
   }
+
+  export interface CreateEventModel {
+    _id?: string;
+    type: 'Évenement' | 'Réunion' | 'Tâche' | 'Deadline' | 'Holiday';
+    titre: string;
+    description?: string;
+    date_debut: string;
+    date_fin: string;
+    emplacement?: string;
+    lien?: string;
+    projet_id?: string;
+    isRecurring?: boolean;
+    type_recurrence?: 'daily' | 'weekly' | 'monthly' | 'personnalise' | 'none';
+    rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
+    status?: string;
+    file?: string;
+    participants?: string[];
+  }
+
+  export interface UpdateEventModel {
+    _id: string;
+    type?: EventType;
+    titre?: string;
+    description?: string;
+    date_debut?: string;
+    date_fin?: string;
+    emplacement?: string;
+    lien?: string;
+    projet_id?: string;
+    isRecurring?: boolean;
+    type_recurrence?: 'daily' | 'weekly' | 'monthly' | 'personnalise' | 'none';
+    rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
+    status?: string;
+    file?: string;
+    participants?: string[] | {  
+        participant_id: string;
+        accept: boolean;
+        refuse: boolean;
+        message?: string;
+    }[];
+}
+
   

@@ -45,10 +45,28 @@ const eventSchema = object({
     type_recurrence: string().when('isRecurring', {
         is: true,
         then: string().required().oneOf(['daily', 'weekly', 'monthly', 'personnalise'])
-    })
+    }),
+// participants: array()
+//     .of(
+//         object({
+//             participant_id: string()
+//                 .required('L\'ID du participant est obligatoire')
+//                 .test('is-object-id', 'L\'ID du participant doit être un ObjectId valide', value => mongoose.Types.ObjectId.isValid(value)),
+//             accept: boolean().default(false),
+//             refuse: boolean().default(false),
+//             message: string().optional()
+//         })
+//     )
+//     .optional()
+    // participants: array(string())
+    //     .of(
+    //         string()
+    //             .required('L\'ID du participant est obligatoire')
+    //             .test('is-object-id', 'L\'ID du participant doit être un ObjectId valide', value => mongoose.Types.ObjectId.isValid(value))
+    //     )
+    //     .optional(),
    
 });
-
 const validateEvent = async (req, res, next) => {
     try {
         // Convertir les dates en objets Date
@@ -58,11 +76,17 @@ const validateEvent = async (req, res, next) => {
         await eventSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
         next();
     } catch (err) {
-        const errors = {};
-        err.inner.forEach(e => {
-            errors[e.path] = e.message;
-        });
-        return res.status(400).json({ success: false, errors });
+        // Vérifiez si `err.inner` existe et est un tableau
+        if (err.inner && Array.isArray(err.inner)) {
+            const errors = {};
+            err.inner.forEach(e => {
+                errors[e.path] = e.message;
+            });
+            return res.status(400).json({ success: false, errors });
+        }
+
+        // Si `err.inner` est undefined, renvoyez un message d'erreur générique
+        return res.status(400).json({ success: false, message: err.message || 'Erreur de validation' });
     }
 };
 
