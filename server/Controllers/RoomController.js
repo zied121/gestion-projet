@@ -25,7 +25,15 @@ const getRooms = async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 };
-
+const getAllRooms = async (req, res) => {
+  try {
+    const rooms = await Room.find(); // Récupère toutes les rooms sans condition
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de toutes les rooms :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
 const getProjectPerUser = async (req,res) => {
  
   try {
@@ -48,7 +56,7 @@ const getProjectPerUser = async (req,res) => {
 const createRoomPerProject = async (req, res) => {
   try {
     const projectId = req.params.id; 
-    const { roomName } = req.body; 
+    const { name } = req.body;
 
     const project = await Project.findById(projectId);
     if (!project) {
@@ -60,11 +68,12 @@ const createRoomPerProject = async (req, res) => {
     }
 
     const newRoom = new Room({
-      name: roomName ? roomName : `Room-${project.name}`,
+      name: name ? name : `Room-${project.name}`,
       owner: req.user._id,  
       members: project.members,
       project: project._id
     });
+    console.log("room", req.body);
     const savedRoom = await newRoom.save();
     const io = req.app.get('io');
     project.members.forEach(member => {
@@ -112,6 +121,7 @@ const updateRoomsec = async (req, res) => {
       return res.status(403).json({ message: "Vous n'êtes pas le propriétaire de cette room" });
     }
 const validatedData = await (req.body);
+    console.log(req.body);
 const updatedRoom = await Room.findByIdAndUpdate(req.params.id, validatedData, { new: true });
     
     res.status(200).json(updatedRoom); 
@@ -188,19 +198,42 @@ const updateRoom = async (req, res) => {
   }
 };
 
+const createRoom = async (req, res) => {
+  try {
+    const { roomName, image, members, project } = req.body;
 
-  const createRoom = async (req, res) => {
-    try {
-        const room = new Room({
-            ...req.body,
-          owner: req.user._id
-        });
-        const savedRoom = await room.save();
-        res.status(201).json(savedRoom);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+    const room = new Room({
+      name: roomName,
+      image: image,
+      members: members,
+      project: project,
+      owner: req.user._id
+    });
+
+    const savedRoom = await room.save();
+
+    const populatedRoom = await Room.findById(savedRoom._id)
+      .populate('members', 'nom email')
+      .populate('project', 'name description');
+
+    res.status(201).json(populatedRoom);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
+  }
 };
+//   const createRoom = async (req, res) => {
+//     try {
+//         const room = new Room({
+//             ...req.body,
+//           owner: req.user._id
+//         });
+//         const savedRoom = await room.save();
+//         res.status(201).json(savedRoom);
+//     } catch (err) {
+//         res.status(400).json({ message: err.message });
+//     }
+// };
 /*
 const deleteRoom = async (req, res) => {
   try {
@@ -397,6 +430,68 @@ const searchRooms = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
+const getRoomsByOwner = async (req, res) => {
+  try {
+    const ownerId = req.user._id;
+
+    const rooms = await Room.find({ owner: ownerId })
+        .populate('project', '_id name')
+        .populate('members', 'nom email')
+        .populate('owner', 'nom email')
+        .select('name owner members project projectID'); // Inclure projectID
+
+    if (!rooms || rooms.length === 0) {
+      return res.status(404).json({ message: 'Aucune room trouvée pour ce propriétaire' });
+    }
+
+    res.status(200).json(rooms);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des rooms par propriétaire :', error);
+    res.status(500).json({ message: 'Erreur serveur', error: error.message });
+  }
+};
+
+const updateRoomDetails = async (req, res) => {
+  try {
+    const roomId = req.params.id;
+    const userId = req.user._id;
+    const { name, image, members, project } = req.body;
+
+    // Vérifier si la room existe
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Room non trouvée" });
+    }
+
+    // Vérifier si l'utilisateur est le propriétaire de la room
+    if (room.owner.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Vous n'êtes pas autorisé à mettre à jour cette room" });
+    }
+
+    // Mettre à jour les champs de la room
+    if (name) room.name = name;
+    if (image) room.image = image;
+    if (members) room.members = members;
+    if (project) room.project = project;
+
+    // Sauvegarder les modifications
+    const updatedRoom = await room.save();
+
+    // Renvoyer la room mise à jour
+    const populatedRoom = await Room.findById(updatedRoom._id)
+      .populate('project', 'name description')
+      .populate('members', 'nom email')
+      .populate('owner', 'nom email');
+
+    res.status(200).json(populatedRoom);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la room :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+
+
 
 
 const getRoomsByUser = async (req, res) => {
@@ -416,4 +511,4 @@ const getRoomsByUser = async (req, res) => {
   }
 };
 
-module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec};
+module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec,getAllRooms,getRoomsByOwner,updateRoomDetails};

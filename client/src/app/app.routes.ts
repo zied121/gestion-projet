@@ -21,6 +21,7 @@ import {AdminApplicationDashboardComponent} from './pages/admin-application-dash
 import { ownerGuard } from './guards/owner.guard';
 import { memberGuard } from './guards/member.guard';
 import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
+import {BackofficeComponent} from './components/chat/components/backoffice/backoffice.component';
 {ownerGuard}
 export const routes: Routes = [
   {
@@ -91,6 +92,11 @@ export const routes: Routes = [
         path: 'backoffice',
         component: AdminApplicationDashboardComponent,
         canActivate: [ownerGuard]
+      },
+      {
+        path: 'backoffice/rooms',
+        component: BackofficeComponent,
+        //canActivate: [authGuard, adminGuard] // Protégez l'accès si nécessaire
       },
       {
         path: 'projects',
