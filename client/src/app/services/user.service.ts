@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
+import {OrganisationService} from './organisation.service';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -9,7 +10,7 @@ const API_URL = 'http://localhost:5000/api/users';
 })
 export class UserService {
   userProfileSubject = new BehaviorSubject<any>(null);
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private organisationService:OrganisationService) { }
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token'); // assuming you store token here
@@ -48,7 +49,23 @@ export class UserService {
     });
   }
 
+    setcredentials(): void {
+      this.organisationService.checkOrganisation().subscribe({
+        next: (response) => {
+          console.log(response);
+          localStorage.setItem('organisation', response.organisation);
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      });
+      this.getProfile().subscribe({
+        next: (res) => {
+          localStorage.setItem('userId', res.user._id);
+        }
+      });
 
+}
 
 
 

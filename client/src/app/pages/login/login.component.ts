@@ -33,25 +33,11 @@ export class LoginComponent implements OnInit {
   otp: string = '';
   step: 'login' | 'verify_otp' = 'login';
 
-  constructor(private authService: AuthService,private userService:UserService,private router: Router,private organisationService:OrganisationService) {}
+  constructor(private authService: AuthService,private userService:UserService,private router: Router,private organisationService:OrganisationService) { }
 
   ngOnInit() {
     this.initializeGoogleSignIn();
-    this.userService.getProfile().subscribe({
-      next: (res) => {
-    localStorage.setItem('userId', res.user._id);
-      }
-    });
-    this.organisationService.checkOrganisation().subscribe({
-      next: (response: any) => {
-        console.log(response.organisation);
-        localStorage.setItem('organisation', response.organisation);
-        this.router.navigate(['/workspace/' + response.organisation]);
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    });
+
   }
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
@@ -72,7 +58,8 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        this.router.navigate(['/workspaceform']);
+        if (res.role === 'admin' || res.role === 'manager') {
+          this.router.navigate(['/workspaceform']);}else  this.router.navigate(['/member']);
       },
       error: (err) => {
         this.showError = true;
@@ -95,6 +82,7 @@ export class LoginComponent implements OnInit {
         this.errorMessage = err.error.msg || 'Login failed.';
       }
     });
+
   }
 
   verifyOtp() {
@@ -103,7 +91,8 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        this.router.navigate(['/workspaceform']);
+        if (res.role === 'admin' || res.role === 'manager') {
+        this.router.navigate(['/workspaceform']);}else  this.router.navigate(['/member']);
       },
       error: (err) => {
         this.showError = true;
@@ -111,4 +100,5 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
 }
