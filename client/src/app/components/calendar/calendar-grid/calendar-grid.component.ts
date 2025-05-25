@@ -2,6 +2,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { EventModel } from '../../../models/event.model';
 import { CommonModule } from '@angular/common';
+import {
+  CalendarBackofficeDetailComponent
+} from '../calendar-backoffice-detail/calendar-backoffice-detail.component';
+import {EventService} from '../../../services/event.service';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-calendar-grid',
@@ -19,7 +24,7 @@ export class CalendarGridComponent {
   @Output() createEventForDay = new EventEmitter<Date>();
 
   daysInMonth: Date[][] = [];
-
+  constructor(private eventService: EventService, private dialog: MatDialog) {}
   ngOnChanges(): void {
     this.generateCalendar(this.currentMonth);
   }
@@ -62,5 +67,11 @@ export class CalendarGridComponent {
 
   isCurrentMonth(date: Date): boolean {
     return date.getMonth() === this.currentMonth.getMonth();
+  }
+  openEventDetails(event: any): void {
+    this.dialog.open(CalendarBackofficeDetailComponent, {
+      width: '500px',
+      data: { event }
+    });
   }
 }
