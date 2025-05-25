@@ -1,13 +1,14 @@
 // calendar.component.ts
+import { Component, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
-import { CreateEventModel, EventModel, EventType, UpdateEventModel } from '../../models/event.model';
+import { EventModel, EventType } from '../../models/event.model';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CalendarHeaderComponent } from './calendar-header/calendar-header.component';
 import { CalendarGridComponent } from './calendar-grid/calendar-grid.component';
 import { EventFormDialogComponent } from './event-form-dialog/event-form-dialog.component';
-import { Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit } from '@angular/core';
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -26,8 +27,6 @@ export class CalendarComponent implements OnInit {
   users: any[] = [];
   showForm = false;
   selectedEvent: EventModel | null = null;
-  @Output() close = new EventEmitter<void>();
-  @Output() submitSuccess = new EventEmitter<void>()
 
   constructor(
     private eventService: EventService,
@@ -54,19 +53,10 @@ export class CalendarComponent implements OnInit {
   }
 
   onEditEvent(event: EventModel): void {
-    if (!event._id) {
-      console.error('Event ID is missing.');
-      return;
-    }
-  
-    this.selectedEvent = {
-      ...event,
-      _id: event._id,
-      type: event.type || EventType.EVENEMENT
-    } as EventModel;
-  
+    this.selectedEvent = event;
     this.showForm = true;
   }
+
   onDeleteEvent(id: string): void {
     if (confirm('Are you sure you want to delete this event?')) {
       this.eventService.deleteEvent(id).subscribe(() => this.loadEvents());
@@ -92,16 +82,4 @@ export class CalendarComponent implements OnInit {
     };
     this.showForm = true;
   }
-
-  get compatibleSelectedEvent(): CreateEventModel | UpdateEventModel | null {
-    if (this.selectedEvent && this.selectedEvent._id) {
-      return { 
-        ...this.selectedEvent, 
-        _id: this.selectedEvent._id, 
-        participants: this.selectedEvent.participants?.map(p => p.participant_id) 
-      };
-    }
-    return this.selectedEvent as CreateEventModel | null;
-  }
-  
 }

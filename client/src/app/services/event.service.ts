@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateEventModel, EventModel, UpdateEventModel } from '../models/event.model';
+import { tap as rxjsTap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +53,20 @@ export class EventService {
 
   getEventById(id: string): Observable<EventModel> {
     return this.http.get<EventModel>(`${this.baseUrl}/${id}`, {
-      headers: this.getAuthHeaders()
-    });
+        headers: this.getAuthHeaders()
+    }).pipe(
+        rxjsTap(event => console.log('API Response:', event))
+    );
   }
+
+  deleteParticipant(eventId: string, participantId: string): Observable<any> {
+    return this.http.delete(
+        `${this.baseUrl}/${eventId}/participants/${participantId}`,
+        { headers: this.getAuthHeaders() }
+    );
+  }
+}
+
+function tap(arg0: (event: any) => void): import("rxjs").OperatorFunction<EventModel, EventModel> {
+  throw new Error('Function not implemented.');
 }

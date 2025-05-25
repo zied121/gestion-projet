@@ -20,19 +20,20 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
 
     formData: Partial<CreateEventModel | UpdateEventModel> = this.getDefaultFormData();
     selectedParticipants: string[] = [];
+    originalParticipants: string[] = []; // Pour tracker les participants originaux
     eventTypeList: EventType[] = Object.values(EventType);
     participantSearchTerm: string = '';
     showParticipantDropdown: boolean = false;
     filteredUsers: any[] = [];
+    
     constructor(private userService: UserService, private eventService: EventService) { }
 
     ngOnInit(): void {
         this.loadUsers();
     }
-
     ngOnChanges(): void {
         console.log('Input event changed:', this.event);
-        
+    
         if (this.event) {
             // Mode édition
             this.formData = {
@@ -45,33 +46,57 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
                 emplacement: this.event.emplacement,
                 lien: this.event.lien,
                 status: this.event.status,
-                isRecurring: this.event.isRecurring,
+                participants: this.event.participants
+                    ? this.event.participants.map(p => this.getParticipantId(p))
+                    : [],
                 type_recurrence: this.event.type_recurrence,
-                rappel: this.event.rappel ? [...this.event.rappel] : []
+                rappel: this.event.rappel ? [...this.event.rappel] : [],
             };
-            
+    
             // Gestion des participants
             this.selectedParticipants = [];
+            this.originalParticipants = [];
             if (this.event.participants && this.event.participants.length > 0) {
-                this.selectedParticipants = this.event.participants.map(p => {
-                    if (typeof p.participant_id === 'string') {
-                        return p.participant_id;
-                    } else {
-                        return p.participant_id;
-                    }
-                });
+                this.selectedParticipants = this.event.participants
+                    .map(p => this.getParticipantId(p))
+                    .filter(id => id !== null && id !== undefined && id !== '') as string[];
+    
+                this.originalParticipants = [...this.selectedParticipants];
             }
+    
+            console.log('Selected participants after init:', this.selectedParticipants);
+            console.log('Original participants:', this.originalParticipants);
         } else {
             // Mode création
             this.formData = this.getDefaultFormData();
             this.selectedParticipants = [];
+            this.originalParticipants = [];
         }
-        
+    
         this.updateFilteredUsers();
     }
-
-    // FIX: Méthodes de gestion des changements plus robustes
-  
+    private getParticipantId(participant: {
+        participant_id?: string | { _id?: string; nom?: string; prenom?: string; email?: string };
+        id?: string;
+    }): string {
+        if (!participant) {
+            console.warn('Participant est invalide:', participant);
+            return ''; // Retournez une chaîne vide ou gérez autrement
+        }
+    
+        if (participant.participant_id) {
+            return typeof participant.participant_id === 'string'
+                ? participant.participant_id
+                : participant.participant_id._id || '';
+        }
+    
+        if (participant.id) {
+            return participant.id; // Utilisez `id` si `participant_id` est absent
+        }
+    
+        console.warn('Participant sans participant_id ni id:', participant);
+        return ''; // Retournez une chaîne vide ou gérez autrement
+    }
 
     private loadUsers(): void {
         this.userService.getAllUsers().subscribe({
@@ -140,10 +165,48 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         }
     }
 
+    getSelectedParticipants(): Array<{_id: string, nom?: string, prenom?: string, email?: string}> {
+        return this.selectedParticipants
+            .map(participantId => {
+                const user = this.users.find(u => u._id === participantId);
+                return user || { 
+                    _id: participantId, 
+                    nom: 'Inconnu', 
+                    prenom: '', 
+                    email: '' 
+                };
+            });
+    }
 
+    // Méthode pour supprimer un participant avec confirmation
+removeParticipant(participantId: string): void {
+    // Si c'est un événement existant, on supprime directement de la liste locale
+    // La suppression réelle se fera lors de la soumission du formulaire
+    this.selectedParticipants = this.selectedParticipants.filter(id => id !== participantId);
+    this.updateFilteredUsers();
+    
+    console.log('Participant retiré de la liste:', participantId);
+    console.log('Liste mise à jour:', this.selectedParticipants);
+}
 
-    getSelectedParticipants(): any[] {
-        return this.users.filter(user => this.selectedParticipants.includes(user._id));
+    // Nouvelle méthode pour supprimer un participant du backend
+    private deleteParticipantFromEvent(participantId: string): void {
+        if (!this.event?._id) return;
+
+        this.eventService.deleteParticipant(this.event._id, participantId).subscribe({
+            next: (response) => {
+                console.log('Participant supprimé du backend:', response);
+                // Retirer de la liste locale
+                this.selectedParticipants = this.selectedParticipants.filter(id => id !== participantId);
+                this.originalParticipants = this.originalParticipants.filter(id => id !== participantId);
+                this.updateFilteredUsers();
+                alert('Participant supprimé avec succès');
+            },
+            error: (err) => {
+                console.error('Erreur lors de la suppression du participant:', err);
+                alert('Erreur lors de la suppression du participant: ' + (err.error?.message || err.message));
+            }
+        });
     }
 
     // Close dropdown when clicking outside
@@ -172,7 +235,6 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         }
     }
 
-    // FIX: Méthode de formatage améliorée
     formatDateTimeLocal(date: Date): string {
         if (!date || isNaN(date.getTime())) {
             return '';
@@ -182,50 +244,70 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
 
-    // FIX: Méthode onSubmit complètement remaniée
-    onSubmit(): void {
-        console.log('Form submitted with data:', this.formData);
-        console.log('Selected participants:', this.selectedParticipants);
-    
-        // Validation
-        if (!this.formData.titre?.trim()) {
-            alert('Veuillez saisir un titre pour l\'événement.');
-            return;
-        }
-    
-        if (!this.formData.date_debut || !this.formData.date_fin) {
-            alert('Veuillez sélectionner des dates de début et de fin.');
-            return;
-        }
-    
-        const startDate = new Date(this.formData.date_debut);
-        const endDate = new Date(this.formData.date_fin);
-    
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            alert('Dates invalides. Veuillez vérifier les dates saisies.');
-            return;
-        }
-    
-        if (endDate <= startDate) {
-            alert('La date de fin doit être postérieure à la date de début.');
-            return;
-        }
-    
-        const eventData: any = {
-            ...this.formData,
-            participants: [...this.selectedParticipants]
-        };
+onSubmit(): void {
+    console.log('Form submitted with data:', this.formData);
+    console.log('Selected participants:', this.selectedParticipants);
+    console.log('Original participants:', this.originalParticipants);
 
-        // Conversion des dates
-        eventData.date_debut = new Date(eventData.date_debut).toISOString();
-        eventData.date_fin = new Date(eventData.date_fin).toISOString();
+    // Validation
+    if (!this.formData.titre?.trim()) {
+        alert('Veuillez saisir un titre pour l\'événement.');
+        return;
+    }
 
-        if (this.event?._id) {
-           // Mode update
-           this.eventService.updateEvent(this.event._id, eventData).subscribe({
+    if (!this.formData.date_debut || !this.formData.date_fin) {
+        alert('Veuillez sélectionner des dates de début et de fin.');
+        return;
+    }
+
+    const startDate = new Date(this.formData.date_debut);
+    const endDate = new Date(this.formData.date_fin);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        alert('Dates invalides. Veuillez vérifier les dates saisies.');
+        return;
+    }
+
+    if (endDate <= startDate) {
+        alert('La date de fin doit être postérieure à la date de début.');
+        return;
+    }
+
+    // Préparer les données de l'événement
+    const eventData: any = {
+        ...this.formData,
+        participants: [...this.selectedParticipants]
+    };
+
+    // Conversion des dates
+    eventData.date_debut = new Date(eventData.date_debut).toISOString();
+    eventData.date_fin = new Date(eventData.date_fin).toISOString();
+
+    // Afficher les changements de participants pour debug
+    if (this.event?._id) {
+        const addedParticipants = this.selectedParticipants.filter(id => !this.originalParticipants.includes(id));
+        const removedParticipants = this.originalParticipants.filter(id => !this.selectedParticipants.includes(id));
+        
+        console.log('Participants ajoutés:', addedParticipants);
+        console.log('Participants supprimés:', removedParticipants);
+    }
+
+    if (this.event?._id) {
+        // Mode update
+        this.eventService.updateEvent(this.event._id, eventData).subscribe({
             next: (response) => {
                 console.log('Update successful:', response);
-                alert('Événement mis à jour avec succès');
+                
+                // Message de succès plus détaillé
+                let successMessage = 'Événement mis à jour avec succès';
+                if (response.addedParticipants && response.addedParticipants.length > 0) {
+                    successMessage += `\n${response.addedParticipants.length} participant(s) ajouté(s)`;
+                }
+                if (response.removedParticipants && response.removedParticipants.length > 0) {
+                    successMessage += `\n${response.removedParticipants.length} participant(s) supprimé(s)`;
+                }
+                
+                alert(successMessage);
                 this.submitSuccess.emit();
                 this.close.emit();
             },
@@ -234,22 +316,50 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
                 alert('Erreur lors de la mise à jour: ' + (err.error?.message || err.message));
             }
         });
-        } else {
-            // Create mode
-            this.eventService.createEvent(eventData as CreateEventModel).subscribe({
-                next: (response) => {
-                    console.log('Create successful:', response);
-                    alert('Événement créé avec succès.');
-                    this.submitSuccess.emit();
-                    this.close.emit();
-                },
-                error: (err) => {
-                    console.error('Create error:', err);
-                    alert('Erreur lors de la création: ' + (err.error?.message || err.message));
-                }
-            });
-        }
+    } else {
+        // Create mode
+        this.eventService.createEvent(eventData as CreateEventModel).subscribe({
+            next: (response) => {
+                console.log('Create successful:', response);
+                alert('Événement créé avec succès.');
+                this.submitSuccess.emit();
+                this.close.emit();
+            },
+            error: (err) => {
+                console.error('Create error:', err);
+                alert('Erreur lors de la création: ' + (err.error?.message || err.message));
+            }
+        });
     }
+}
+
+// Nouvelle méthode pour obtenir un aperçu des changements de participants
+getParticipantChanges(): { added: string[], removed: string[] } {
+    if (!this.event?._id) {
+        return { added: this.selectedParticipants, removed: [] };
+    }
+    
+    const added = this.selectedParticipants.filter(id => !this.originalParticipants.includes(id));
+    const removed = this.originalParticipants.filter(id => !this.selectedParticipants.includes(id));
+    
+    return { added, removed };
+}
+
+// Méthode pour afficher un résumé des changements
+showParticipantChangesSummary(): string {
+    const changes = this.getParticipantChanges();
+    const summary = [];
+    
+    if (changes.added.length > 0) {
+        summary.push(`${changes.added.length} participant(s) à ajouter`);
+    }
+    
+    if (changes.removed.length > 0) {
+        summary.push(`${changes.removed.length} participant(s) à supprimer`);
+    }
+    
+    return summary.length > 0 ? summary.join(', ') : 'Aucun changement';
+}
 
     closeDialog(): void {
         console.log('Fermeture du dialog');
@@ -258,11 +368,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
 
     private showValidationError(message: string): void {
         console.log('Message affiché:', message);
-        alert(message); // Remplacez par votre système de notification préféré
-    }
-    removeParticipant(participantId: string): void {
-        this.selectedParticipants = this.selectedParticipants.filter(id => id !== participantId);
-        this.updateFilteredUsers();
+        alert(message);
     }
 
     // Utility method to get participant count for display
@@ -272,9 +378,19 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
 
     // Method to clear all participants
     clearAllParticipants(): void {
-        this.selectedParticipants = [];
-        this.updateFilteredUsers();
+        if (this.originalParticipants.length > 0 && this.event?._id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer tous les participants de cet événement ?')) {
+                // Supprimer tous les participants originaux du backend
+                this.originalParticipants.forEach(participantId => {
+                    this.deleteParticipantFromEvent(participantId);
+                });
+            }
+        } else {
+            this.selectedParticipants = [];
+            this.updateFilteredUsers();
+        }
     }
+    
 
     // Method to check if form is valid
     isFormValid(): boolean {
@@ -285,5 +401,10 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             this.formData.type &&
             new Date(this.formData.date_fin) > new Date(this.formData.date_debut)
         );
+    }
+
+    // Méthode utilitaire pour vérifier si un participant était original
+    isOriginalParticipant(participantId: string): boolean {
+        return this.originalParticipants.includes(participantId);
     }
 }

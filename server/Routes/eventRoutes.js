@@ -10,7 +10,7 @@ const {
   updateEvent,
   deleteEvent,
   getEventsByOrganisateur,
-  getEventsByParticipant, 
+  getEventsByParticipant,deleteParticipant, 
   getEventsByUser, 
   deleteHolidayAndDeadlineEvents, 
   searchEvents, 
@@ -86,6 +86,7 @@ router.post(
 router.get('/get/:id', getEventById);
 router.get('/list', getEvents);
 router.put('/update/:id', sanitizeEventData, validateEvent, updateEvent);
+
 router.delete('/delete/:id', deleteEvent);
 router.get('/search_user', searchByUser);
 router.get('/event_participant/', getEventsByParticipant);
@@ -95,5 +96,7 @@ router.get('/', getEventsByUser);
 router.delete('/cleanup', deleteHolidayAndDeadlineEvents);
 router.put('/add_participant/:id', addParticipants);
 router.put('/update_participant/:id', updateParticipantResponse);
+router.delete('/events/:id/participants/:participantId', isAuth, deleteParticipant);
+// Nouvelle route pour supprimer des participants
 
 module.exports = router;

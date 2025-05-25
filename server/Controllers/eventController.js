@@ -479,259 +479,109 @@ const createEvent = async (req, res) => {
 };
 const updateEvent = async (req, res) => {
     try {
-        console.log('--- Debugging Update Event Controller ---');
-        console.log('Event ID:', req.params.id);
-        console.log('Request body:', req.body);
-        console.log('Authenticated user:', req.user._id);
+        const eventId = req.params.id;
+        const updateData = req.body;
+        const userId = req.user.id;
 
-        const event = await Event.findById(req.params.id);
+        console.log('Mise à jour de l\'événement:', eventId);
+        console.log('Données reçues:', updateData);
 
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                message: 'Événement non trouvé'
-            });
+        // Vérifier que l'événement existe et appartient à l'utilisateur
+        const existingEvent = await Event.findById(eventId);
+        if (!existingEvent) {
+            return res.status(404).json({ message: 'Événement non trouvé' });
         }
 
-        // Vérifier que l'utilisateur est l'organisateur
-        if (event.organisateur_id.toString() !== req.user._id.toString()) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous n\'êtes pas autorisé à modifier cet événement.'
-            });
-        }
-
-        // Vérifier si l'événement est de type Holiday (non modifiable)
-        if (event.type === 'Holiday') {
-            return res.status(403).json({
-                success: false,
-                message: 'Les événements de type Holiday ne peuvent pas être modifiés.'
-            });
-        }
-
-        // Préparer les données de mise à jour
-        const updateData = { ...req.body };
-        let addedParticipants = [];
-
-        // Gestion spéciale des participants
-        if (req.body.participants && ['Réunion', 'Évenement'].includes(updateData.type || event.type)) {
-            console.log('Processing participants update...');
-            
-            let participantIds = Array.isArray(req.body.participants) 
-                ? req.body.participants 
-                : [req.body.participants];
-            
-            // Nettoyer et valider les IDs des participants
-            participantIds = [...new Set(participantIds)]
-                .filter(id => id && id.toString() !== req.user._id.toString());
-
-            console.log('Cleaned participant IDs:', participantIds);
-
-            // Vérifier que tous les participants existent
-            if (participantIds.length > 0) {
-                const existingUsers = await Utilisateur.find({
-                    _id: { $in: participantIds }
-                }).select('_id');
-
-                const existingUserIds = existingUsers.map(user => user._id.toString());
-                const invalidParticipants = participantIds.filter(
-                    id => !existingUserIds.includes(id.toString())
-                );
-
-                if (invalidParticipants.length > 0) {
-                    return res.status(400).json({
-                        success: false,
-                        message: `Les participants suivants n'existent pas: ${invalidParticipants.join(', ')}`
-                    });
-                }
-            }
-
-            // Créer une map des participants existants pour préserver leurs réponses
-            const existingParticipantsMap = new Map();
-            event.participants.forEach(p => {
-                if (p.participant_id) {
-                    existingParticipantsMap.set(p.participant_id.toString(), {
-                        accept: p.accept,
-                        refuse: p.refuse,
-                        message: p.message
-                    });
-                }
-            });
-
-            // Construire la nouvelle liste de participants
-            const finalParticipants = [];
-            addedParticipants = [];
-
-            participantIds.forEach(id => {
-                const idStr = id.toString();
-                if (existingParticipantsMap.has(idStr)) {
-                    // Participant existant - conserver ses réponses
-                    const existingData = existingParticipantsMap.get(idStr);
-                    finalParticipants.push({
-                        participant_id: id,
-                        accept: existingData.accept,
-                        refuse: existingData.refuse,
-                        message: existingData.message
-                    });
-                } else {
-                    // Nouveau participant
-                    finalParticipants.push({
-                        participant_id: id,
-                        accept: false,
-                        refuse: false,
-                        message: ''
-                    });
-                    addedParticipants.push(id);
-                }
-            });
-
-            updateData.participants = finalParticipants;
-            console.log('Final participants:', finalParticipants);
-            console.log('Added participants:', addedParticipants);
-        }
-
-        // Gestion des booléens pour isRecurring
-        if (updateData.isRecurring !== undefined) {
-            if (updateData.isRecurring === 'true' || updateData.isRecurring === true) {
-                updateData.isRecurring = true;
-            } else if (updateData.isRecurring === 'false' || updateData.isRecurring === false) {
-                updateData.isRecurring = false;
-            }
-        }
-
-        // Si type_recurrence est défini et différent de 'none', activer isRecurring
-        if (updateData.type_recurrence && updateData.type_recurrence !== 'none') {
-            updateData.isRecurring = true;
-        }
-
-        // Validation des types d'événements interdits
-        if (updateData.type && ['Holiday', 'Deadline'].includes(updateData.type)) {
-            return res.status(403).json({
-                success: false,
-                message: `Vous ne pouvez pas changer le type vers ${updateData.type}.`
-            });
-        }
-
-        // Générer un lien Jitsi pour les événements en ligne
-        if (updateData.emplacement === 'En ligne' && ['Réunion', 'Évenement'].includes(updateData.type || event.type)) {
-            if (!updateData.lien) {
-                updateData.lien = generateJitsiLink(updateData.titre || event.titre, updateData.date_debut || event.date_debut);
-            }
-        }
-
-        // Gestion des fichiers uploadés
-        if (req.file) {
-            updateData.fichier = `/uploads/${req.file.filename}`;
+        // Vérifier les permissions (organisateur ou admin)
+        if (existingEvent.organisateur_id.toString() !== userId && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Vous n\'avez pas les permissions pour modifier cet événement' });
         }
 
         // Validation des dates
-        if (updateData.date_debut || updateData.date_fin) {
-            const startDate = new Date(updateData.date_debut || event.date_debut);
-            const endDate = new Date(updateData.date_fin || event.date_fin);
+        if (updateData.date_debut && updateData.date_fin) {
+            const startDate = new Date(updateData.date_debut);
+            const endDate = new Date(updateData.date_fin);
 
             if (endDate <= startDate) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'La date de fin doit être postérieure à la date de début.'
-                });
+                return res.status(400).json({ message: 'La date de fin doit être postérieure à la date de début' });
             }
         }
 
-        // Validation pour les événements récurrents
-        if (updateData.isRecurring) {
-            const validRecurrenceTypes = ['daily', 'weekly', 'monthly', 'yearly', 'personnalise'];
-            if (updateData.type_recurrence && !validRecurrenceTypes.includes(updateData.type_recurrence)) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Type de récurrence invalide.'
-                });
-            }
+        // Gestion des participants
+        let addedParticipants = [];
+        let removedParticipants = [];
+        
+        if (updateData.participants && Array.isArray(updateData.participants)) {
+            const currentParticipants = existingEvent.participants.map(p => 
+                p.participant_id ? p.participant_id.toString() : p.toString()
+            );
+            const newParticipants = updateData.participants;
 
-            if (updateData.type_recurrence === 'personnalise') {
-                if (!updateData.custom_recurrence_days || updateData.custom_recurrence_days < 1) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'Pour une récurrence personnalisée, spécifiez un nombre de jours valide.'
-                    });
-                }
-                updateData.custom_recurrence_days = parseInt(updateData.custom_recurrence_days);
-            }
+            // Identifier les participants ajoutés et supprimés
+            addedParticipants = newParticipants.filter(p => !currentParticipants.includes(p));
+            removedParticipants = currentParticipants.filter(p => !newParticipants.includes(p));
 
-            if (updateData.recurrence_end_date) {
-                const endDate = new Date(updateData.recurrence_end_date);
-                const startDate = new Date(updateData.date_debut || event.date_debut);
+            // Transformer en format attendu par le modèle
+            updateData.participants = newParticipants.map(participantId => ({
+                participant_id: participantId,
+                status: 'invited'
+            }));
 
-                if (endDate <= startDate) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'La date de fin de récurrence doit être postérieure à la date de début.'
-                    });
-                }
-            }
+            console.log('Participants ajoutés:', addedParticipants);
+            console.log('Participants supprimés:', removedParticipants);
         }
 
-        console.log('Final update data:', updateData);
+        // Vérifier si c'est un événement récurrent ou si la récurrence change
+        const isCurrentlyRecurring = existingEvent.isRecurring && existingEvent.type_recurrence !== 'none';
+        const willBeRecurring = updateData.isRecurring && updateData.type_recurrence && updateData.type_recurrence !== 'none';
+        const recurrenceChanging = updateData.hasOwnProperty('isRecurring') || updateData.hasOwnProperty('type_recurrence');
 
-        // Effectuer la mise à jour
-        const updatedEvent = await Event.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { 
-                new: true,
-                runValidators: true
+        console.log('Actuellement récurrent:', isCurrentlyRecurring);
+        console.log('Sera récurrent:', willBeRecurring);
+        console.log('Récurrence en changement:', recurrenceChanging);
+
+        let result;
+
+        if (isCurrentlyRecurring || willBeRecurring || recurrenceChanging) {
+            // Utiliser le service de récurrence pour gérer la mise à jour
+            console.log('Utilisation du service de récurrence...');
+            result = await updateRecurringEventInstances(eventId, updateData);
+            
+            res.status(200).json({
+                message: 'Événement récurrent mis à jour avec succès',
+                event: result.parentEvent,
+                instancesCount: result.instances ? result.instances.length : result.instancesUpdated || 0,
+                addedParticipants,
+                removedParticipants,
+                recurrenceMessage: result.message
+            });
+        } else {
+            // Mise à jour simple pour événement non récurrent
+            console.log('Mise à jour simple...');
+            const updatedEvent = await Event.findByIdAndUpdate(
+                eventId,
+                { $set: updateData },
+                { new: true, runValidators: true }
+            ).populate('participants.participant_id', 'nom prenom email')
+             .populate('organisateur_id', 'nom prenom email');
+
+            if (!updatedEvent) {
+                return res.status(404).json({ message: 'Événement non trouvé après mise à jour' });
             }
-        ).populate('organisateur_id', 'nom prenom email')
-         .populate('participants.participant_id', 'nom prenom email');
 
-        if (!updatedEvent) {
-            return res.status(404).json({
-                success: false,
-                message: 'Impossible de mettre à jour l\'événement.'
+            res.status(200).json({
+                message: 'Événement mis à jour avec succès',
+                event: updatedEvent,
+                addedParticipants,
+                removedParticipants
             });
         }
-
-        // Programmer les rappels si nécessaire
-        if (updateData.rappel || updateData.date_debut) {
-            await scheduleEventReminders(updatedEvent);
-        }
-
-        // Envoyer des notifications aux nouveaux participants
-        if (addedParticipants.length > 0) {
-            // Ici vous pouvez ajouter la logique d'envoi de notifications
-            console.log('Sending notifications to new participants:', addedParticipants);
-        }
-
-        res.status(200).json({
-            success: true,
-            data: updatedEvent,
-            addedParticipants: addedParticipants,
-            message: addedParticipants.length > 0 
-                ? 'Événement mis à jour avec ajout de nouveaux participants' 
-                : 'Événement mis à jour avec succès'
-        });
 
     } catch (error) {
-        console.error('Error updating event:', error);
-        
-        // Gestion spécifique des erreurs
-        if (error.name === 'ValidationError') {
-            const errors = Object.values(error.errors).map(e => e.message);
-            return res.status(400).json({
-                success: false,
-                message: 'Erreur de validation: ' + errors.join(', ')
-            });
-        }
-
-        if (error.name === 'CastError') {
-            return res.status(400).json({
-                success: false,
-                message: 'ID d\'événement invalide.'
-            });
-        }
-
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Erreur serveur lors de la mise à jour'
+        console.error('Erreur lors de la mise à jour de l\'événement:', error);
+        res.status(500).json({ 
+            message: 'Erreur serveur lors de la mise à jour de l\'événement',
+            error: error.message 
         });
     }
 };
@@ -814,6 +664,65 @@ const addParticipants = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Erreur serveur lors de l\'ajout des participants.'
+        });
+    }
+};
+const deleteParticipant = async (req, res) => {
+    try {
+        const { id, participantId } = req.params;
+
+        // Vérifier que l'ID est valide
+        if (!mongoose.Types.ObjectId.isValid(participantId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID de participant invalide'
+            });
+        }
+
+        // Trouver l'événement
+        const event = await Event.findById(id);
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: 'Événement non trouvé'
+            });
+        }
+
+        // Vérifier les permissions
+        if (event.organisateur_id.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: 'Vous ne pouvez pas modifier cet événement'
+            });
+        }
+
+        // Trouver l'index du participant
+        const participantIndex = event.participants.findIndex(
+            p => p.participant_id.toString() === participantId
+        );
+
+        if (participantIndex === -1) {
+            return res.status(404).json({
+                success: false,
+                message: 'Participant non trouvé dans cet événement'
+            });
+        }
+
+        // Supprimer le participant
+        event.participants.splice(participantIndex, 1);
+        await event.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Participant supprimé avec succès',
+            data: event
+        });
+
+    } catch (error) {
+        console.error('Erreur suppression participant:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Erreur serveur'
         });
     }
 };
@@ -1254,6 +1163,7 @@ const searchByUser = async (req, res) => {
 //     }
 // }
 
+
 module.exports = {
     getEvents,
     getEventById,
@@ -1269,7 +1179,8 @@ module.exports = {
     searchByUser,
     addParticipants,
     validateRecurringEventData,
-    sanitizeEventData
+    sanitizeEventData, 
+    deleteParticipant
     // updateReponse
 };
 

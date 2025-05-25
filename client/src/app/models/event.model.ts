@@ -29,11 +29,11 @@ export interface EventModel {
     status?: string;
     file?: string;
     participants?: {
-      participant_id: string;
+      participant_id: string | { _id: string, nom?: string, prenom?: string, email?: string };
       accept: boolean;
       refuse: boolean;
       message?: string;
-    }[];
+  }[];
     updatedAt?: string;
     createdAt?: string;
   }
@@ -73,12 +73,12 @@ export interface EventModel {
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
     file?: string;
-    participants?: string[] | {  
-        participant_id: string;
-        accept: boolean;
-        refuse: boolean;
-        message?: string;
-    }[];
+    participants?: {
+      participant_id: string | { _id: string, nom: string, prenom: string, email: string };
+      accept: boolean;
+      refuse: boolean;
+      message?: string;
+  }[];
 }
 
   
