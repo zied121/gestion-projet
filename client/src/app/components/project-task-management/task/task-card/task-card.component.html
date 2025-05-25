@@ -1,0 +1,15 @@
+<div class="card task-card shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title">{{ task.title }}</h5>
+    <p class="card-text">{{ task.description }}</p>
+    <div class="mb-2">
+      <span class="badge bg-secondary">{{ task.status }}</span>
+      <span class="badge bg-light text-dark">{{ progress }} complété</span>
+    </div>
+    <div class="users">
+      <small *ngFor="let user of task.users" class="me-2 text-muted">
+        👤 {{ user.name }}
+      </small>
+    </div>
+  </div>
+</div>

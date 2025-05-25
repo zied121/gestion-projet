@@ -1,0 +1,56 @@
+<div class="task-list">
+  <h2>Liste des tâches</h2>
+
+  <button class="btn btn-primary mb-3" (click)="openTaskModal()">Ajouter une tâche</button>
+
+  <table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Description</th>
+      <th>Statut</th>
+      <th>Progression</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let task of tasks">
+      <tr>
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.status }}</td>
+        <td>{{ calculateProgress(task.subtasks) }}</td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-outline-primary" (click)="openTaskDetail(task)">
+              <i class="bi bi-eye"></i> Détails
+            </button>
+            <button class="btn btn-sm btn-outline-warning" (click)="openTaskModal(task)">
+              <i class="bi bi-pencil"></i> Modifier
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteTask(task._id)">
+              <i class="bi bi-trash"></i> Supprimer
+            </button>
+            <button class="btn btn-sm btn-outline-info" (click)="toggleExpand(task._id)">
+              <i class="bi" [ngClass]="expandedTaskId === task._id ? 'bi-eye-slash' : 'bi-people'"></i>
+              {{ expandedTaskId === task._id ? 'Masquer' : 'Utilisateurs' }}
+            </button>
+            <button class="btn btn-sm btn-success" (click)="assignUsers(task._id)">
+              <i class="bi bi-person-plus-fill"></i> Assigner
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="expandedTaskId === task._id">
+        <td colspan="5">
+          <ul>
+            <li *ngFor="let user of task.assignee">
+              {{ user.nom }}
+            </li>
+          </ul>
+        </td>
+      </tr>
+    </ng-container>
+    </tbody>
+  </table>
+</div>

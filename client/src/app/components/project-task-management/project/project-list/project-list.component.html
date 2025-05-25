@@ -1,0 +1,107 @@
+<div class="project-list">
+  <h2>Liste des projets</h2>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <button class="btn btn-primary" (click)="openProjectModal()">Ajouter un projet</button>
+    <div>
+      <button class="btn btn-outline-secondary btn-sm me-1" (click)="useCardView = false">
+        <i class="bi bi-list"></i> Vue tableau
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="useCardView = true">
+        <i class="bi bi-grid"></i> Vue cartes
+      </button>
+    </div>
+  </div>
+
+  <!-- Table View -->
+  <div *ngIf="!useCardView">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Progression</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-container *ngFor="let project of projects">
+        <tr>
+          <td>{{ project.name }}</td>
+          <td>{{ project.description }}</td>
+          <td>{{ calculateProgress(project.tasks) }}</td>
+          <td>
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary btn-sm" (click)="openProjectDetail(project)">
+                <i class="bi bi-eye"></i> Détails
+              </button>
+              <button class="btn btn-warning btn-sm" (click)="openProjectModal(project)">
+                <i class="bi bi-pencil-square"></i> Modifier
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="deleteProject(project._id)">
+                <i class="bi bi-trash"></i> Supprimer
+              </button>
+              <button class="btn btn-outline-info btn-sm" (click)="toggleExpand(project._id)">
+                <i class="bi" [ngClass]="expandedProjectId === project._id ? 'bi-eye-slash' : 'bi-people'"></i>
+                {{ expandedProjectId === project._id ? 'Masquer utilisateurs' : 'Voir utilisateurs' }}
+              </button>
+              <button class="btn btn-success btn-sm" (click)="assignUsers(project._id)">
+                <i class="bi bi-person-plus-fill"></i> Assigner
+              </button>
+                <button class="btn btn-outline-secondary btn-sm" [routerLink]="['/tasks', project._id]">
+                    <i class="bi bi-list-task"></i> Tâches
+                </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="expandedProjectId === project._id">
+          <td colspan="4">
+            <ul *ngIf="project.members && project.members.length > 0">
+              <li *ngFor="let user of project.members">
+                {{ user.nom }}
+              </li>
+            </ul>
+          </td>
+          <td colspan="4">
+            <h6>👤 Membres du projet :</h6>
+            <ul *ngIf="project.members && project.members.length > 0">
+              <li *ngFor="let user of project.members">{{ user.nom }}</li>
+            </ul>
+
+            <h6 class="mt-3">🕘 Logs du projet :</h6>
+            <ul *ngIf="project.activityLogs?.length">
+              <li *ngFor="let log of project.activityLogs">
+                {{ log.timestamp | date:'short' }} - {{ log.action }}
+              </li>
+            </ul>
+
+            <h6 class="mt-3">📄 Logs des tâches :</h6>
+            <div *ngIf="project.tasks?.length">
+              <div *ngFor="let task of project.tasks">
+                <strong>{{ task.title }}</strong>
+                <ul *ngIf="task.activityLogs?.length">
+                  <li *ngFor="let tlog of task.activityLogs">
+                    {{ tlog.timestamp | date:'short' }} - {{ tlog.action }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </td>
+
+
+        </tr>
+      </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Card View -->
+  <div *ngIf="useCardView">
+    <div class="row">
+      <div class="col-md-4 mb-3" *ngFor="let project of projects">
+        <app-project-card [project]="project" [progress]="calculateProgress(project.tasks)">
+        </app-project-card>
+      </div>
+    </div>
+  </div>
+</div>

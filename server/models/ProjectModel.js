@@ -6,24 +6,31 @@ const activityLogSchema = new mongoose.Schema({
     action: String,
     timestamp: { type: Date, default: Date.now }
 });
-//
+
 const projectSchema = new mongoose.Schema({
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    organisation: { type: mongoose.Schema.Types.ObjectId, ref: 'Organisation' },
     name: { type: String, required: true },
-    description: String,
-    startDate: Date,
-    endDate: Date,
+    description: { type: String, required: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur', required: true },
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }],
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
+    start_date: { type: Date, required: true },
+    end_date: { type: Date, required: true },
+    tags: [{ type: String }],
     status: {
         type: String,
         enum: ['Planned', 'Active', 'Completed', 'Archived'],
-        default: 'Planned'
+        default: 'Planned',
+        required: true
     },
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' }],
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur' },
     activityLogs: [activityLogSchema]
 }, { timestamps: true });
 
+
 const projectValidationSchema = yup.object({
     name: yup.string().required().min(3),
+    organisation: yup.string().required().matches(/^[0-9a-fA-F]{24}$/),
     description: yup.string(),
     startDate: yup.date().nullable(),
     endDate: yup.date().nullable(),

@@ -13,6 +13,7 @@ import {
   HlmAlertIconDirective,
   HlmAlertTitleDirective,
 } from '@spartan-ng/ui-alert-helm';
+import {UserService} from '../../services/user.service';
 
 declare const google: any;
 
@@ -31,12 +32,16 @@ export class LoginComponent implements OnInit {
   otp: string = '';
   step: 'login' | 'verify_otp' = 'login';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService,private userService:UserService,private router: Router) {}
 
   ngOnInit() {
     this.initializeGoogleSignIn();
+    this.userService.getProfile().subscribe({
+      next: (res) => {
+    localStorage.setItem('userId', res.user._id);
+      }
+    });
   }
-
   initializeGoogleSignIn() {
     google.accounts.id.initialize({
       client_id: '398876415878-tcp8anmiqvpd2datpfh7t47d4rgg4ipe.apps.googleusercontent.com',

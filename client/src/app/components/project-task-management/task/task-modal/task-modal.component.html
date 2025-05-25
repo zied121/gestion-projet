@@ -1,0 +1,57 @@
+<div class="modal-header bg-primary text-white">
+  <h5 class="modal-title">
+    {{ task ? 'Modifier une tâche' : 'Ajouter une tâche' }}
+  </h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <label>Organisation</label>
+      <input type="text" class="form-control" formControlName="organisation"  readonly/>
+    </div>
+    <div class="mb-3">
+      <label>Titre</label>
+      <input type="text" class="form-control" formControlName="title" required />
+    </div>
+
+    <div class="mb-3">
+      <label>Description</label>
+      <textarea class="form-control" formControlName="description"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label>Statut</label>
+      <select class="form-select" formControlName="status">
+        <option value="To Do">TO DO</option>
+        <option value="In Progress">IN PROGRESS</option>
+        <option value="Done">Done</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>Date de début</label>
+      <input type="date" class="form-control" formControlName="startDate" />
+    </div>
+
+    <div class="mb-3">
+      <label>Date de fin</label>
+      <input type="date" class="form-control" formControlName="dueDate" />
+    </div>
+  </div>
+
+
+  <div class="modal-footer">
+
+    <button class="btn btn-secondary" (click)="activeModal.dismiss()">Annuler</button>
+
+    <button class="btn btn-success" type="submit" [disabled]="form.invalid">
+      {{ task ? 'Mettre à jour' : 'Créer' }}
+    </button>
+
+  </div>
+
+
+</form>

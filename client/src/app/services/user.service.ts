@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -8,8 +8,8 @@ const API_URL = 'http://localhost:5000/api/users';
   providedIn: 'root'
 })
 export class UserService {
-
-  constructor(private http: HttpClient) { }
+  userProfileSubject = new BehaviorSubject<any>(null);
+  constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token'); // assuming you store token here
@@ -17,13 +17,14 @@ export class UserService {
       'Authorization': `Bearer ${token}`
     });
   }
+
   getProfile(): Observable<any> {
     return this.http.get(`${API_URL}/getone`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  addUser(userData: any, organisationid: any): Observable<any> {
+  addUser(userData: any,organisationid:any): Observable<any> {
     return this.http.post(`${API_URL}/add/${organisationid}`, userData, {
       headers: this.getAuthHeaders()
     });
@@ -35,14 +36,13 @@ export class UserService {
     });
   }
 
-  deleteUser(userId: string, organisationid: any): Observable<any> {
+  deleteUser(userId: string,organisationid:any): Observable<any> {
     return this.http.delete(`${API_URL}/delete/${organisationid}/${userId}`, {
       headers: this.getAuthHeaders()
     });
   }
-
-  getAllUsers(): Observable<any> {
-    return this.http.get(`${API_URL}/getall`, {
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(`${API_URL}`, {
       headers: this.getAuthHeaders()
     });
   }

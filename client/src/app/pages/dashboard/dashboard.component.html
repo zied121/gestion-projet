@@ -1,7 +1,7 @@
 <div class="overflow-x-auto mt-6 p-8">
   <div class="flex justify-between items-center mb-4">
     <h2 class="text-2xl font-semibold">Manage Users of your Workspace</h2>
-  
+
     <hlm-dialog>
       <button id="add-user" brnDialogTrigger hlmBtn class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add User</button>
       <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
@@ -20,10 +20,7 @@
           </div>
           <div class="items-center grid grid-cols-4 gap-4">
             <label hlmLabel for="add-role" class="text-right">Role</label>
-            <select
-              id="add-role"
-              [(ngModel)]="newUserData.role"
-              class="col-span-3 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            <select id="add-role" [(ngModel)]="newUserData.role" class="col-span-3 block w-full px-3 py-2 border rounded-md shadow-sm">
               <option disabled value="">Select role</option>
               <option value="Member">Member</option>
               <option value="Manager">Manager</option>
@@ -32,18 +29,8 @@
           <div class="items-center grid grid-cols-4 gap-4">
             <label for="add-password" class="text-right">Password</label>
             <div class="col-span-3 flex gap-2">
-              <input
-                type="text"
-                id="add-password"
-                [(ngModel)]="newUserData.motDePasse"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Generated password" />
-              <button
-                type="button"
-                (click)="generatePassword()"
-                class="px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">
-                Generate
-              </button>
+              <input type="text" id="add-password" [(ngModel)]="newUserData.motDePasse" class="w-full px-3 py-2 border rounded-md shadow-sm" placeholder="Generated password" />
+              <button type="button" (click)="generatePassword()" class="px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">Generate</button>
             </div>
           </div>
         </div>
@@ -53,6 +40,7 @@
       </hlm-dialog-content>
     </hlm-dialog>
   </div>
+
   <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
     <thead class="bg-gray-50">
       <tr>
@@ -76,15 +64,15 @@
           </div>
         </td>
         <td class="px-12 py-4 text-sm text-gray-700 whitespace-nowrap">
-            <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2"
-               [ngClass]="{'bg-emerald-100/60': user.Status === 'active', 'bg-red-100/60': user.Status === 'inactive'}">
+          <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2"
+            [ngClass]="{'bg-emerald-100/60': user.Status === 'active', 'bg-red-100/60': user.Status !== 'active'}">
             <span class="h-1.5 w-1.5 rounded-full"
-                [ngClass]="{'bg-emerald-500': user.Status === 'active', 'bg-red-500': user.Status === 'inactive'}"></span>
+              [ngClass]="{'bg-emerald-500': user.Status === 'active', 'bg-red-500': user.Status !== 'active'}"></span>
             <span class="text-sm"
-                [ngClass]="{'text-emerald-500': user.Status === 'active', 'text-red-500': user.Status === 'inactive'}">
-              {{ user.Status }}
+              [ngClass]="{'text-emerald-500': user.Status === 'active', 'text-red-500': user.Status !== 'active'}">
+              {{user.Status}}
             </span>
-            </div>
+          </div>
         </td>
         <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.role }}</td>
         <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.email }}</td>
@@ -126,7 +114,7 @@
             </hlm-dialog>
 
             <hlm-alert-dialog>
-              <button brnAlertDialogTrigger title="Delete" class="text-gray-500 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <button brnAlertDialogTrigger title="Delete" class="text-gray-500 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
             </svg></button>
               <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
@@ -145,4 +133,26 @@
       </tr>
     </tbody>
   </table>
+
+  <!-- Pagination -->
+  <div class="flex justify-between items-center mt-6">
+    <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+      class="px-4 py-2 text-sm bg-white border rounded disabled:opacity-50">Previous</button>
+
+    <div class="flex items-center gap-1">
+      <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
+        <button (click)="changePage(i + 1)"
+          [ngClass]="{
+            'bg-blue-600 text-white': currentPage === i + 1,
+            'bg-white text-gray-700': currentPage !== i + 1
+          }"
+          class="px-3 py-1 text-sm border rounded">
+          {{ i + 1 }}
+        </button>
+      </ng-container>
+    </div>
+
+    <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
+      class="px-4 py-2 text-sm bg-white border rounded disabled:opacity-50">Next</button>
+  </div>
 </div>

@@ -1,0 +1,15 @@
+Index: server/config/.env
+===================================================================
+diff --git a/server/config/.env b/server/config/.env
+--- a/server/config/.env	(revision d15ef8bf1dcbbf2ead577862c494bee205940ae9)
++++ b/server/config/.env	(date 1744654630346)
+@@ -1,0 +1,8 @@
++port=5000
++URL= mongodb+srv://zied:lol0azer@cluster0.g2hae5a.mongodb.net/gestionprojet?retryWrites=true&w=majority
++JWT_SECRET="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjFiOTI2MWE5MTViZjEwYjMxN2NlMiIsImlhdCI6MTc0Mzg5NDgyOSwiZXhwIjoxNzQzOTMwODI5fQ.A3cJfaI4g6Kln_NplRbzhHu9HrY0cvqsSrM1kN3EACc"
++GOOGLE_CLIENT_ID=581478345784-o5p6krpeo9u0qn1a405lse64rpd25vf9.apps.googleusercontent.com
++GOOGLE_CLIENT_SECRET=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
++GOOGLE_REDIRECT_URI=http://localhost:5000/google/callback
++EMAIL_USER=ziedbensalah10@gmail.com
++EMAIL_PASS=lchyusmmdsmeelbl
+\ No newline at end of file

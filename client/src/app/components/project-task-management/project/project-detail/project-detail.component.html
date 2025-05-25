@@ -1,0 +1,11 @@
+<div *ngIf="project" class="project-detail">
+  <h2>{{ project.name }}</h2>
+  <p>{{ project.description }}</p>
+
+  <div class="details">
+    <span>Status: {{ project.status }}</span>
+    <span>Start Date: {{ project.start_date | date }}</span>
+    <span>End Date: {{ project.end_date | date }}</span>
+    <span>members:{{members}}</span>
+  </div>
+</div>

@@ -20,6 +20,7 @@ const eventRoutes = require('./Routes/eventRoutes');
 const participantRoutes = require('./Routes/participantRoutes');
 const chatbotRoutes = require('./Routes/chatbot');
 const holidayRoutes = require('./Routes/holidayRoutes');
+const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
 
 connectDb();
 app.use(express.json());
@@ -35,6 +36,12 @@ const io = new Server(server, {
 
 app.set('io', io);
 
+app.use('/api/organisation',OrganisationRoutes);
+app.use('/api',AuthRoutes);
+app.use('/api/users',userRouter);
+app.use("/api/feedbacks", feedbackRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use('/api/subscription', SubscriptionRoutes);
 app.use('/api/organisation', OrganisationRoutes);
 app.use('/api', AuthRoutes);
 app.use('/api/users', userRouter);
@@ -62,3 +69,11 @@ const port = process.env.port || 5000;
 server.listen(port, (error) => {
     (error) ? console.log('Server failed') : console.log(`Server running on port ${port}`);
 });
+
+
+
+
+
+
+
+

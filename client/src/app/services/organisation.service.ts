@@ -12,7 +12,7 @@ export class OrganisationService {
   constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // assuming you store token here
+    const token = localStorage.getItem('token');
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -37,19 +37,54 @@ export class OrganisationService {
       headers: this.getAuthHeaders()
     });
   }
-  
+
   updateOrganisationById(id: string, data: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/edit/${id}`, data, {
       headers: this.getAuthHeaders()
     });
   }
 
-  
-  getAllUsersByOrganisation(organisationId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/getall/${organisationId}`, {
+  getAllOrganisations(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/organisations`, {
       headers: this.getAuthHeaders()
     });
   }
 
+  deleteOrganisationById(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+getAllUsersByOrganisation(organisationId: string, page = 1, limit = 10): Observable<any> {
+  return this.http.get(`${this.baseUrl}/getall/${organisationId}?page=${page}&limit=${limit}`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+getOrganisationAnalytics(): Observable<any> {
+  return this.http.get(`${this.baseUrl}/analytics`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
+  // getAllUsersByOrganisation(organisationId: string): Observable<any> {
+  //   return this.http.get(`${this.baseUrl}/getall/${organisationId}`, {
+  //     headers: this.getAuthHeaders()
+  //   });
+  // }
+
+
+  getOrganizations():Observable<any> {
+    return this.http.get(`${this.baseUrl}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+    deleteOrganization(id: string): Observable<any> {
+      return this.http.delete(`${this.baseUrl}/${id}`, {
+        headers: this.getAuthHeaders()
+      });
+    }
 
 }

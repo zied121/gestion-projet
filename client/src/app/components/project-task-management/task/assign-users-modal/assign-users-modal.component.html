@@ -1,0 +1,31 @@
+<div class="modal-header bg-primary text-white">
+  <h5 class="modal-title">Affecter des utilisateurs</h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+
+<div class="modal-body" *ngIf="!loading; else loadingTpl">
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div class="mb-3">
+    <label for="users" class="form-label">Utilisateurs</label>
+    <select id="users" class="form-select" multiple [(ngModel)]="selectedUserIds">
+      <option *ngFor="let user of allUsers" [value]="user._id">
+        {{ user.nom }}
+      </option>
+    </select>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="text-center p-3">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Chargement...</p>
+  </div>
+</ng-template>
+
+<div class="modal-footer">
+  <button class="btn btn-secondary" (click)="activeModal.dismiss()">Annuler</button>
+  <button class="btn btn-success" [disabled]="loading" (click)="submit()">Affecter</button>
+</div>

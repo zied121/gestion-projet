@@ -13,6 +13,13 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
+import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
+import { ownerGuard } from './guards/owner.guard';
+import { memberGuard } from './guards/member.guard';
+import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
+{ownerGuard}
+import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
+import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {CalendarBackofficeComponent} from './components/calendar/calendar-backoffice/calendar-backoffice.component';
 export const routes: Routes = [
@@ -21,7 +28,6 @@ export const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-  // Auth routes without navbar
   {
     path: 'login',
     component: LoginComponent
@@ -36,28 +42,28 @@ export const routes: Routes = [
   },
   {
     path: 'success',
-    component: SuccessPaiementComponent
+    component: SuccessPaiementComponent,
   },
   {
     path: 'cancel',
-    component: FailPaiementComponent
+    component: FailPaiementComponent,
   },
-
+  {
+    path: 'workspaceform',
+    component: WorkspaceformComponent,
+    canActivate: [authGuard]
+  },
 
   // Protected routes with navbar via MainLayoutComponent
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+
     children: [
-      {
-        path: 'workspaceform',
-        component: WorkspaceformComponent
-      },
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [authGuard,adminGuard]
+        canActivate: [adminGuard]
       },
       {
         path: 'profile/:id',
@@ -73,15 +79,53 @@ export const routes: Routes = [
         component: SubscriptionComponent
       },
       {
+        path: 'backoffice',
+        component: AdminApplicationDashboardComponent,
+        canActivate: [ownerGuard]
+      },
+      {
         path: 'backoffice/calendar',
         component: CalendarBackofficeComponent,
-      }
+      },
+      {
+        path: 'projects',
+        loadChildren: () =>
+          import('./components/project-task-management/project/project.module').then(
+            (m) => m.ProjectModule
+          ),
+        canActivate: [adminGuard]
+
+      },
+      {
+        path: 'tasks',
+        loadChildren: () =>
+          import('./components/project-task-management/task/task.module').then(
+            (m) => m.TaskModule
+          ),
+        canActivate: [adminGuard]
+      },
+
     ]
   },
 
-  {
-    path: 'calendar',
-    component: CalendarComponent,
-  },
 
+  {
+    path: '',
+    component: FrontofficelayoutComponent,
+
+    children: [
+      {
+        path: 'member',
+        loadChildren: () =>
+          import('./components/project-task-management/member/member.module').then(
+            (m) => m.MemberModule),
+        canActivate: [memberGuard]
+      },
+      {
+        path: 'calendar',
+        component: CalendarComponent,
+      },
+
+    ]
+  }
 ];

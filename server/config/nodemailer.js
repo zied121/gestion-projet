@@ -5,14 +5,14 @@
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: "zied.s@convergen.io",
-        pass: "tcle gobb atrz qrwk"
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
 
   const sendOrganiastionCodeEmail = async (email, password) => {
-      
+
       try {
           transporter.sendMail({
               from: "ziedbensalah10@gmail.com",
@@ -27,7 +27,7 @@ const transporter = nodemailer.createTransport({
   };
 
   const ForgetPasswordEmail = async (email, password) => {
-      
+
       try{
           transporter.sendMail({
               from:"ziedbensalah10@gmail.com",
@@ -40,7 +40,7 @@ const transporter = nodemailer.createTransport({
       }catch (err){
           console.log(err);
       }
-  }   
+  }
 
 const SendOtpMail = async (to, subject, otp) => {
     try {
@@ -53,7 +53,8 @@ const SendOtpMail = async (to, subject, otp) => {
     } catch (err) {
         console.log(err);
     }
-};
+}
+
 
 const sendTaskCreatedNotification = async (managerEmail, managerName, taskTitle, projectName, priority, status) => {
     if (!managerEmail) {
@@ -81,10 +82,24 @@ const sendTaskCreatedNotification = async (managerEmail, managerName, taskTitle,
     }
 };
 
+const SendOtpMail = async (to, subject, otp) => {
+    try {
+        await transporter.sendMail({
+            from: "ziedbensalah10@gmail.com",
+            to: to,
+            subject: subject,
+            html: `<p>Your OTP code is: <strong>${otp}</strong></p>`
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+
 function getEventCreationEmail(event, user, recipientEmail) {
     const eventDate = new Date(event.date_debut);
     const eventEndDate = new Date(event.date_fin);
-    
+
     const emailContent = {
         from: 'tasko.tasko2001@gmail.com',
         to: recipientEmail,
@@ -138,7 +153,7 @@ function getParticipantResponseEmail(event, participantInfo, organisateurEmail) 
 function getReminderEmail(event, timeLeft, recipientEmail) {
     const eventDateDebut = new Date(event.date_debut);
     const eventDateFin = new Date(event.date_fin);
-    
+
     const emailContent = {
         from: 'tasko.tasko2001@gmail.com',
         to: recipientEmail,
@@ -188,5 +203,7 @@ module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
     SendOtpMail,
-    sendTaskCreatedNotification,
+    ForgetPasswordEmail,
+    sendTaskCreatedNotification
 };
+
