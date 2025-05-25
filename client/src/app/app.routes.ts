@@ -13,7 +13,7 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-import {CalendarComponent} from './pages/calendar/calendar.component';
+import {CalendarComponent} from './components/calendar/calendar.component';
 import {CalendarBackofficeComponent} from './components/calendar/calendar-backoffice/calendar-backoffice.component';
 export const routes: Routes = [
   {

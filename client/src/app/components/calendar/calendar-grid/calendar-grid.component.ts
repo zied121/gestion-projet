@@ -4,7 +4,7 @@ import { EventModel } from '../../../models/event.model';
 import { CommonModule } from '@angular/common';
 import {
   CalendarBackofficeDetailComponent
-} from '../../../components/calendar/calendar-backoffice-detail/calendar-backoffice-detail.component';
+} from '../calendar-backoffice-detail/calendar-backoffice-detail.component';
 import {EventService} from '../../../services/event.service';
 import {MatDialog} from '@angular/material/dialog';
 

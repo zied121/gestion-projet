@@ -15,7 +15,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {NgForOf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {EventFormDialogComponent} from '../../../pages/calendar/event-form-dialog/event-form-dialog.component';
+import {EventFormDialogComponent} from '../event-form-dialog/event-form-dialog.component';
 
 @Component({
   selector: 'app-calendar-backoffice',
