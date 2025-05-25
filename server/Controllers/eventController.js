@@ -13,7 +13,7 @@ const syncHolidayEvents = async () => {
     try {
         // Récupération des données
         const [allUsers, holidays] = await Promise.all([
-            Utilisateur.find({}, '_id nom email'), 
+            Utilisateur.User.find({}, '_id nom email'), 
             Holiday.find()
         ]);
         
@@ -312,7 +312,7 @@ const createEvent = async (req, res) => {
             }
 
             // Verify participants exist in the database
-            const existingUsers = await Utilisateur.find({
+            const existingUsers = await Utilisateur.User.find({
                 _id: { $in: participantIds }
             });
 
@@ -1110,7 +1110,7 @@ const searchByUser = async (req, res) => {
             userQuery.email = { $regex: email, $options: 'i' };
         }
 
-        const users = await Utilisateur.find(userQuery, 'nom prenom email');
+        const users = await Utilisateur.User.find(userQuery, 'nom prenom email');
 
         res.status(200).json(users);
     } catch (err) {

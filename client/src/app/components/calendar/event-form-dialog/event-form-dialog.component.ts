@@ -100,7 +100,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     }
 
     private loadUsers(): void {
-      this.organisationService.getAllUsersByOrganisation(this.organisationId).subscribe({
+      this.userService.getAllUsers().subscribe({
             next: (res) => {
                 console.log('Fetched users:', res);
                 this.users = res.users;
