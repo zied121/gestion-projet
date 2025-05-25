@@ -24,12 +24,19 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "src/styles.css"
+
             ],
-            
             "scripts": []
           },
           "configurations": {
@@ -93,8 +100,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "9a3e53b3-93cf-47ec-a0df-01a5d4588d47"
   }
 }

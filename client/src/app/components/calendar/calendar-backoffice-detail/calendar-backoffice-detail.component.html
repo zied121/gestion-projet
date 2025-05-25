@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Détails de l'événement</h2>
+<mat-dialog-content>
+  <p><strong>Titre :</strong> {{ data.event.titre }}</p>
+  <p><strong>Type :</strong> {{ data.event.type }}</p>
+  <p><strong>Description :</strong> {{ data.event.description }}</p>
+  <p><strong>Date de début :</strong> {{ data.event.dateDebut | date:'dd/MM/yyyy HH:mm' }}</p>
+  <p><strong>Date de fin :</strong> {{ data.event.dateFin | date:'dd/MM/yyyy HH:mm' }}</p>
+  <p><strong>Lieu :</strong> {{ data.event.lieu }}</p>
+  <p><strong>Organisateur :</strong> {{ data.event.organisateur }}</p>
+  <p><strong>Contact :</strong> {{ data.event.contact }}</p>
+  <p><strong>Visibilité :</strong> {{ data.event.visibilite }}</p>
+  <p><strong>Créé le :</strong> {{ data.event.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+  <p><strong>Mis à jour le :</strong> {{ data.event.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+  <p><strong>État :</strong> {{ data.event.etat }}</p>
+  <p><strong>Type d'événement :</strong> {{ data.event.typeEvenement }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

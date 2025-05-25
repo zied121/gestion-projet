@@ -1,0 +1,63 @@
+.calendar-backoffice {
+  padding: 24px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+
+    .actions {
+      button {
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(to right, #2563eb, #1d4ed8);
+        color: #fff;
+        border: none;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          font-size: 1rem;
+        }
+
+        &:hover {
+          background: linear-gradient(to right, #1d4ed8, #1e40af);
+        }
+      }
+    }
+  }
+
+  .table {
+    th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .btn-group .btn {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+
+      i {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}

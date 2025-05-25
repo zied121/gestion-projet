@@ -17,11 +17,11 @@
           </button>
         </div>
       </div>
-  
+
       <!-- Form Content -->
       <div class="overflow-y-auto max-h-[calc(95vh-120px)]">
         <form class="p-6 space-y-6" (ngSubmit)="onSubmit()">
-          
+
           <!-- Basic Information Section -->
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -30,7 +30,7 @@
               </svg>
               Basic Information
             </h4>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Event Type*</label>
@@ -45,7 +45,7 @@
                   </svg>
                 </div>
               </div>
-  
+
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <div class="relative">
@@ -62,14 +62,14 @@
                 </div>
               </div>
             </div>
-  
+
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">Title*</label>
               <input [(ngModel)]="formData.titre" name="titre" type="text" required
                 class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
                 placeholder="Enter event title">
             </div>
-  
+
             <div class="mt-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
               <textarea [(ngModel)]="formData.description" name="description" rows="3"
@@ -77,7 +77,7 @@
                 placeholder="Describe your event..."></textarea>
             </div>
           </div>
-  
+
           <!-- Date & Time Section -->
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -86,7 +86,7 @@
               </svg>
               Date & Time
             </h4>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time*</label>
@@ -99,7 +99,7 @@
                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4">
               </div>
             </div>
-  
+
             <!-- Recurrence Options -->
             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -127,7 +127,7 @@
               </div>
             </div>
           </div>
-  
+
           <!-- Location & Link Section -->
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -137,7 +137,7 @@
               </svg>
               Location & Link
             </h4>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
@@ -153,7 +153,7 @@
               </div>
             </div>
           </div>
-  
+
           <!-- Enhanced Participants Section -->
           <div class="bg-gray-50 rounded-lg p-4" *ngIf="formData.type !== 'Tâche'">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-between">
@@ -167,28 +167,28 @@
                 {{ getSelectedParticipants().length }} selected
               </span>
             </h4>
-  
+
             <!-- Search and Add Participants -->
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">Add Participants</label>
               <div class="relative">
-                <input 
-                  type="text" 
-                  [(ngModel)]="participantSearchTerm" 
+                <input
+                  type="text"
+                  [(ngModel)]="participantSearchTerm"
                   name="participantSearch"
                   (input)="onParticipantSearch()"
                   (focus)="showParticipantDropdown = true"
                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 pl-10"
                   placeholder="Search and add participants...">
-                
+
                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
-  
+
                 <!-- Dropdown for available participants -->
-                <div *ngIf="showParticipantDropdown && getFilteredUsers().length > 0" 
+                <div *ngIf="showParticipantDropdown && getFilteredUsers().length > 0"
                   class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  <div *ngFor="let user of getFilteredUsers()" 
+                  <div *ngFor="let user of getFilteredUsers()"
                     (click)="addParticipant(user)"
                     class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors">
                     <div class="flex items-center justify-between">
@@ -209,12 +209,12 @@
                 </div>
               </div>
             </div>
-  
+
             <!-- Selected Participants Display -->
-            <div *ngIf="getSelectedParticipants().length > 0" class="mb-4">
+            <div *ngIf="getParticipants().length > 0" class="mb-4">
               <label class="block text-sm font-medium text-gray-700 mb-3">Selected Participants</label>
               <div class="space-y-2 max-h-32 overflow-y-auto">
-                <div *ngFor="let participant of getSelectedParticipants()" 
+                <div *ngFor="let participant of getParticipants()"
                   class="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-3 hover:border-blue-300 transition-colors">
                   <div class="flex items-center">
                     <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3">
@@ -225,8 +225,8 @@
                       <div class="text-xs text-gray-500">{{ participant.email }}</div>
                     </div>
                   </div>
-                  <button type="button" 
-                    (click)="removeParticipant(participant._id)"
+                  <button type="button"
+                    (click)="removeParticipant(participant.id)"
                     class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -235,8 +235,8 @@
                 </div>
               </div>
             </div>
-  
-            <div *ngIf="getSelectedParticipants().length === 0" 
+
+            <div *ngIf="getParticipants().length === 0"
               class="text-center py-8 text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
@@ -245,7 +245,7 @@
               <p class="text-xs text-gray-400">Search and add participants above</p>
             </div>
           </div>
-  
+
           <!-- Reminders Section -->
           <div class="bg-gray-50 rounded-lg p-4">
             <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -254,13 +254,13 @@
               </svg>
               Reminders
             </h4>
-            
+
             <div class="space-y-3">
-              <div *ngFor="let reminder of formData.rappel || []; let i = index" 
+              <div *ngFor="let reminder of formData.rappel || []; let i = index"
                 class="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-200">
                 <input [(ngModel)]="reminder.time" name="reminderTime{{i}}" type="number" min="1"
                   class="w-20 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3">
-                
+
                 <div class="relative flex-1">
                   <select [(ngModel)]="reminder.unit" name="reminderUnit{{i}}"
                     class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3 appearance-none bg-white">
@@ -272,15 +272,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                   </svg>
                 </div>
-                
-                <button type="button" (click)="removeReminder(i)" 
+
+                <button type="button" (click)="removeReminder(i)"
                   class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-2 transition-colors">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                   </svg>
                 </button>
               </div>
-              
+
               <button type="button" (click)="addReminder()"
                 class="w-full text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 border-2 border-dashed border-blue-200 hover:border-blue-300 rounded-lg py-3 px-4 transition-colors flex items-center justify-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -290,7 +290,7 @@
               </button>
             </div>
           </div>
-  
+
           <!-- Action Buttons -->
           <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
             <button type="button" (click)="close.emit()"
@@ -309,6 +309,6 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Click outside to close -->
   <div class="fixed inset-0 z-40" (click)="close.emit()"></div>

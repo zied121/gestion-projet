@@ -8,6 +8,9 @@ import { NgModule } from '@angular/core';
     import { TaskService } from './services/task.service';
     import { ProjectService } from './services/project.service';
     import { routes } from './app.routes';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
     @NgModule({
       imports: [
@@ -16,8 +19,13 @@ import { NgModule } from '@angular/core';
         RouterModule.forRoot(routes),
         AppComponent,
         TaskListComponent,
-        ProjectListComponent
+        ProjectListComponent,
+        BrowserAnimationsModule,
+        MatFormFieldModule,
+        MatInputModule,
+
       ],
+
       providers: [TaskService, ProjectService]
     })
     export class AppModule { }

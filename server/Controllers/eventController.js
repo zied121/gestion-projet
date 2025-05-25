@@ -6,7 +6,8 @@ const emailService = require('../config/nodemailer');
 const { scheduleEventReminders } = require('../services/reminderScheduler');
 const mongoose = require('mongoose');
 const { createRecurringEventInstances, deleteRecurringEventInstances, updateRecurringEventInstances } = require('../services/recurringEventService');
-
+const isAdmin = require("../Middleware/adminorganisation");
+const User = require("../models/Usermodel");
 
 const syncHolidayEvents = async () => {
     try {
@@ -818,6 +819,7 @@ const addParticipants = async (req, res) => {
     }
 };
 const deleteEvent = async (req, res) => {
+
     try {
         const event = await Event.findById(req.params.id);
 
@@ -834,8 +836,11 @@ const deleteEvent = async (req, res) => {
                 message: 'Les événements de type Holiday ne peuvent pas être supprimés.'
             });
         }
-        
-        if (event.organisateur_id.toString() !== req.user._id.toString()) {
+
+        const user = await User.findById(req.user.id);
+        const isAdmin = user.role === 'admin' || user.role === 'manager';
+        console.log(isAdmin)
+        if (event.organisateur_id.toString() !== req.user._id.toString() && !isAdmin) {
             return res.status(403).json({
                 success: false,
                 message: 'Vous n\'êtes pas l\'organisateur de cet événement.'
