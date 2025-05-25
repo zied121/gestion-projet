@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {BehaviorSubject, catchError, Observable, tap, throwError} from 'rxjs';
 import {OrganisationService} from './organisation.service';
+import {observableToBeFn} from 'rxjs/internal/testing/TestScheduler';
 
 const API_URL = 'http://localhost:5000/api/users';
 
@@ -43,8 +44,8 @@ export class UserService {
     });
   }
 
-  getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}/getAll`, {
+  getAllUsers():Observable<any> {
+    return this.http.get(`${API_URL}/getAll`, {
       headers: this.getAuthHeaders()
     });
   }
