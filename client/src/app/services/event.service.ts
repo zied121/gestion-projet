@@ -65,7 +65,20 @@ export class EventService {
         { headers: this.getAuthHeaders() }
     );
   }
+
+  // Nouvelle méthode pour mettre à jour la réponse du participant
+  updateParticipantResponse(eventId: string, responseData: { response: string; message?: string }): Observable<any> {
+    return this.http.put(`${this.baseUrl}/update_participant/${eventId}`, responseData);
+  }
+
+  // Méthode pour récupérer les événements où l'utilisateur est participant
+  getEventsByParticipant(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/event_participant`);
+  }
+
+
 }
+
 
 function tap(arg0: (event: any) => void): import("rxjs").OperatorFunction<EventModel, EventModel> {
   throw new Error('Function not implemented.');

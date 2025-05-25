@@ -586,6 +586,110 @@ const updateEvent = async (req, res) => {
         });
     }
 };
+
+const getEventsByParticipant = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.status(400).json({ message: 'Utilisateur non authentifié.' });
+        }
+
+        // Trouver les événements où l'utilisateur est un participant
+        const events = await Event.find({
+            'participants.participant_id': req.user._id
+        })
+        .populate('organisateur_id', 'nom prenom email')
+        .populate('participants.participant_id', 'nom prenom email')
+        .lean();
+
+        // Formater les événements pour la réponse
+        const formattedEvents = events.map(event => {
+            // Récupérer juste les informations du participant actuel pour maintenir la compatibilité
+            const currentParticipant = event.participants.find(
+                p => p.participant_id && p.participant_id._id.toString() === req.user._id.toString()
+            );
+
+            const formattedParticipant = currentParticipant ? {
+                id: currentParticipant.participant_id._id,
+                nom: currentParticipant.participant_id.nom,
+                email: currentParticipant.participant_id.email,
+                reponse: currentParticipant.accept ? 'accepter' : (currentParticipant.refuse ? 'refuser' : 'en_attente')
+            } : null;
+
+            return {
+                ...event,
+                participants: formattedParticipant ? [formattedParticipant] : []
+            };
+        });
+
+        res.status(200).json(formattedEvents);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
+const updateParticipantResponse = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { response, message } = req.body;
+        const userId = req.user._id;
+
+        if (!['accepter', 'refuser', 'en_attente'].includes(response)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Réponse invalide. Utilisez "accepter", "refuser" ou "en_attente".'
+            });
+        }
+
+        const event = await Event.findById(id);
+        
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: 'Événement non trouvé'
+            });
+        }
+
+        // Trouver l'index du participant dans le tableau
+        const participantIndex = event.participants.findIndex(
+            p => p.participant_id && p.participant_id.toString() === userId.toString()
+        );
+
+        if (participantIndex === -1) {
+            return res.status(404).json({
+                success: false,
+                message: 'Vous n\'êtes pas invité à cet événement'
+            });
+        }
+
+        // Mettre à jour la réponse du participant
+        const updateData = {};
+        updateData[`participants.${participantIndex}.accept`] = response === 'accepter';
+        updateData[`participants.${participantIndex}.refuse`] = response === 'refuser';
+        
+        if (message) {
+            updateData[`participants.${participantIndex}.message`] = message;
+        }
+
+        await Event.findByIdAndUpdate(id, { $set: updateData });
+
+        // Récupérer l'événement mis à jour
+        const updatedEvent = await Event.findById(id)
+            .populate('organisateur_id', 'nom prenom email')
+            .populate('participants.participant_id', 'nom prenom email');
+
+        res.status(200).json({
+            success: true,
+            message: `Votre réponse a été enregistrée.`,
+            data: updatedEvent
+        });
+    } catch (err) {
+        res.status(400).json({ 
+            success: false,
+            message: err.message 
+        });
+    }
+};
+
+
 const addParticipants = async (req, res) => {
     try {
         const { id } = req.params;
@@ -866,45 +970,7 @@ const getEventsByOrganisateur = async (req, res) => {
     }
 };
 
-const getEventsByParticipant = async (req, res) => {
-    try {
-        if (!req.user || !req.user._id) {
-            return res.status(400).json({ message: 'Utilisateur non authentifié.' });
-        }
 
-        // Trouver les événements où l'utilisateur est un participant
-        const events = await Event.find({
-            'participants.participant_id': req.user._id
-        })
-        .populate('organisateur_id', 'nom prenom email')
-        .populate('participants.participant_id', 'nom prenom email')
-        .lean();
-
-        // Formater les événements pour la réponse
-        const formattedEvents = events.map(event => {
-            // Récupérer juste les informations du participant actuel pour maintenir la compatibilité
-            const currentParticipant = event.participants.find(
-                p => p.participant_id && p.participant_id._id.toString() === req.user._id.toString()
-            );
-
-            const formattedParticipant = currentParticipant ? {
-                id: currentParticipant.participant_id._id,
-                nom: currentParticipant.participant_id.nom,
-                email: currentParticipant.participant_id.email,
-                reponse: currentParticipant.accept ? 'accepter' : (currentParticipant.refuse ? 'refuser' : 'en_attente')
-            } : null;
-
-            return {
-                ...event,
-                participants: formattedParticipant ? [formattedParticipant] : []
-            };
-        });
-
-        res.status(200).json(formattedEvents);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};
 
 const getEventsByUser = async (req, res) => {
     try {
@@ -963,68 +1029,7 @@ const getEventsByUser = async (req, res) => {
     }
 };
 
-const updateParticipantResponse = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { response, message } = req.body;
-        const userId = req.user._id;
 
-        if (!['accepter', 'refuser', 'en_attente'].includes(response)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Réponse invalide. Utilisez "accepter", "refuser" ou "en_attente".'
-            });
-        }
-
-        const event = await Event.findById(id);
-        
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                message: 'Événement non trouvé'
-            });
-        }
-
-        // Trouver l'index du participant dans le tableau
-        const participantIndex = event.participants.findIndex(
-            p => p.participant_id && p.participant_id.toString() === userId.toString()
-        );
-
-        if (participantIndex === -1) {
-            return res.status(404).json({
-                success: false,
-                message: 'Vous n\'êtes pas invité à cet événement'
-            });
-        }
-
-        // Mettre à jour la réponse du participant
-        const updateData = {};
-        updateData[`participants.${participantIndex}.accept`] = response === 'accepter';
-        updateData[`participants.${participantIndex}.refuse`] = response === 'refuser';
-        
-        if (message) {
-            updateData[`participants.${participantIndex}.message`] = message;
-        }
-
-        await Event.findByIdAndUpdate(id, { $set: updateData });
-
-        // Récupérer l'événement mis à jour
-        const updatedEvent = await Event.findById(id)
-            .populate('organisateur_id', 'nom prenom email')
-            .populate('participants.participant_id', 'nom prenom email');
-
-        res.status(200).json({
-            success: true,
-            message: `Votre réponse a été enregistrée.`,
-            data: updatedEvent
-        });
-    } catch (err) {
-        res.status(400).json({ 
-            success: false,
-            message: err.message 
-        });
-    }
-};
 
 const deleteHolidayAndDeadlineEvents = async (req, res) => {
     try {

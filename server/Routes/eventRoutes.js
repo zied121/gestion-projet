@@ -96,6 +96,7 @@ router.get('/', getEventsByUser);
 router.delete('/cleanup', deleteHolidayAndDeadlineEvents);
 router.put('/add_participant/:id', addParticipants);
 router.put('/update_participant/:id', updateParticipantResponse);
+// Dans vos routes
 router.delete('/events/:id/participants/:participantId', isAuth, deleteParticipant);
 // Nouvelle route pour supprimer des participants
 
