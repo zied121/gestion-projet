@@ -1,314 +1,317 @@
-<!-- event-form-dialog.component.html -->
-<div class="fixed inset-0 flex items-center justify-center z-50 p-4" style="background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden">
-      <!-- Header -->
-      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-        <div class="flex justify-between items-center">
-          <div>
-            <h3 class="text-xl font-bold">
-              {{ event ? 'Edit Event' : 'Create New Event' }}
-            </h3>
-            <p class="text-blue-100 text-sm mt-1">{{ event ? 'Update event details' : 'Fill in the event information below' }}</p>
+  <!-- event-form-dialog.component.html -->
+  <div class="fixed inset-0 flex items-center justify-center z-50 p-4" style="background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+          <div class="flex justify-between items-center">
+            <div>
+              <h3 class="text-xl font-bold">
+                {{ event ? 'Edit Event' : 'Create New Event' }}
+              </h3>
+              <p class="text-blue-100 text-sm mt-1">{{ event ? 'Update event details' : 'Fill in the event information below' }}</p>
+            </div>
+            <button (click)="close.emit()" class="text-blue-200 hover:text-white hover:bg-blue-800 rounded-full p-2 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          <button (click)="close.emit()" class="text-blue-200 hover:text-white hover:bg-blue-800 rounded-full p-2 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
         </div>
-      </div>
 
-      <!-- Form Content -->
-      <div class="overflow-y-auto max-h-[calc(95vh-120px)]">
-        <form class="p-6 space-y-6" (ngSubmit)="onSubmit()">
+        <div class="overflow-y-auto max-h-[calc(95vh-120px)]">
+          <form class="p-6 space-y-6" (ngSubmit)="onSubmit()">
 
-          <!-- Basic Information Section -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Basic Information
-            </h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Event Type*</label>
-                <div class="relative">
-                  <select [(ngModel)]="formData.type" name="type" required
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
-                    <option value="" disabled>Select event type</option>
-                    <option *ngFor="let type of eventTypeList" [value]="type">{{ type }}</option>
-                  </select>
-                  <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <div class="relative">
-                  <select [(ngModel)]="formData.status" name="status"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
-                    <option value="En_attente">🟡 Pending</option>
-                    <option value="Confirme">🟢 Confirmed</option>
-                    <option value="Annule">🔴 Canceled</option>
-                    <option value="Terminé">✅ Completed</option>
-                  </select>
-                  <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Title*</label>
-              <input [(ngModel)]="formData.titre" name="titre" type="text" required
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
-                placeholder="Enter event title">
-            </div>
-
-            <div class="mt-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea [(ngModel)]="formData.description" name="description" rows="3"
-                class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
-                placeholder="Describe your event..."></textarea>
-            </div>
-          </div>
-
-          <!-- Date & Time Section -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Date & Time
-            </h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time*</label>
-                <input [(ngModel)]="formData.date_debut" name="date_debut" type="datetime-local" required
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">End Date & Time*</label>
-                <input [(ngModel)]="formData.date_fin" name="date_fin" type="datetime-local" required
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4">
-              </div>
-            </div>
-
-            <!-- Recurrence Options -->
-            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Recurrence</label>
-                <div class="relative">
-                  <select [(ngModel)]="formData.type_recurrence" name="type_recurrence"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
-                    <option value="none">No recurrence</option>
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="personnalise">Custom</option>
-                  </select>
-                  <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </div>
-              </div>
-              <div class="flex items-end">
-                <label class="flex items-center cursor-pointer bg-white rounded-lg border border-gray-300 px-4 py-3 hover:bg-gray-50 transition-colors">
-                  <input [(ngModel)]="formData.isRecurring" name="isRecurring" type="checkbox"
-                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
-                  <span class="text-sm text-gray-700">Is Recurring Event?</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Location & Link Section -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Location & Link
-            </h4>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                <input [(ngModel)]="formData.emplacement" name="emplacement" type="text"
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
-                  placeholder="Enter location or 'Online'">
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Link</label>
-                <input [(ngModel)]="formData.lien" name="lien" type="url"
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
-                  placeholder="https://...">
-              </div>
-            </div>
-          </div>
-
-          <!-- Enhanced Participants Section -->
-          <div class="bg-gray-50 rounded-lg p-4" *ngIf="formData.type !== 'Tâche'">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-between">
-              <div class="flex items-center">
+            <!-- Basic Information Section -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Basic Information
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Event Type*</label>
+                  <div class="relative">
+                    <select [(ngModel)]="formData.type" name="type" required
+                      class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
+                      <option value="" disabled>Select event type</option>
+                      <option *ngFor="let type of eventTypeList" [value]="type">{{ type }}</option>
+                    </select>
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <div class="relative">
+                    <select [(ngModel)]="formData.status" name="status"
+                      class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
+                      <option value="En_attente">🟡 Pending</option>
+                      <option value="Confirme">🟢 Confirmed</option>
+                      <option value="Annule">🔴 Canceled</option>
+                      <option value="Terminé">✅ Completed</option>
+                    </select>
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Title*</label>
+                <input [(ngModel)]="formData.titre" name="titre" type="text" required
+                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
+                  placeholder="Enter event title">
+              </div>
+
+              <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <textarea [(ngModel)]="formData.description" name="description" rows="3"
+                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
+                  placeholder="Describe your event..."></textarea>
+              </div>
+            </div>
+
+            <!-- Date & Time Section -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Date & Time
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Start Date & Time*</label>
+                  <input [(ngModel)]="formData.date_debut" name="date_debut" type="datetime-local" required
+                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">End Date & Time*</label>
+                  <input [(ngModel)]="formData.date_fin" name="date_fin" type="datetime-local" required
+                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4">
+                </div>
+              </div>
+
+              <!-- Recurrence Options -->
+              <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Recurrence</label>
+                  <div class="relative">
+                                                                                                               <select [(ngModel)]="formData.type_recurrence" name="type_recurrence"
+                                                                            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 appearance-none bg-white">
+                                                                            <option value="none">No recurrence</option>
+                                                                            <option value="daily">Daily</option>
+                                                                            <option value="weekly">Weekly</option>
+                                                                            <option value="monthly">Monthly</option>
+                                                                            <option value="personnalise">Custom</option>
+                                                                          </select>
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <label class="flex items-center cursor-pointer bg-white rounded-lg border border-gray-300 px-4 py-3 hover:bg-gray-50 transition-colors">
+                    <input [(ngModel)]="formData.isRecurring" name="isRecurring" type="checkbox"
+                      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 mr-3">
+                    <span class="text-sm text-gray-700">Is Recurring Event?</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Location & Link Section -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Location & Link
+              </h4>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                  <input [(ngModel)]="formData.emplacement" name="emplacement" type="text"
+                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
+                    placeholder="Enter location or 'Online'">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Link</label>
+                  <input [(ngModel)]="formData.lien" name="lien" type="url"
+                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4"
+                    placeholder="https://...">
+                </div>
+              </div>
+            </div>
+
+            <!-- Enhanced Participants Section -->
+            <div class="bg-gray-50 rounded-lg p-4" *ngIf="formData.type !== 'Tâche'">
+              <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-between">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                  Participants
+                </div>
+                <span class="text-sm text-gray-500 bg-blue-100 px-3 py-1 rounded-full">
+                  {{ getSelectedParticipants().length }} selected
+                </span>
+              </h4>
+
+
+              <!-- Search and Add Participants -->
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Add Participants</label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    [(ngModel)]="participantSearchTerm"
+                    name="participantSearch"
+                    (input)="onParticipantSearch()"
+                    (focus)="showParticipantDropdown = true"
+                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 pl-10"
+                    placeholder="Search and add participants...">
+
+                  <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+
+                  <!-- Dropdown for available participants -->
+                  <div *ngIf="showParticipantDropdown && getFilteredUsers().length > 0"
+                    class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                    <div *ngFor="let user of getFilteredUsers()"
+                      (click)="addParticipant(user)"
+                      class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                          <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3">
+                            {{ (user.nom?.[0] || '') + (user.prenom?.[0] || '') }}
+                          </div>
+                          <div>
+                            <div class="text-sm font-medium text-gray-900">{{ user.nom }} {{ user.prenom }}</div>
+                            <div class="text-xs text-gray-500">{{ user.email }}</div>
+                          </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Participants Display -->
+                                       <!-- Selected Participants Display -->
+                          <div *ngIf="getSelectedParticipants().length > 0" class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Selected Participants</label>
+                            <div class="space-y-2 max-h-32 overflow-y-auto">
+                              <div *ngFor="let participant of getSelectedParticipants()"
+                                class="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-3 hover:border-blue-300 transition-colors">
+                                <div class="flex items-center">
+                                  <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3">
+                                    {{ (participant.nom?.[0] || '') + (participant.prenom?.[0] || '') }}
+                                  </div>
+                                  <div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                      {{ participant.nom }} {{ participant.prenom }}
+                                    </div>
+                                    <div class="text-xs text-gray-500">{{ participant.email }}</div>
+                                  </div>
+                                </div>
+                                <button type="button"
+                                        (click)="removeParticipant(participant._id)"
+                                        class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+              <div *ngIf="getSelectedParticipants().length === 0"
+                class="text-center py-8 text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
-                Participants
-              </div>
-              <span class="text-sm text-gray-500 bg-blue-100 px-3 py-1 rounded-full">
-                {{ getSelectedParticipants().length }} selected
-              </span>
-            </h4>
-
-            <!-- Search and Add Participants -->
-            <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Add Participants</label>
-              <div class="relative">
-                <input
-                  type="text"
-                  [(ngModel)]="participantSearchTerm"
-                  name="participantSearch"
-                  (input)="onParticipantSearch()"
-                  (focus)="showParticipantDropdown = true"
-                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-3 px-4 pl-10"
-                  placeholder="Search and add participants...">
-
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-
-                <!-- Dropdown for available participants -->
-                <div *ngIf="showParticipantDropdown && getFilteredUsers().length > 0"
-                  class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  <div *ngFor="let user of getFilteredUsers()"
-                    (click)="addParticipant(user)"
-                    class="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3">
-                          {{ (user.nom?.[0] || '') + (user.prenom?.[0] || '') }}
-                        </div>
-                        <div>
-                          <div class="text-sm font-medium text-gray-900">{{ user.nom }} {{ user.prenom }}</div>
-                          <div class="text-xs text-gray-500">{{ user.email }}</div>
-                        </div>
-                      </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+                <p class="text-sm">No participants selected</p>
+                <p class="text-xs text-gray-400">Search and add participants above</p>
               </div>
             </div>
 
-            <!-- Selected Participants Display -->
-            <div *ngIf="getParticipants().length > 0" class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-3">Selected Participants</label>
-              <div class="space-y-2 max-h-32 overflow-y-auto">
-                <div *ngFor="let participant of getParticipants()"
-                  class="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-3 hover:border-blue-300 transition-colors">
-                  <div class="flex items-center">
-                    <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-sm font-medium mr-3">
-                      {{ (participant.nom?.[0] || '') + (participant.prenom?.[0] || '') }}
-                    </div>
-                    <div>
-                      <div class="text-sm font-medium text-gray-900">{{ participant.nom }} {{ participant.prenom }}</div>
-                      <div class="text-xs text-gray-500">{{ participant.email }}</div>
-                    </div>
+            <!-- Reminders Section -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h10a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Reminders
+              </h4>
+
+              <div class="space-y-3">
+                <div *ngFor="let reminder of formData.rappel || []; let i = index"
+                  class="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-200">
+                  <input [(ngModel)]="reminder.time" name="reminderTime{{i}}" type="number" min="1"
+                    class="w-20 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3">
+
+                  <div class="relative flex-1">
+                    <select [(ngModel)]="reminder.unit" name="reminderUnit{{i}}"
+                      class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3 appearance-none bg-white">
+                      <option value="minutes">Minutes before</option>
+                      <option value="hours">Hours before</option>
+                      <option value="days">Days before</option>
+                    </select>
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                   </div>
-                  <button type="button"
-                    (click)="removeParticipant(participant.id)"
-                    class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-1 transition-colors">
+
+                  <button type="button" (click)="removeReminder(i)"
+                    class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-2 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
                     </svg>
                   </button>
                 </div>
-              </div>
-            </div>
 
-            <div *ngIf="getParticipants().length === 0"
-              class="text-center py-8 text-gray-500 bg-white rounded-lg border-2 border-dashed border-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-              </svg>
-              <p class="text-sm">No participants selected</p>
-              <p class="text-xs text-gray-400">Search and add participants above</p>
-            </div>
-          </div>
-
-          <!-- Reminders Section -->
-          <div class="bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h10a2 2 0 002-2V7a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              Reminders
-            </h4>
-
-            <div class="space-y-3">
-              <div *ngFor="let reminder of formData.rappel || []; let i = index"
-                class="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-200">
-                <input [(ngModel)]="reminder.time" name="reminderTime{{i}}" type="number" min="1"
-                  class="w-20 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3">
-
-                <div class="relative flex-1">
-                  <select [(ngModel)]="reminder.unit" name="reminderUnit{{i}}"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm py-2 px-3 appearance-none bg-white">
-                    <option value="minutes">Minutes before</option>
-                    <option value="hours">Hours before</option>
-                    <option value="days">Days before</option>
-                  </select>
-                  <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </div>
-
-                <button type="button" (click)="removeReminder(i)"
-                  class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full p-2 transition-colors">
+                <button type="button" (click)="addReminder()"
+                  class="w-full text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 border-2 border-dashed border-blue-200 hover:border-blue-300 rounded-lg py-3 px-4 transition-colors flex items-center justify-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                   </svg>
+                  Add Reminder
                 </button>
               </div>
+            </div>
 
-              <button type="button" (click)="addReminder()"
-                class="w-full text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 border-2 border-dashed border-blue-200 hover:border-blue-300 rounded-lg py-3 px-4 transition-colors flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
+              <button type="button" (click)="close.emit()"
+                class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors">
+                Cancel
+              </button>
+              <button type="submit"
+                class="px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
-                Add Reminder
+                {{ event ? 'Update Event' : 'Create Event' }}
               </button>
             </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-3 pt-6 border-t border-gray-200">
-            <button type="button" (click)="close.emit()"
-              class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors">
-              Cancel
-            </button>
-            <button type="submit"
-              class="px-6 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              {{ event ? 'Update Event' : 'Create Event' }}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Click outside to close -->
-  <div class="fixed inset-0 z-40" (click)="close.emit()"></div>
+    <!-- Click outside to close -->
+    <div class="fixed inset-0 z-40" (click)="close.emit()"></div>
