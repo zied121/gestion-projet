@@ -27,6 +27,11 @@ export class CalendarComponent implements OnInit {
   users: any[] = [];
   showForm = false;
   selectedEvent: EventModel | null = null;
+  searchQuery = '';
+  searchType: 'event' | 'user' = 'event';
+  eventType: string = '';
+  searchResults: any[] = [];
+  showSearchResults = false;
 
   constructor(
     private eventService: EventService,
@@ -35,7 +40,31 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     this.loadEvents();
   }
+  onSearch(): void {
+    if (this.searchType === 'event') {
+      this.eventService.searchEvents(this.eventType, this.searchQuery).subscribe({
+        next: (res) => {
+          this.searchResults = res;
+          this.showSearchResults = true;
+        },
+        error: (err) => console.error(err)
+      });
+    } else {
+      this.eventService.searchByUser(this.searchQuery).subscribe({
+        next: (res) => {
+          this.searchResults = res;
+          this.showSearchResults = true;
+        },
+        error: (err) => console.error(err)
+      });
+    }
+  }
 
+  // Ajoutez cette méthode pour revenir au calendrier
+  backToCalendar(): void {
+    this.showSearchResults = false;
+    this.searchQuery = '';
+  }
   loadEvents(): void {
     this.eventService.getEventsByUser().subscribe({
       next: (res) => (this.events = res),

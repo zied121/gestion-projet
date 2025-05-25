@@ -1,17 +1,75 @@
-<!-- calendar.component.html -->
+<!-- Dans calendar.component.html -->
 <div class="flex justify-between items-center mb-6 px-4 container my-8">
   <h2 class="text-2xl font-semibold text-gray-900">Calendar</h2>
-  <button (click)="onCreateEvent()"
-    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-md">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd"
-        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-    </svg>
-    Create Event
-  </button>
+  <div class="flex items-center gap-4">
+    <!-- Ajoutez ce bloc de recherche -->
+    <div class="flex items-center gap-2">
+      <select [(ngModel)]="searchType" class="border rounded px-2 py-1 text-sm">
+        <option value="event">Search by Event</option>
+        <option value="user">Search by User</option>
+      </select>
+      
+      <input [(ngModel)]="searchQuery" 
+             placeholder="Search..." 
+             class="border rounded px-3 py-1 text-sm w-64"
+             (keyup.enter)="onSearch()">
+      
+      <select *ngIf="searchType === 'event'" [(ngModel)]="eventType" class="border rounded px-2 py-1 text-sm">
+        <option value="">All Types</option>
+        <option value="Réunion">Meeting</option>
+        <option value="Tâche">Task</option>
+        <option value="Deadline">Deadline</option>
+        <option value="Holiday">Holiday</option>
+        <option value="Évenement">Event</option>
+      </select>
+      
+      <button (click)="onSearch()" class="bg-blue-100 px-3 py-1 rounded text-sm hover:bg-blue-200">
+        Search
+      </button>
+    </div>
+    
+    <button (click)="onCreateEvent()"
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-md">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Create Event
+    </button>
+  </div>
 </div>
 
-<section class="relative py-4 px-4">
+<!-- Ajoutez cette section pour afficher les résultats -->
+<section *ngIf="showSearchResults" class="relative py-4 px-4">
+  <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Search Results</h3>
+      <button (click)="backToCalendar()" class="text-blue-600 hover:text-blue-800">
+        Back to Calendar
+      </button>
+    </div>
+    
+    <div *ngIf="searchType === 'event'">
+      <div *ngFor="let event of searchResults" class="mb-4 p-3 border rounded hover:bg-gray-50">
+        <h4 class="font-medium">{{event.titre}}</h4>
+        <p class="text-sm text-gray-600">{{event.type}} • {{event.date_debut | date}}</p>
+        <p class="text-sm">{{event.description}}</p>
+      </div>
+      <p *ngIf="searchResults.length === 0" class="text-gray-500">No events found</p>
+    </div>
+    
+    <div *ngIf="searchType === 'user'">
+      <div *ngFor="let user of searchResults" class="mb-4 p-3 border rounded hover:bg-gray-50">
+        <h4 class="font-medium">{{user.nom}} {{user.prenom}}</h4>
+        <p class="text-sm text-gray-600">{{user.email}}</p>
+      </div>
+      <p *ngIf="searchResults.length === 0" class="text-gray-500">No users found</p>
+    </div>
+  </div>
+</section>
+
+<!-- Affichez le calendrier seulement si on ne montre pas les résultats de recherche -->
+<section *ngIf="!showSearchResults" class="relative py-4 px-4">
   <div class="max-w-7xl mx-auto">
     <app-calendar-header [currentMonth]="currentMonth" (monthChange)="onMonthChange($event)">
     </app-calendar-header>

@@ -77,6 +77,26 @@ export class EventService {
   }
 
 
+  // Dans event.service.ts
+
+// Ajoutez ces deux nouvelles méthodes
+// Dans event.service.ts
+
+// Ajoutez ces deux nouvelles méthodes
+searchEvents(type: string, search: string): Observable<EventModel[]> {
+  return this.http.get<EventModel[]>(`${this.baseUrl}/search`, {
+    params: { type, search },
+    headers: this.getAuthHeaders()
+  });
+}
+
+searchByUser(email: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/search_user`, {
+    params: { email },
+    headers: this.getAuthHeaders()
+  });
+}
+
 }
 
 
