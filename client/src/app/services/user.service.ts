@@ -43,7 +43,7 @@ export class UserService {
   }
 
   getAllUsers(): Observable<any[]> {
-    return this.http.get<any[]>(`${API_URL}`, {
+    return this.http.get<any[]>(`${API_URL}/getAll`, {
       headers: this.getAuthHeaders()
     });
   }

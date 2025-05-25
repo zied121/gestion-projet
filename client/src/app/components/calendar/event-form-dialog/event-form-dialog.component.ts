@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { EventService } from '../../../services/event.service';
+import {OrganisationService} from '../../../services/organisation.service';
 
 @Component({
     selector: 'app-event-form-dialog',
@@ -17,7 +18,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     @Input() users: any[] = [];
     @Output() close = new EventEmitter<void>();
     @Output() submitSuccess = new EventEmitter<void>();
-
+    protected organisationId= localStorage.getItem('organisation') || '';
     formData: Partial<CreateEventModel | UpdateEventModel> = this.getDefaultFormData();
     selectedParticipants: string[] = [];
     originalParticipants: string[] = []; // Pour tracker les participants originaux
@@ -26,7 +27,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     showParticipantDropdown: boolean = false;
     filteredUsers: any[] = [];
 
-    constructor(private userService: UserService, private eventService: EventService) { }
+    constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
 
     ngOnInit(): void {
         this.loadUsers();
@@ -99,11 +100,10 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     }
 
     private loadUsers(): void {
-        this.userService.getAllUsers().subscribe({
+      this.organisationService.getAllUsersByOrganisation(this.organisationId).subscribe({
             next: (res) => {
                 console.log('Fetched users:', res);
-                // @ts-ignore
-              this.users = res.users;
+                this.users = res.users;
                 this.updateFilteredUsers();
             },
             error: (err) => console.error('Error fetching users:', err),
