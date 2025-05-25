@@ -7,7 +7,7 @@ const { scheduleEventReminders } = require('../services/reminderScheduler');
 const mongoose = require('mongoose');
 const { createRecurringEventInstances, deleteRecurringEventInstances, updateRecurringEventInstances } = require('../services/recurringEventService');
 const isAdmin = require("../Middleware/adminorganisation");
-const User = require("../models/Usermodel");
+//const User = require("../models/Usermodel");
 
 const syncHolidayEvents = async () => {
     try {
@@ -850,7 +850,7 @@ const deleteEvent = async (req, res) => {
             });
         }
 
-        const user = await User.findById(req.user.id);
+        const user = await Utilisateur.User.findById(req.user.id);
         const isAdmin = user.role === 'admin' || user.role === 'manager';
         console.log(isAdmin)
         if (event.organisateur_id.toString() !== req.user._id.toString() && !isAdmin) {
