@@ -4,6 +4,7 @@ import { TaskService } from '../../../../services/task.service';
 import { ChartConfiguration } from 'chart.js';
 import {DatePipe, NgClass, NgForOf} from '@angular/common';
 import {NgChartsModule} from 'ng2-charts';
+import {UserService} from '../../../../services/user.service';
 
 @Component({
   selector: 'app-member-dashboard',
@@ -55,16 +56,20 @@ export class DashboardComponent implements OnInit {
     indexAxis: 'y'
   };
 
-  constructor(private projectService: ProjectService, private taskService: TaskService) {}
+  constructor(private projectService: ProjectService, private userService: UserService) {}
 
   ngOnInit(): void {
-    let userId = localStorage.getItem('userId') || '';
-    this.projectService.getProjectsForCurrentMember(userId).subscribe((projects) => {
-      this.projects = projects;
-      this.tasks = projects.flatMap((p: { tasks: any; }) => p.tasks || []);
-      this.calculateStats();
-      this.buildCharts();
-    });
+    this.userService.setcredentials();
+    setTimeout(() => {
+      let userId = localStorage.getItem('userId') || '';
+      this.projectService.getProjectsForCurrentMember(userId).subscribe((projects) => {
+        this.projects = projects;
+        this.tasks = projects.flatMap((p: { tasks: any; }) => p.tasks || []);
+        this.calculateStats();
+        this.buildCharts();
+      });
+    }, 2000);
+
   }
 
   calculateStats() {

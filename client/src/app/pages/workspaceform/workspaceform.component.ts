@@ -26,6 +26,7 @@ import {
 
 import {OrganisationService} from '../../services/organisation.service'; // adjust path if
 import { Router } from '@angular/router';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-workspaceform',
@@ -63,7 +64,7 @@ export class WorkspaceformComponent {
   joinWorkspaceForm: FormGroup;
 
 
-  constructor( private fb: FormBuilder,private router: Router , private organisationService: OrganisationService) {
+  constructor( private fb: FormBuilder,private router: Router , private organisationService: OrganisationService, private userService: UserService) {
     this.createWorkspaceForm = this.fb.group({
       nom: ['', Validators.required],
       matricule_fiscal: ['', Validators.required],
@@ -84,10 +85,10 @@ export class WorkspaceformComponent {
     if (this.createWorkspaceForm.valid) {
       this.organisationService.onCreateWorkspace(this.createWorkspaceForm.value).subscribe({
         next: (response: any) => {
-          console.log("reponse", response); 
+          console.log("reponse", response);
           this.showSuccess = true;
           this.susccessMessage = response.message;
-          
+
           this.router.navigate(['/workspace/' + response.organisation._id ]);
         },
         error: (err: any) => {
@@ -113,15 +114,8 @@ export class WorkspaceformComponent {
   }
 
   ngOnInit(): void {
-  this.organisationService.checkOrganisation().subscribe({
-    next: (response: any) => {
-      console.log(response.organisation);
-      localStorage.setItem('organisation', response.organisation);
-      this.router.navigate(['/workspace/' + response.organisation]);
-  },
-  error: (err: any) => {
-    console.log(err);
-  }
-});
-  }
+  this.userService.setcredentials();
 }
+
+  }
+
