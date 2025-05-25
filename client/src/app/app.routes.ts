@@ -10,9 +10,6 @@ import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
-
-import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
-import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
 import { memberGuard } from './guards/member.guard';
@@ -93,7 +90,7 @@ export const routes: Routes = [
           import('./components/project-task-management/project/project.module').then(
             (m) => m.ProjectModule
           ),
-        canActivate: [adminGuard]
+
 
       },
       {

@@ -20,7 +20,7 @@ const eventRoutes = require('./Routes/eventRoutes');
 const participantRoutes = require('./Routes/participantRoutes');
 const chatbotRoutes = require('./Routes/chatbot');
 const holidayRoutes = require('./Routes/holidayRoutes');
-const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
+
 
 connectDb();
 app.use(express.json());

@@ -41,6 +41,7 @@ export class UserService {
       headers: this.getAuthHeaders()
     });
   }
+
   getAllUsers(): Observable<any[]> {
     return this.http.get<any[]>(`${API_URL}`, {
       headers: this.getAuthHeaders()

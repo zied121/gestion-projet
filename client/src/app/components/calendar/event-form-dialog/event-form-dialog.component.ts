@@ -102,7 +102,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         this.userService.getAllUsers().subscribe({
             next: (res) => {
                 console.log('Fetched users:', res);
-                this.users = res.users;
+                // @ts-ignore
+              this.users = res.users;
                 this.updateFilteredUsers();
             },
             error: (err) => console.error('Error fetching users:', err),

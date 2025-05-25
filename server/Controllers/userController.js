@@ -80,13 +80,6 @@ const updateUser = async (req, res) => {
   }
 }
 const createUser = async (req, res) => {
-  const user = req.body;
-  try {
-    const salt = await bcrypt.genSalt(10);
-    user.motDePasse = await bcrypt.hash(user.motDePasse, salt);
-
-    const newUser = new User({ ...user, Organisation_id: req.params.organisationId });
-    await newUser.save();
     const user = req.body;
     try {
         const salt = await bcrypt.genSalt(10);
@@ -95,16 +88,6 @@ const createUser = async (req, res) => {
         const newUser = new User({ ...user, Organisation_id: req.params.organisationId });
         await newUser.save();
 
-    await Organisation.findByIdAndUpdate(
-      req.params.organisationId,
-      { $push: { membres: newUser._id } },
-      { new: true }
-    );
-    await sendOrganiastionCodeEmail(user.email, user.motDePasse);
-
-    res.status(200).json({
-      msg: 'user created successfully'
-    });
         await Organisation.findByIdAndUpdate(
             req.params.organisationId,
             { $push: { membres: newUser._id } },
@@ -116,74 +99,71 @@ const createUser = async (req, res) => {
             msg: 'user created successfully'
         });
 
-  } catch (err) {
-    res.status(400).json({
-      msg: "operation failed"
-    });
-  }
+    } catch (err) {
+        res.status(400).json({
+            msg: "operation failed"
+        });
+    }
 
 };
+
 
 
 const deleteUser = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const user = await User.findById(id);
-    if (!user) {
+        const id = req.params.id;
+        try {
+            const user = await User.findById(id);
+            if (!user) {
 
-      return res.status(401).json({
-        msg: 'No user found'
-      });
+                return res.status(401).json({
+                    msg: 'No user found'
+                });
 
-    } else {
-      await User.findByIdAndDelete(id);
+            } else {
+                await User.findByIdAndDelete(id);
 
-      await Organisation.findByIdAndUpdate(
-        user.Organisation_id,
-        { $pull: { membres: id } },
-        { new: true }
-      );
-      res.status(200).json({
-        msg: 'user deleted successfully'
-      });
+                await Organisation.findByIdAndUpdate(
+                    user.Organisation_id,
+                    {$pull: {membres: id}},
+                    {new: true}
+                );
+                res.status(200).json({
+                    msg: 'user deleted successfully'
+                });
+            }
+
+        } catch (err) {
+            res.status(400).json({
+                msg: "operation failed"
+            });
+        }
     }
 
-  }
-  catch (err) {
-    res.status(400).json({
-      msg: "operation failed"
-    });
-  }
-}
+    const getAllUsers = async (req, res) => {
+        try {
+            const users = await User.find()
+            if (!users) {
+                return res.status(401).json({
+                    msg: 'No user found'
+                });
+            } else {
+                res.status(200).json({
+                    users
+                });
+            }
 
-const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find()
-    if (!users) {
-      return res.status(401).json({
-        msg: 'No user found'
-      });
-    } else {
-      res.status(200).json({
-        users
-      });
-    }
-
-  } catch (err) {
-    res.status(400).json({
-      msg: "operation failed"
-    });
-  }
-};
+        } catch (err) {
+            res.status(400).json({
+                msg: "operation failed"
+            });
+        }
+    };
 
 
-
-
-module.exports = {
-  createUser,
-  getOneUser,
-  deleteUser,
-  updateUser,
-  getAllUsers
-};
-}
+    module.exports = {
+        createUser,
+        getOneUser,
+        deleteUser,
+        updateUser,
+        getAllUsers
+    };

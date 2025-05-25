@@ -42,18 +42,6 @@ const transporter = nodemailer.createTransport({
       }
   }
 
-const SendOtpMail = async (to, subject, otp) => {
-    try {
-        await transporter.sendMail({
-            from: "ziedbensalah10@gmail.com",
-            to: to,
-            subject: subject,
-            html: `<p>Your OTP code is: <strong>${otp}</strong></p>`
-        });
-    } catch (err) {
-        console.log(err);
-    }
-}
 
 
 const sendTaskCreatedNotification = async (managerEmail, managerName, taskTitle, projectName, priority, status) => {
@@ -203,7 +191,6 @@ module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
     SendOtpMail,
-    ForgetPasswordEmail,
     sendTaskCreatedNotification
 };
 
