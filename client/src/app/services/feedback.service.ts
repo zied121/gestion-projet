@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Feedback } from '../../../models/feedback.model';
 
 @Injectable({
@@ -11,6 +11,15 @@ export class FeedbackService {
 
   constructor(private http: HttpClient) { }
 
+  // Nouvelle méthode pour le feedback global
+  submitFeedback(feedbackData: any): Observable<Feedback> {
+    return this.http.post<Feedback>(`${this.apiUrl}/global`, feedbackData)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Méthodes existantes (gardées pour compatibilité)
   getFeedbacksByBlog(blogId: string): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(`${this.apiUrl}/blog/${blogId}`);
   }
@@ -25,5 +34,11 @@ export class FeedbackService {
 
   deleteFeedback(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // Gestion d'erreur centralisée
+  private handleError(error: HttpErrorResponse) {
+    console.error('Error:', error);
+    return throwError(() => new Error('Une erreur est survenue. Veuillez réessayer.'));
   }
 }

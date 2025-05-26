@@ -1,69 +1,22 @@
-/* Styles pour les nouveaux éléments */
-.search-filter {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+/* Style pour le groupe de boutons */
+.btn-group {
+  gap: 0.25rem;
 }
 
-.search-input {
-  flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
+  }
 }
 
-.filter-select {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-  cursor: pointer;
+/* Effet hover pour les boutons */
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
 }
 
-.loading-spinner {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-  font-size: 1.1rem;
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
 }
-
-.no-results {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-  font-size: 1.1rem;
-  border: 1px dashed #ddd;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
-/* Amélioration de la pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding: 1rem 0;
-}
-
-.pagination button {
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pagination button:hover:not([disabled]) {
-  background: #f0f0f0;
-}
-
-.pagination button[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-

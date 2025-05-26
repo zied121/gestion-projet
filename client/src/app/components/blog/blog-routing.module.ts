@@ -9,12 +9,28 @@ const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./blog-list/blog-list.component').then(m => m.BlogListComponent),
+      import('./blog-list/blog-list.component').then(m => m.BlogListComponent)
 
   },
-  { path: 'blogs/create', component: BlogFormComponent },
-  { path: 'blogs/:id', component: BlogDetailComponent },
-];
+
+
+{ path: 'create',  loadComponent: () => 
+    import('./blog-form/blog-form.component').then(m => m.BlogFormComponent)
+  },
+  
+
+  { path: ':id', loadComponent: () => 
+    import('./blog-detail/blog-detail.component').then(m => m.BlogDetailComponent)
+  },
+
+  { 
+    path: 'feedback', 
+    loadComponent: () => 
+      import('./feedback-form/feedback-form.component').then(m => m.FeedbackFormComponent)
+  }
+  
+  ]
+  
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

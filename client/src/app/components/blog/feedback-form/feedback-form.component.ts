@@ -1,10 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FeedbackService } from '../../../services/feedback.service';
-import { Feedback } from '../../../../../models/feedback.model';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-
-
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-feedback-form',
@@ -19,36 +16,22 @@ import {NgClass, NgForOf, NgIf} from '@angular/common';
   styleUrls: ['./feedback-form.component.css']
 })
 export class FeedbackFormComponent {
-  @Input() blogId!: string;
-  @Input() isEditMode: boolean = false;
-  @Output() feedbackSubmitted = new EventEmitter<Feedback>();
-
   feedbackForm: FormGroup;
   categories: string[] = ['Général', 'Technique', 'Suggestion', 'Bug'];
+  feedbackTypes = [
+    { id: 'comment', label: 'Commentaire', icon: '💬' },
+    { id: 'bug', label: 'Rapport de bug', icon: '🐛' },
+    { id: 'suggestion', label: 'Suggestion', icon: '💡' }
+  ];
 
   constructor(private fb: FormBuilder, private feedbackService: FeedbackService) {
     this.feedbackForm = this.fb.group({
+      type: ['comment', Validators.required],
       title: ['', [Validators.required, Validators.minLength(5)]],
       content: ['', [Validators.required, Validators.minLength(10)]],
       category: ['Général', Validators.required],
-      tags: ['']
-    });
-  }
-
-  ngOnInit(): void {
-    if (this.isEditMode) {
-      // Charger les données existantes si en mode édition
-      this.loadFeedbackData();
-    }
-  }
-
-  loadFeedbackData(): void {
-    // Implémentez la logique de chargement si nécessaire
-    this.feedbackForm.patchValue({
-      title: 'Titre existant',
-      content: 'Contenu existant...',
-      category: 'Technique',
-      tags: 'feedback,amélioration'
+      email: ['', [Validators.email]], // Champ optionnel
+      notifyMe: [false] // Case à cocher
     });
   }
 
@@ -58,15 +41,22 @@ export class FeedbackFormComponent {
       return;
     }
 
-    const feedbackData: Feedback = {
+    const feedbackData = {
       ...this.feedbackForm.value,
-      blog: this.blogId,
       createdAt: new Date(),
-      user: { username: 'Current User' } // À remplacer par l'utilisateur réel
+      // Ajoutez ici d'autres métadonnées si nécessaire
     };
 
-    this.feedbackSubmitted.emit(feedbackData);
-    this.resetForm();
+    this.feedbackService.submitFeedback(feedbackData).subscribe({
+      next: () => {
+        alert('Merci pour votre feedback !');
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Erreur:', err);
+        alert('Une erreur est survenue. Veuillez réessayer.');
+      }
+    });
   }
 
   private markFormAsTouched(): void {
@@ -77,9 +67,9 @@ export class FeedbackFormComponent {
 
   public resetForm(): void {
     this.feedbackForm.reset({
-      category: 'Général'
+      type: 'comment',
+      category: 'Général',
+      notifyMe: false
     });
   }
-
-
 }

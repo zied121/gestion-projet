@@ -150,46 +150,49 @@ export class BlogFormComponent implements OnInit {
       const tagsArray = String(tagsValue).split(',')
         .map(t => t.trim())
         .filter(t => t.length > 0);
-      tagsArray.forEach(tag => formData.append('tags', tag)); // Note: 'tags' au lieu de 'tags[]'
+      tagsArray.forEach(tag => formData.append('tags', tag));
     }
 
     // Ajout de l'image
     if (this.selectedFile) {
-      formData.append('image', this.selectedFile); // Note: 'image' au lieu de 'imageFile'
+      formData.append('image', this.selectedFile);
     }
 
     // Debug: Affichez le contenu de FormData
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
-    });
+      const request = this.isEditMode
+        ? this.blogService.updateBlog(this.blogId, formData)
+        : this.blogService.createBlog(formData);
+      console.log(formData)
+      request.subscribe({
+        next: (res) => {
+          alert(`Blog ${this.isEditMode ? 'mis à jour' : 'créé'} avec succès !`);
+          this.router.navigate([this.isEditMode ? `/blogs/${this.blogId}` : '/blogs']);
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Erreur complète:', err);
 
-    const request = this.isEditMode
-      ? this.blogService.updateBlog(this.blogId, formData)
-      : this.blogService.createBlog(formData);
+          let errorMessage = 'Une erreur est survenue';
 
-    request.subscribe({
-      next: (res) => {
-        alert(`Blog ${this.isEditMode ? 'mis à jour' : 'créé'} avec succès !`);
-        this.router.navigate([this.isEditMode ? `/blogs/${this.blogId}` : '/blogs']);
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Erreur complète:', err);
+          if (err.error?.errors) {
+            errorMessage = err.error.errors.map((e: any) => e.message).join('\n');
+          } else if (err.error?.message) {
+            errorMessage = err.error.message;
+          } else if (err.message) {
+            errorMessage = err.message;
+          }
 
-        let errorMessage = 'Une erreur est survenue';
-
-        if (err.error?.errors) {
-          errorMessage = err.error.errors.map((e: any) => e.message).join('\n');
-        } else if (err.error?.message) {
-          errorMessage = err.error.message;
-        } else if (err.message) {
-          errorMessage = err.message;
+          alert(errorMessage);
         }
-
-        alert(errorMessage);
-      }
+      });
     });
+
+
+
+
   }
 
   private markFormGroupTouched(formGroup: FormGroup) {

@@ -1,89 +1,108 @@
-<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="container py-4">
-  <h2 class="h3 mb-4 text-center fw-bold">
-    {{ isEditMode ? 'Modifier le Feedback' : 'Envoyer un Feedback' }}
-  </h2>
-  
-  <!-- Titre -->
-  <div class="mb-4">
-    <label for="feedback-title" class="form-label fw-semibold">Titre</label>
-    <input 
-      type="text" 
-      id="feedback-title" 
-      formControlName="title"
-      class="form-control form-control-lg"
-      [ngClass]="{
-        'is-invalid': feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched
-      }"
-    >
-    <div *ngIf="feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched" 
-         class="invalid-feedback">
-      <i class="bi bi-exclamation-circle me-1"></i>
-      Le titre est requis (minimum 5 caractères)
+<div class="feedback-global-container">
+  <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()">
+    <h2 class="text-center mb-4">Votre feedback</h2>
+    
+    <!-- Type de feedback -->
+    <div class="mb-4">
+      <label class="form-label fw-semibold">Type de feedback</label>
+      <div class="feedback-types">
+        <button *ngFor="let type of feedbackTypes"
+                type="button"
+                class="feedback-type-btn"
+                [class.active]="feedbackForm.get('type')?.value === type.id"
+                (click)="feedbackForm.get('type')?.setValue(type.id)">
+          <span class="feedback-type-icon">{{type.icon}}</span>
+          {{type.label}}
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Contenu -->
-  <div class="mb-4">
-    <label for="feedback-content" class="form-label fw-semibold">Contenu</label>
-    <textarea 
-      id="feedback-content" 
-      formControlName="content" 
-      rows="6"
-      class="form-control"
-      [ngClass]="{
-        'is-invalid': feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched
-      }"
-    ></textarea>
-    <div *ngIf="feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched" 
-         class="invalid-feedback">
-      <i class="bi bi-exclamation-circle me-1"></i>
-      Le contenu est requis (minimum 10 caractères)
+    <!-- Titre -->
+    <div class="mb-3">
+      <label for="feedback-title" class="form-label fw-semibold">Titre</label>
+      <input 
+        type="text" 
+        id="feedback-title" 
+        formControlName="title"
+        class="form-control"
+        [ngClass]="{'is-invalid': feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched}"
+        placeholder="Donnez un titre à votre feedback">
+      <div *ngIf="feedbackForm.get('title')?.invalid && feedbackForm.get('title')?.touched" 
+           class="invalid-feedback">
+        <i class="bi bi-exclamation-circle me-1"></i>
+        Un titre de minimum 5 caractères est requis
+      </div>
     </div>
-  </div>
 
-  <!-- Catégorie et Tags -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-6">
+    <!-- Contenu -->
+    <div class="mb-3">
+      <label for="feedback-content" class="form-label fw-semibold">Détails</label>
+      <textarea 
+        id="feedback-content" 
+        formControlName="content" 
+        rows="5"
+        class="form-control"
+        [ngClass]="{'is-invalid': feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched}"
+        placeholder="Décrivez votre feedback en détails..."></textarea>
+      <div *ngIf="feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched" 
+           class="invalid-feedback">
+        <i class="bi bi-exclamation-circle me-1"></i>
+        Une description de minimum 10 caractères est requise
+      </div>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="mb-3">
       <label for="feedback-category" class="form-label fw-semibold">Catégorie</label>
       <select 
         id="feedback-category" 
         formControlName="category"
         class="form-select"
-      >
+        [ngClass]="{'is-invalid': feedbackForm.get('category')?.invalid && feedbackForm.get('category')?.touched}">
         <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
       </select>
     </div>
-    <div class="col-md-6">
-      <label for="feedback-tags" class="form-label fw-semibold">
-        Tags <small class="text-muted">(séparés par des virgules)</small>
+
+    <!-- Email optionnel -->
+    <div class="mb-3" *ngIf="feedbackForm.get('type')?.value !== 'bug'">
+      <label for="feedback-email" class="form-label fw-semibold">
+        Email (optionnel)
+        <small class="text-muted">- Pour vous recontacter</small>
       </label>
       <input 
-        type="text" 
-        id="feedback-tags" 
-        formControlName="tags"
+        type="email" 
+        id="feedback-email" 
+        formControlName="email"
         class="form-control"
-        placeholder="ex: design, ergonomie, bug"
-      >
+        placeholder="votre@email.com">
     </div>
-  </div>
 
-  <!-- Actions -->
-  <div class="d-flex justify-content-end gap-3 pt-2">
-    <button 
-      type="button" 
-      class="btn btn-outline-secondary px-4"
-      (click)="resetForm()"
-    >
-      <i class="bi bi-x-circle me-2"></i>Annuler
-    </button>
-    <button 
-      type="submit" 
-      class="btn btn-primary px-4"
-      [disabled]="feedbackForm.invalid"
-      [class.btn-warning]="isEditMode"
-    >
-      <i class="bi" [class.bi-send]="!isEditMode" [class.bi-check-circle]="isEditMode"></i>
-      {{ isEditMode ? ' Mettre à jour' : ' Envoyer' }}
-    </button>
-  </div>
-</form>
+    <!-- Notification -->
+    <div class="mb-4 form-check">
+      <input 
+        type="checkbox" 
+        id="feedback-notify" 
+        formControlName="notifyMe"
+        class="form-check-input">
+      <label for="feedback-notify" class="form-check-label">
+        Me notifier des mises à jour concernant ce feedback
+      </label>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-between">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary"
+        (click)="resetForm()">
+        <i class="bi bi-x-circle me-1"></i> Annuler
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="feedbackForm.invalid">
+        <i class="bi bi-send me-1"></i> Envoyer
+      </button>
+    </div>
+  </form>
+</div>

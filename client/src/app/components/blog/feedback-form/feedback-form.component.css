@@ -1,49 +1,46 @@
-/* Style personnalisé pour le formulaire */
-form {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: white;
+.feedback-global-container {
+  max-width: 700px;
+  margin: 2rem auto;
   padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Animation pour les champs invalides */
-.is-invalid {
-  border-left: 3px solid #dc3545 !important;
-  transition: border-left 0.3s ease;
-}
-
-.invalid-feedback {
+.feedback-types {
   display: flex;
-  align-items: center;
+  gap: 0.75rem;
   margin-top: 0.5rem;
 }
 
-/* Style pour le bouton en mode édition */
-.btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
-  color: #212529;
+.feedback-type-btn {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
 }
 
-.btn-warning:hover {
-  background-color: #e0a800;
-  border-color: #d39e00;
+.feedback-type-btn:hover {
+  border-color: #ced4da;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  form {
-    padding: 1.5rem;
-  }
-  
-  .d-flex.justify-content-end {
-    flex-direction: column-reverse;
-    gap: 1rem !important;
-  }
-  
-  .btn {
-    width: 100%;
+.feedback-type-btn.active {
+  border-color: #0d6efd;
+  background-color: #f0f7ff;
+}
+
+.feedback-type-icon {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .feedback-types {
+    flex-direction: column;
   }
 }

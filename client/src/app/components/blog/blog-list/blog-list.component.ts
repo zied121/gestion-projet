@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../../../services/blog.service';
-import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Blog } from '../../../../../models/blog.model';
-import {RouterLink} from '@angular/router';
-import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
+import { DatePipe, NgForOf, NgIf, SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-blog-list',
@@ -22,31 +22,25 @@ import {DatePipe, NgForOf, NgIf, SlicePipe} from '@angular/common';
   styleUrls: ['./blog-list.component.css']
 })
 export class BlogListComponent implements OnInit {
-  blogs: any[] = [];
+  blogs: Blog[] = [];
   filteredBlogs: Blog[] = [];
   currentPage = 1;
   totalPages = 1;
   isLoading = true;
+  isLikedMap: { [key: string]: boolean } = {}; // Gestion des likes
 
-  // Contrôle unique pour la recherche
   searchControl = new FormControl('');
   sortOption = 'newest';
 
-  constructor(private blogService: BlogService) {}
+  constructor(
+    private blogService: BlogService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadBlogs();
     this.setupSearch();
   }
-
-  getAuthorName(author: string | { username: string }): string {
-    if (typeof author === 'string') {
-      return author;
-    }
-    return author?.username || 'Auteur inconnu';
-  }
-
-
 
   private setupSearch(): void {
     this.searchControl.valueChanges
@@ -61,7 +55,10 @@ export class BlogListComponent implements OnInit {
     this.isLoading = true;
     this.blogService.getBlogs(page).subscribe({
       next: (response) => {
-        this.blogs = response.blogs;
+        this.blogs = response.blogs.map(blog => ({
+          ...blog,
+          isLiked: false // Initialisation du statut like
+        }));
         this.filteredBlogs = [...this.blogs];
         this.currentPage = page;
         this.totalPages = response.totalPages;
@@ -75,11 +72,51 @@ export class BlogListComponent implements OnInit {
     });
   }
 
-  applyFilters(): void {
-    let results = [...this.blogs];
+  likeBlog(blogId: string): void {
+    if (!blogId) return;
 
-    // Filtrage
+    this.blogService.likeBlog(blogId).subscribe({
+      next: (response) => {
+        const index = this.blogs.findIndex(b => b._id === blogId);
+        if (index !== -1) {
+          this.blogs[index] = {
+            ...this.blogs[index],
+            likeCount: response.likeCount,
+            isLiked: !this.blogs[index].isLiked
+          };
+          this.applyFilters();
+        }
+      },
+      error: (err) => console.error('Error liking blog:', err)
+    });
+  }
+
+  deleteBlog(blogId: string): void {
+    if (!blogId) return;
+
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce blog ?')) {
+      this.blogService.deleteBlog(blogId).subscribe({
+        next: () => {
+          this.blogs = this.blogs.filter(blog => blog._id !== blogId);
+          this.filteredBlogs = this.filteredBlogs.filter(blog => blog._id !== blogId);
+          alert('Blog supprimé avec succès');
+        },
+        error: (err) => {
+          console.error('Erreur lors de la suppression:', err);
+          alert('Échec de la suppression: ' + (err.error?.message || err.message));
+        }
+      });
+    }
+  }
+
+  editBlog(blogId: string): void {
+    this.router.navigate(['/blogs/edit', blogId]);
+  }
+
+  private applyFilters(): void {
+    let results = [...this.blogs];
     const searchTerm = this.searchControl.value?.toLowerCase() || '';
+    
     if (searchTerm) {
       results = results.filter(blog =>
         blog.title.toLowerCase().includes(searchTerm) ||
@@ -87,12 +124,10 @@ export class BlogListComponent implements OnInit {
       );
     }
 
-    // Tri
-    results = this.sortBlogs(results);
-    this.filteredBlogs = results;
+    this.filteredBlogs = this.sortBlogs(results);
   }
 
-  private sortBlogs(blogs: any[]): Blog[] {
+  private sortBlogs(blogs: Blog[]): Blog[] {
     switch (this.sortOption) {
       case 'newest':
         return [...blogs].sort((a, b) =>
@@ -117,22 +152,4 @@ export class BlogListComponent implements OnInit {
       this.loadBlogs(page);
     }
   }
-
-  likeBlog(blogId: string): void {
-    if (!blogId) return;
-
-    this.blogService.likeBlog(blogId).subscribe({
-      next: (response) => {
-        const index = this.blogs.findIndex(b => b._id === blogId);
-        if (index !== -1) {
-          this.blogs[index].likeCount = response.likeCount;
-          this.applyFilters();
-        }
-      },
-      error: (err) => console.error('Error liking blog:', err)
-    });
-  }
-
-
-
 }

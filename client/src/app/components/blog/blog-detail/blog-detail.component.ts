@@ -121,8 +121,7 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
   getAuthorName(author: any): string {
     return author?.username || 'Anonyme';
   }
-// Supprimez l'import et l'injection de AuthService
-// Modifiez la méthode likeBlog() comme suit :
+
 
 likeBlog(): void {
   if (!this.blog._id || this.isLiking) return;

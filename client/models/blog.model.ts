@@ -26,7 +26,7 @@ export interface Blog {
   likes: string[];
   categorie?: any;
   imageUrl?: string; 
-  
+  isLiked?: boolean;
   
 }
 

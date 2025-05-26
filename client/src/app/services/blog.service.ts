@@ -60,11 +60,10 @@ export class BlogService {
   }
 
   createBlog(formData: FormData): Observable<any> {
-    return this.http.post(
-      this.apiUrl,
-      formData,
-      { headers: this.getAuthHeaders() }
+    return this.http.post(this.apiUrl, formData, { headers: this.getAuthHeaders() }
+
     ).pipe(
+
       catchError(this.handleError)
     );
   }
