@@ -19,10 +19,12 @@ const notificationRoutes = require("./Routes/NotificationRoutes");
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
 const categorieRoutes = require('./Routes/categorieRoutes');
 const multer = require("multer");
+
+
 connectDb();
 app.use(express.json());
 app.use(cors());
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 
 const io = new Server(server, {

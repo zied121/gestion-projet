@@ -55,6 +55,7 @@ export class BlogListComponent implements OnInit {
     this.isLoading = true;
     this.blogService.getBlogs(page).subscribe({
       next: (response) => {
+        console.log('BlogList', response);
         this.blogs = response.blogs.map(blog => ({
           ...blog,
           isLiked: false // Initialisation du statut like
@@ -63,6 +64,7 @@ export class BlogListComponent implements OnInit {
         this.currentPage = page;
         this.totalPages = response.totalPages;
         this.isLoading = false;
+        console.log('BlogList', this.blogs);
         this.applyFilters();
       },
       error: (err) => {
@@ -116,7 +118,7 @@ export class BlogListComponent implements OnInit {
   private applyFilters(): void {
     let results = [...this.blogs];
     const searchTerm = this.searchControl.value?.toLowerCase() || '';
-    
+
     if (searchTerm) {
       results = results.filter(blog =>
         blog.title.toLowerCase().includes(searchTerm) ||

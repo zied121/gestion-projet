@@ -5,66 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="a">
-      <change afterPath="$PROJECT_DIR$/client/models/blog.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/models/categorie.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/models/feedback.model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog.module.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/services/blog.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/services/categorie.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/Controllers/categorieController.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/Middleware/authMiddleware.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/Routes/categorieRoutes.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/models/Categorie.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/Controllers/blogController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/blogController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/feedbackController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/feedbackController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/blogRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/blogRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Blog.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Blog.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Feedback.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Feedback.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +86,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "settings.nodejs",
-    "ts.external.directory.path": "C:\\Users\\Rim\\Desktop\\tasko\\gestion-projet\\client\\node_modules\\typescript\\lib",
+    "ts.external.directory.path": "C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -161,14 +106,14 @@
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\project\project-detail" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/server/package.json" />
       <command value="run" />
       <scripts>
         <script value="dev" />
       </scripts>
-      <node-interpreter value="$PROJECT_DIR$/../../../../../Program Files/nodejs/node" />
+      <node-interpreter value="$PROJECT_DIR$/../../../nvm4w/nodejs/node" />
       <envs />
       <method v="2" />
     </configuration>
@@ -182,10 +127,14 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="npm.dev" />
+      <item itemvalue="npm.start" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />

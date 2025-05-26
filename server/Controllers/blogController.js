@@ -534,61 +534,52 @@ const getBlogById = async (req, res, next) => {
 };
 
 // Create a blog
+
 const createBlog = async (req, res) => {
   try {
-    const { title, content, tags } = req.body;
-    let categorie = req.body.categorie || req.body.category;
+    const { title, content, categorie, tags } = req.body;
 
-    if (!categorie) {
-      return res.status(400).json({ success: false, message: "Le champ 'categorie' est requis" });
+    // Vérification de la catégorie
+    let categoryId = categorie;
+    if (!mongoose.Types.ObjectId.isValid(categorie)) {
+      const categoryDoc = await mongoose.model('Categorie').findOne({ name: categorie });
+      if (!categoryDoc) {
+        return res.status(404).json({ success: false, message: "Catégorie non trouvée" });
+      }
+      categoryId = categoryDoc._id;
     }
 
-    if (typeof categorie === 'string' && mongoose.isValidObjectId(categorie)) {
-      categorie = new mongoose.Types.ObjectId(categorie);
-    } else if (!(categorie instanceof mongoose.Types.ObjectId)) {
-      return res.status(400).json({ success: false, message: "Format d'ID de catégorie invalide" });
-    }
-
-    const categoryExists = await mongoose.model('Categorie').findById(categorie);
-    if (!categoryExists) {
-      return res.status(404).json({ success: false, message: "Catégorie non trouvée" });
-    }
-
+    // Validation des données
     const validatedData = await blogValidationSchema.validate({
       title,
       content,
-      categorie,
+      categorie: categoryId,
       tags,
-      imageUrl: req.file ? `/uploads/blog-images/${req.file.filename}` : null
+      imageUrl: req.file ? `${req.protocol}://${req.get('host')}/uploads/blog-images/${req.file.filename}` : null
     }, { abortEarly: false });
 
+    // Création du blog
     const newBlog = new Blog({
       title: validatedData.title,
       content: validatedData.content,
       categorie: validatedData.categorie,
-      tags: Array.isArray(validatedData.tags)
-        ? validatedData.tags
-        : validatedData.tags?.split(',').map(t => t.trim()).filter(t => t),
+      tags: validatedData.tags,
       author: req.user._id,
       imageUrl: validatedData.imageUrl
     });
 
     const savedBlog = await newBlog.save();
-
     res.status(201).json({ success: true, data: savedBlog, message: "Blog créé avec succès" });
   } catch (error) {
+    console.error("Erreur création blog:", error);
+
     if (error instanceof yup.ValidationError) {
       return res.status(400).json({ success: false, errors: error.errors, type: "validation_error" });
     }
 
-    if (error.name === 'CastError') {
-      return res.status(400).json({ success: false, message: "Format d'ID invalide" });
-    }
-
-    res.status(500).json({ success: false, message: "Erreur serveur", detail: error.message });
+    res.status(500).json({ success: false, message: "Erreur serveur lors de la création du blog" });
   }
 };
-
 // Update blog
 const updateBlog = async (req, res, next) => {
   try {

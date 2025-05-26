@@ -1,8 +1,8 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BlogService } from '../../../services/blog.service';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {NgForOf, NgIf} from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgForOf, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-blog-form',
@@ -71,10 +71,12 @@ export class BlogFormComponent implements OnInit {
 
   initForm(): void {
     this.feedbackForm = this.fb.group({
+      id: [''],
       title: ['', [Validators.required, Validators.minLength(5)]],
       content: ['', [Validators.required, Validators.minLength(10)]],
       category: ['Technologie', Validators.required],
-      tags: ['']
+      tags: [''],
+      image: ['']
     });
   }
 
@@ -115,85 +117,46 @@ export class BlogFormComponent implements OnInit {
     this.resetFileInput();
   }
 
-  onSubmit(): void {
-    if (this.feedbackForm.invalid) {
-      this.markFormGroupTouched(this.feedbackForm);
-      alert('Veuillez remplir tous les champs obligatoires correctement');
-      return;
-    }
+ onSubmit(): void {
+   if (this.feedbackForm.invalid) {
+     this.markFormGroupTouched(this.feedbackForm);
+     alert('Veuillez remplir tous les champs obligatoires correctement');
+     return;
+   }
 
-    if (!this.selectedFile && !this.isEditMode) {
-      alert('Veuillez sélectionner une image');
-      return;
-    }
+   const formData = new FormData();
+   formData.append('title', this.feedbackForm.get('title')?.value || '');
+   formData.append('content', this.feedbackForm.get('content')?.value || '');
+   formData.append('categorie', this.feedbackForm.get('category')?.value || '');
 
-    this.isLoading = true;
+   const tagsValue = this.feedbackForm.get('tags')?.value;
+   if (tagsValue) {
+     formData.append('tags', String(tagsValue)
+       .split(',')
+       .map(t => t.trim())
+       .filter(t => t.length > 0)
+       .join(','));
+   }
 
-    const formData = new FormData();
+   if (this.selectedFile) {
+     formData.append('imageFile', this.selectedFile);
+   }
 
-    // Ajout des champs avec vérification
-    formData.append('title', this.feedbackForm.get('title')?.value || '');
-    formData.append('content', this.feedbackForm.get('content')?.value || '');
+   const request = this.isEditMode
+     ? this.blogService.updateBlog(this.blogId, formData)
+     : this.blogService.createBlog(formData);
 
-    // Gestion de la catégorie
-    const categoryValue = this.feedbackForm.get('category')?.value;
-    if (!categoryValue) {
-      alert('Veuillez sélectionner une catégorie');
-      this.isLoading = false;
-      return;
-    }
-    formData.append('categorie', categoryValue);
-
-    // Gestion des tags
-    const tagsValue = this.feedbackForm.get('tags')?.value;
-    if (tagsValue) {
-      const tagsArray = String(tagsValue).split(',')
-        .map(t => t.trim())
-        .filter(t => t.length > 0);
-      tagsArray.forEach(tag => formData.append('tags', tag));
-    }
-
-    // Ajout de l'image
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile);
-    }
-
-    // Debug: Affichez le contenu de FormData
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-      const request = this.isEditMode
-        ? this.blogService.updateBlog(this.blogId, formData)
-        : this.blogService.createBlog(formData);
-      console.log(formData)
-      request.subscribe({
-        next: (res) => {
-          alert(`Blog ${this.isEditMode ? 'mis à jour' : 'créé'} avec succès !`);
-          this.router.navigate([this.isEditMode ? `/blogs/${this.blogId}` : '/blogs']);
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.isLoading = false;
-          console.error('Erreur complète:', err);
-
-          let errorMessage = 'Une erreur est survenue';
-
-          if (err.error?.errors) {
-            errorMessage = err.error.errors.map((e: any) => e.message).join('\n');
-          } else if (err.error?.message) {
-            errorMessage = err.error.message;
-          } else if (err.message) {
-            errorMessage = err.message;
-          }
-
-          alert(errorMessage);
-        }
-      });
-    });
-
-
-
-
-  }
+   request.subscribe({
+     next: (res) => {
+       alert(`Blog ${this.isEditMode ? 'mis à jour' : 'créé'} avec succès !`);
+       this.router.navigate([this.isEditMode ? `/blogs/${this.blogId}` : '/blogs']);
+     },
+     error: (err) => {
+       console.error('Erreur complète:', err);
+       alert('Une erreur est survenue');
+     }
+   });
+ }
 
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
