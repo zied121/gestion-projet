@@ -47,7 +47,17 @@ export class BlogDetailComponent implements OnInit, OnDestroy {
   isLiking = false;
   isCommenting = false;
   shareInProgress = false;
-  protected blog: any;
+  blog: Blog = {
+    _id: '',
+    title: '',
+    content: '',
+    author: { _id: '', username: '' },
+    createdAt: new Date(),
+    tags: [],
+    comments: [],
+    likeCount: 0,
+    likes: []
+  };
 
   constructor(
     private route: ActivatedRoute,

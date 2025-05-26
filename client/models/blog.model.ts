@@ -25,9 +25,9 @@ export interface Blog {
   likeCount: number;
   likes: string[];
   categorie?: any;
-  imageUrl?: string; 
+  imageUrl?: string;
   isLiked?: boolean;
-  
+
 }
 
 interface BlogCreateData {

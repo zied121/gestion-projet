@@ -19,6 +19,9 @@ const createTask = async (req, res) => {
         });
 
         const savedTask = await task.save();
+        await Project.findByIdAndUpdate(task.project, {
+            $push: { tasks: savedTask._id }
+        });
         await Notification.create({
             user: req.body.assignee,
             content: `Une nouvelle tâche "${task.title}" vous a été assignée.`
@@ -198,6 +201,25 @@ const getTasksByProject = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des tâches', error: err.message });
     }
 };
+const updateTaskStatusOnly = async (req, res) => {
+    try {
+        const { status } = req.body;
+
+        if (!status) {
+            return res.status(400).json({ message: 'Statut requis' });
+        }
+
+        const task = await Task.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+
+        res.status(200).json(task);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 
 
 module.exports = {
@@ -207,5 +229,5 @@ module.exports = {
     updateTask,
     deleteTask,
     addSubtask,
-    addCommentToTask,assignUsersToTask,getTasksByProject
+    addCommentToTask,assignUsersToTask,getTasksByProject,updateTaskStatusOnly
 };

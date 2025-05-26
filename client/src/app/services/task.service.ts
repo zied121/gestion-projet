@@ -55,4 +55,12 @@ import { Injectable } from '@angular/core';
         assignUsers(taskId: string, userIds: string[]): Observable<any> {
           return this.http.post(`${this.baseUrl}/${taskId}/assign-users`, { userIds }, { headers: this.getAuthHeaders() });
         }
+        updateTaskStatus(taskId: string, status: string) {
+          return this.http.patch(`${this.baseUrl}/${taskId}/status`, { status }, { headers: this.getAuthHeaders() });
+        }
+
+        // updateTaskStatus(taskId: string, status: string) {
+        //   return this.http.patch(`${this.baseUrl}/${taskId}/status`, { status }, { headers: this.getAuthHeaders() });
+        // }
+
       }

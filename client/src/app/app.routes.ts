@@ -16,6 +16,8 @@ import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
 import {BlogModule} from './components/blog/blog.module';
+import { memberGuard } from './guards/member.guard';
+import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
 {ownerGuard}
 export const routes: Routes = [
   {
@@ -84,6 +86,7 @@ export const routes: Routes = [
           import('./components/project-task-management/project/project.module').then(
             (m) => m.ProjectModule
           ),
+        canActivate: [adminGuard]
 
       },
       {
@@ -92,16 +95,33 @@ export const routes: Routes = [
           import('./components/project-task-management/task/task.module').then(
             (m) => m.TaskModule
           ),
+        canActivate: [adminGuard]
       },
 
-   
+    ]
+  },
+
+
+  {
+    path: '',
+    component: FrontofficelayoutComponent,
+
+    children: [
+      {
+        path: 'member',
+        loadChildren: () =>
+          import('./components/project-task-management/member/member.module').then(
+            (m) => m.MemberModule),
+        canActivate: [memberGuard]
+      },
+
+
       {
         path: 'blogs',
         loadChildren: () =>
           import('./components/blog/blog.module').then(
-            (m) => m.BlogModule
-          ),
+            (m) => m.BlogModule),
       },
     ]
   }
-];
+  ]

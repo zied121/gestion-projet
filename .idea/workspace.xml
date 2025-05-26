@@ -4,22 +4,67 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="on the new layout">
+    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="a">
+      <change afterPath="$PROJECT_DIR$/client/models/blog.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/models/categorie.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/models/feedback.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-category/blog-category.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/categorie-list/categorie-list.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/components/blog/image-upload/image-upload.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/blog.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/categorie.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/cloudinary.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Controllers/categorieController.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Middleware/authMiddleware.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/Routes/categorieRoutes.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/models/Categorie.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/models/blog.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/models/blog.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-detail/blog-detail.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-form/blog-form.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/feedback-form/feedback-form.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/blog.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/blog.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-card/project-card.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-detail/project-detail.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/blogController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/blogController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/feedbackController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/feedbackController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/blogRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/blogRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Blog.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Blog.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Feedback.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Feedback.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,34 +117,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;22.14.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;22.14.1&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Rim/Desktop/tasko/gestion-projet/client/src/app/services&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_interpreter_path&quot;: &quot;node&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;C:\\Program Files\\nodejs\\npm.cmd&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.nodejs&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Rim\\Desktop\\tasko\\gestion-projet\\client\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "javascript.nodejs.core.library.configured.version": "22.14.0",
+    "javascript.nodejs.core.library.typings.version": "22.14.1",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Rim/Desktop/tasko/gestion-projet/client/src/app/services",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "C:\\Program Files\\nodejs\\npm.cmd",
+    "npm.dev.executor": "Run",
+    "npm.start.executor": "Run",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "C:\\Users\\Rim\\Desktop\\tasko\\gestion-projet\\client\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Rim\Desktop\tasko\gestion-projet\client\src\app\services" />
@@ -186,8 +231,7 @@
       <workItem from="1747488334426" duration="3456000" />
       <workItem from="1747492096760" duration="800000" />
       <workItem from="1747492913072" duration="475000" />
-      <workItem from="1747496014663" duration="6517000" />
-      <workItem from="1748281653145" duration="2210000" />
+      <workItem from="1747496014663" duration="6230000" />
     </task>
     <task id="LOCAL-00001" summary="test first api">
       <option name="closed" value="true" />
@@ -341,15 +385,7 @@
       <option name="project" value="LOCAL" />
       <updated>1747492185118</updated>
     </task>
-    <task id="LOCAL-00020" summary="on the new layout">
-      <option name="closed" value="true" />
-      <created>1747502387508</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1747502387508</updated>
-    </task>
-    <option name="localTasksCounter" value="21" />
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -390,7 +426,6 @@
     <MESSAGE value="packagejson for front" />
     <MESSAGE value="project admin module" />
     <MESSAGE value="a" />
-    <MESSAGE value="on the new layout" />
-    <option name="LAST_COMMIT_MESSAGE" value="on the new layout" />
+    <option name="LAST_COMMIT_MESSAGE" value="a" />
   </component>
 </project>

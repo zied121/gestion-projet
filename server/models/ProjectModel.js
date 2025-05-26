@@ -9,6 +9,7 @@ const activityLogSchema = new mongoose.Schema({
 
 const projectSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    organisation: { type: mongoose.Schema.Types.ObjectId, ref: 'Organisation' },
     name: { type: String, required: true },
     description: { type: String, required: true },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Utilisateur', required: true },
@@ -29,6 +30,7 @@ const projectSchema = new mongoose.Schema({
 
 const projectValidationSchema = yup.object({
     name: yup.string().required().min(3),
+    organisation: yup.string().required().matches(/^[0-9a-fA-F]{24}$/),
     description: yup.string(),
     startDate: yup.date().nullable(),
     endDate: yup.date().nullable(),
