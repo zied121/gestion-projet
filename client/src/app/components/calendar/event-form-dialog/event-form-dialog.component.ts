@@ -28,6 +28,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     filteredUsers: any[] = [];
 
     constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
+selectedFile: File | null = null;
+existingFileUrl: string | null = null;
 
     ngOnInit(): void {
         this.loadUsers();
@@ -109,6 +111,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             error: (err) => console.error('Error fetching users:', err),
         });
     }
+
+
 
     private getDefaultFormData(): CreateEventModel {
         const now = new Date();
@@ -246,6 +250,7 @@ removeParticipant(participantId: string): void {
     }
 
 onSubmit(): void {
+    const formData = new FormData();
     console.log('Form submitted with data:', this.formData);
     console.log('Selected participants:', this.selectedParticipants);
     console.log('Original participants:', this.originalParticipants);

@@ -16,7 +16,8 @@ const {
   searchEvents, 
   searchByUser,
   addParticipants,
-  updateParticipantResponse
+  updateParticipantResponse, 
+  participant_status
 } = require('../Controllers/eventController');
 
 // Data sanitization middleware
@@ -98,6 +99,20 @@ router.put('/add_participant/:id', addParticipants);
 router.put('/update_participant/:id', updateParticipantResponse);
 // Dans vos routes
 router.delete('/events/:id/participants/:participantId', isAuth, deleteParticipant);
+
+
+
+router.get('/:eventId/participant-status', async (req, res) => {
+    const { eventId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const status = await participant_status(eventId, userId);
+        return res.json(status);
+    } catch (error) {
+        return res.status(500).json({ error: 'Erreur lors de la récupération du statut du participant' });
+    }
+});
 // Nouvelle route pour supprimer des participants
 
 module.exports = router;

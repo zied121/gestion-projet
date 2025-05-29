@@ -1,4 +1,4 @@
-
+//models 
 export enum EventType {
     EVENEMENT = 'Évenement',
     REUNION = 'Réunion',
@@ -52,7 +52,7 @@ export interface EventModel {
     type_recurrence?: 'daily' | 'weekly' | 'monthly' | 'personnalise' | 'none';
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
-    file?: string;
+    file?: File | string;
     participants?: string[];
   }
 
