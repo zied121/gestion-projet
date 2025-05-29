@@ -62,25 +62,18 @@ router.post(
   '/create',
   (req, res, next) => {
     console.log('--- Debugging Create Event Route ---');
-    console.log('Incoming request body:', req.body);
-    console.log('Authenticated user:', req.user);
+    console.log('Incoming headers:', req.headers);
+    console.log('Content-Type:', req.headers['content-type']);
     next();
   },
   upload.single('file'),
   (req, res, next) => {
     console.log('Uploaded file:', req.file);
+    console.log('Request body:', req.body);
     next();
   },
-  sanitizeEventData, // Sanitize data BEFORE validation
-  (req, res, next) => {
-    console.log('Data after sanitization:', req.body);
-    next();
-  },
+  sanitizeEventData,
   validateEvent,
-  (req, res, next) => {
-    console.log('Validation passed for event creation.');
-    next();
-  },
   createEvent
 );
 

@@ -32,6 +32,8 @@ export class EventService {
     });
   }
 
+
+
   createEvent(data: any): Observable<any> {
     console.log('Creating event with data:', data);
     return this.http.post(`${this.baseUrl}/create`, data, {
