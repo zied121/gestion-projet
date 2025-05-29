@@ -85,7 +85,15 @@ const createFeedback = async (req, res) => {
     });
 
     if (req.body.content) {
-      await feedbackmail(req.body.content);
+      await feedbackmail({
+        type: 'comment',
+        title: req.body.title || 'Untitled',
+        content: req.body.content,
+        category: req.body.category || 'Général',
+        email: req.body.email || null,
+        notifyMe: req.body.notifyMe || false,
+        createdAt: new Date().toISOString()
+      });
     }
     // Enregistre le feedback dans la base de données
     await newFeedback.save();

@@ -85,8 +85,16 @@ const feedbackmail = async (content) => {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: "rimmhatli59@gmail.com",
-            subject: "feedback",
-            html: `you have new feedback: <strong>${content}</strong></p>`
+            subject: "Feedback",
+            html: `
+            <p>Type: <strong>comment</strong></p>
+            <p>Title: <strong>${content.title || 'Untitled'}</strong></p>
+            <p>Content: <strong>${content.content}</strong></p>
+            <p>Category: <strong>${content.category || 'Général'}</strong></p>
+            <p>Email: <strong>${content.email || 'N/A'}</strong></p>
+            <p>Notify Me: <strong>${content.notifyMe || false}</strong></p>
+            <p>Created At: <strong>${new Date().toISOString()}</strong></p>
+            `
         });
         console.log("Feedback email sent successfully", content);
     } catch (err) {
