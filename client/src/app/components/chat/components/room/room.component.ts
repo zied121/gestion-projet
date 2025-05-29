@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../services/message.service';
 import { Message } from '../../services/message.service';
@@ -18,7 +18,7 @@ import { Room, RoomService } from '../../services/room.service';
 })
 export class RoomComponent implements OnInit, OnDestroy {
   @Input() roomId!: string;
-
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   currentRoomId: string = '';
   messages: Message[] = [];
   room: Room | null = null;
@@ -30,6 +30,8 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   editingMessageId: string | null = null;
   editedContent: string = '';
+  isStartingCall = false;
+  isGoogleAuthenticated = false;
 
   constructor(
     private messageService: MessageService,
@@ -37,7 +39,69 @@ export class RoomComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private roomService: RoomService
 
-  ) {}
+  ) {
+    /*
+    this.checkGoogleAuth();
+    this.handleAuthRedirect();*/
+  }
+private handleAuthRedirect() {
+  this.route.queryParams.subscribe(params => {
+    if (params['googleAuthSuccess'] && this.room?._id) {
+      // Only start call if we have a room ID
+      this.isGoogleAuthenticated = true;
+      this.startVideoCall();
+    } else if (params['googleAuthError']) {
+      alert('Google authentication failed. Please try again.');
+    }
+  });
+}
+
+signInWithGoogle() {
+  if (this.room?._id) {
+    this.roomService.initiateGoogleAuth(this.room._id);
+  } else {
+    this.roomService.initiateGoogleAuth();
+  }
+}
+  checkGoogleAuth() {
+    this.roomService.checkGoogleAuth().subscribe({
+      next: (response) => {
+        this.isGoogleAuthenticated = response.authenticated;
+      },
+      error: () => {
+        this.isGoogleAuthenticated = false;
+      }
+    });
+  }
+async startVideoCall() {
+   if (!this.room?._id) return;
+  
+  try {
+    // Type is now guaranteed to be AuthCheckResponse
+    const authCheck = await this.roomService.checkGoogleAuth().toPromise();
+    
+    // No need for undefined check since we have the interface
+
+    if (!this.isGoogleAuthenticated) {
+      this.signInWithGoogle();
+      return;
+    }
+    this.isStartingCall = true;
+    const response = await this.roomService.startCall(this.room._id).toPromise();
+    
+    if (response?.meetLink) {
+      this.messageText = `Video call started: ${response.meetLink}`;
+      this.sendMessage();
+      setTimeout(() => {
+        window.open(response.meetLink, '_blank', 'noopener,noreferrer');
+      }, 300);
+    }
+  } catch (error) {
+    // Error handling remains the same
+  } finally {
+    this.isStartingCall = false;
+  }
+}
 
   ngOnInit(): void {
 
@@ -71,6 +135,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.messages = [...this.messages];
         }
 });
+
    this.roomSubscription = this.socketService.listenForNewRoom().subscribe((newRoom) => {
       console.log('New room created:', newRoom);
       this.rooms.push(newRoom);  // Add the new room to the list
@@ -90,7 +155,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   // Méthode pour envoyer un message
-  sendMessage(): void {
+  /*sendMessage(): void {
     const formData = new FormData();
     formData.append('room', this.currentRoomId); // Append the room ID
     formData.append('content', this.messageText); // Append the message content
@@ -111,9 +176,29 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.messageText = '';
       this.selectedFile = null;
     });
-  }
+  }*/
+sendMessage(): void {
+    const formData = new FormData();
+    formData.append('room', this.currentRoomId);
+    formData.append('content', this.messageText);
 
-  // Gérer la sélection du fichier
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile, this.selectedFile.name);
+    }
+
+    this.messageService.sendMessage(formData).subscribe((newMessage) => {
+      this.socketService.emit('sendMessage', newMessage);
+
+      // Réinitialiser les champs du formulaire
+      this.messageText = '';
+      this.selectedFile = null;
+      
+      // Réinitialiser le champ de fichier dans le DOM
+      if (this.fileInput && this.fileInput.nativeElement) {
+        this.fileInput.nativeElement.value = '';
+      }
+    });
+  }
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -234,5 +319,8 @@ getUserColor(username: string): string {
   }, 0);
   
   return colors[Math.abs(hash) % colors.length];
-}
+}/*
+signInWithGoogle() {
+  this.roomService.initiateGoogleAuth();
+}*/
 }

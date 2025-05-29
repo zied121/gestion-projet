@@ -15,6 +15,7 @@
       </div>
       <input type="text" 
              placeholder="Search here..." 
+             (input)="onSearchInput($event)"
              class="search-input">
     </div>
   </div>
@@ -22,12 +23,12 @@
   <!-- Room List -->
   <div class="room-list">
     
-    <!-- Favorites Section -->
-    <div class="section">
+    <!-- Group Rooms Section -->
+    <div class="section" *ngIf="groupRooms.length > 0">
       <h2 class="section-title">Rooms</h2>
       
-      <!-- Room Items -->
-      <div *ngFor="let room of rooms" 
+      <!-- Group Room Items -->
+      <div *ngFor="let room of groupRooms" 
            (click)="selectRoom(room._id)"
            class="room-item"
            [class.room-item-selected]="room._id === selectedRoomId">
@@ -55,10 +56,7 @@
           <div class="room-header">
             <h3 class="room-name">{{ room.name }}</h3>
             <!-- Static unread count for demo -->
-            <span class="unread-badge">
-            <!--    {{ room.unreadCount || (Math.floor(Math.random() * 20) + 1) }}  -->
-                 2
-            </span>
+            <span class="unread-badge">2</span>
           </div>
           <p class="room-message">
             {{ room.lastMessage?.content || 'Hey, how are you doing today?' }}
@@ -68,18 +66,19 @@
     </div>
 
     <!-- Direct Messages Section -->
-    <div class="section" *ngIf="rooms.length > 0">
+    <div class="section">
       <div class="section-header">
         <h2 class="section-title">Direct Messages</h2>
-        <button class="add-button">
+        <!-- Bouton + pour créer une nouvelle conversation privée -->
+        <button class="add-button" (click)="openCreatePrivateRoomModal()">
           <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
         </button>
       </div>
       
-      <!-- Additional Room Items -->
-      <div *ngFor="let room of rooms.slice(0, 4)" 
+      <!-- Private Room Items -->
+      <div *ngFor="let room of privateRooms" 
            (click)="selectRoom(room._id)"
            class="room-item">
            
@@ -97,7 +96,7 @@
             {{ room.name?.charAt(0)?.toUpperCase() || 'R' }}
           </div>
           
-          <!-- Offline Status for direct messages -->
+          <!-- Status indicator for private messages -->
           <div class="status-indicator status-offline"></div>
         </div>
         
@@ -109,9 +108,14 @@
           </p>
         </div>
       </div>
+
+      <!-- Message si aucune conversation privée -->
+      <div *ngIf="privateRooms.length === 0" class="no-private-rooms">
+        <p class="no-rooms-text">No private conversations yet</p>
+      </div>
     </div>
 
-    <!-- Empty State -->
+    <!-- Empty State - affiché seulement si aucune room du tout -->
     <div *ngIf="rooms.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg class="empty-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,6 +126,52 @@
       <p class="empty-description">
         You haven't joined any rooms yet. Start a new conversation to get started.
       </p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour créer une room privée -->
+<div *ngIf="showUserModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Start New Conversation</h3>
+      <button class="modal-close" (click)="closeModal()">
+        <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <p class="modal-description">Select a user to start a private conversation:</p>
+      
+      <div class="user-list">
+        <div *ngFor="let user of users" 
+             class="user-item" 
+             [class.user-selected]="selectedUserId === user._id"
+             (click)="selectedUserId = user._id">
+          <div class="user-avatar">
+            {{ (user.nom || user.name || 'U').charAt(0).toUpperCase() }}
+          </div>
+          <div class="user-info">
+            <span class="user-name">{{ user.nom || user.name || 'Utilisateur' }}</span>
+            <span class="user-email">{{ user.email }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="users.length === 0" class="no-users">
+        <p>Aucun utilisateur disponible pour créer une conversation.</p>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+      <button class="btn-create" 
+              (click)="createPrivateRoom()" 
+              [disabled]="!selectedUserId || isCreatingRoom">
+        {{ isCreatingRoom ? 'Creating...' : 'Start Conversation' }}
+      </button>
     </div>
   </div>
 </div>
