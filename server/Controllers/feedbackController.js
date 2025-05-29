@@ -49,33 +49,34 @@ const getFeedbackById = async (req, res) => {
 // Fonction pour ajouter un feedback sur un blog
 const createFeedback = async (req, res) => {
   try {
-
-    // Récupère le commentaire depuis le corps de la requête
-    const { comment } = req.body;
-
-    // Récupère l'ID du blog depuis les paramètres d'URL
-    const { blogId } = req.params;
-
-    // Vérifie si le commentaire est vide ou inexistant
-    if (!comment || comment.trim() === "") {
-      return res.status(400).json({ message: "Le commentaire est requis" });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(blogId)) {
-      return res.status(400).json({ message: "ID de blog invalide" });
-    }
-
-    // Vérifie que le blog existe
-    const blog = await Blog.findById(blogId);
-    if (!blog) {
-      return res.status(404).json({ message: "Blog non trouvé" });
-    }
-
+    /*
+        // Récupère le commentaire depuis le corps de la requête
+        const { comment } = req.body;
+    
+        // Récupère l'ID du blog depuis les paramètres d'URL
+        const { blogId } = req.params;
+    
+        // Vérifie si le commentaire est vide ou inexistant
+        /*
+        if (!comment || comment.trim() === "") {
+          return res.status(400).json({ message: "Le commentaire est requis" });
+        }*/
+    /*
+        if (!mongoose.Types.ObjectId.isValid(blogId)) {
+          return res.status(400).json({ message: "ID de blog invalide" });
+        }
+    
+        // Vérifie que le blog existe
+        const blog = await Blog.findById(blogId);
+        if (!blog) {
+          return res.status(404).json({ message: "Blog non trouvé" });
+        }
+          */
     // Crée un nouveau document Feedback avec :
     const newFeedback = new Feedback({
-      blog: blogId,
+
       user: req.user.id,
-      comment,
+
     });
 
     // Enregistre le feedback dans la base de données

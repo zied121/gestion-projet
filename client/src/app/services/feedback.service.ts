@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse ,HttpHeaders} from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Feedback } from '../../../models/feedback.model';
 
@@ -9,11 +9,17 @@ import { Feedback } from '../../../models/feedback.model';
 export class FeedbackService {
   private apiUrl = 'http://localhost:5000/api/feedbacks';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient ) { }
 
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+  }
   // Nouvelle méthode pour le feedback global
   submitFeedback(feedbackData: any): Observable<Feedback> {
-    return this.http.post<Feedback>(`${this.apiUrl}/global`, feedbackData)
+    return this.http.post<Feedback>(`${this.apiUrl}`, feedbackData , { headers: this.getAuthHeaders() })
       .pipe(
         catchError(this.handleError)
       );

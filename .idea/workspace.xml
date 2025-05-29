@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="a">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-list/blog-list.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/blog/blog-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/server/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="feedback">
+      <change beforePath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/feedback.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/feedbackController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/feedbackController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/feedbackRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,7 +179,7 @@
       <workItem from="1747492096760" duration="800000" />
       <workItem from="1747492913072" duration="475000" />
       <workItem from="1747496014663" duration="6230000" />
-      <workItem from="1748543258221" duration="405000" />
+      <workItem from="1748543258221" duration="1137000" />
     </task>
     <task id="LOCAL-00001" summary="test first api">
       <option name="closed" value="true" />
@@ -334,7 +333,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747492185118</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="feedback">
+      <option name="closed" value="true" />
+      <created>1748543712400</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1748543712400</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -375,6 +382,7 @@
     <MESSAGE value="packagejson for front" />
     <MESSAGE value="project admin module" />
     <MESSAGE value="a" />
-    <option name="LAST_COMMIT_MESSAGE" value="a" />
+    <MESSAGE value="feedback" />
+    <option name="LAST_COMMIT_MESSAGE" value="feedback" />
   </component>
 </project>
