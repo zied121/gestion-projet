@@ -28,8 +28,9 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     filteredUsers: any[] = [];
 
     constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
-selectedFile: File | null = null;
-existingFileUrl: string | null = null;
+  selectedFile: File | null = null;
+    uploadProgress: number = 0;
+    isUploading: boolean = false;
 
     ngOnInit(): void {
         this.loadUsers();
@@ -212,6 +213,43 @@ removeParticipant(participantId: string): void {
                 alert('Erreur lors de la suppression du participant: ' + (err.error?.message || err.message));
             }
         });
+    }
+    onFileSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            // Validation de la taille (exemple: max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Le fichier est trop volumineux. Taille maximale: 10MB');
+                return;
+            }
+
+            // Validation du type de fichier (optionnel)
+            const allowedTypes = [
+                'image/jpeg', 'image/png', 'image/gif',
+                'application/pdf', 
+                'application/msword', 
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Type de fichier non autorisé. Types acceptés: JPG, PNG, GIF, PDF, DOC, DOCX, TXT');
+                return;
+            }
+
+            this.selectedFile = file;
+            console.log('Fichier sélectionné:', file.name, file.size, file.type);
+        }
+    }
+
+    // Méthode pour supprimer le fichier sélectionné
+    removeSelectedFile(): void {
+        this.selectedFile = null;
+        // Reset l'input file
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
     }
 
     // Close dropdown when clicking outside
