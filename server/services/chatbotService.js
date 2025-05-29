@@ -7,7 +7,7 @@ const Utilisateur = require('../models/Usermodel');
 
 class ChatbotService {
     constructor() {
-        this.token = process.env.GITHUB_TOKEN || "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";
+        this.token = process.env.GITHUB_TOKEN;
         this.endpoint = "https://models.github.ai/inference";
         this.model = "deepseek/DeepSeek-V3-0324";
         
