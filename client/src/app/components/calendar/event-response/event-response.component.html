@@ -1,0 +1,198 @@
+<!-- event-response.component.html -->
+<div class="relative p-6 max-w-md mx-auto bg-white rounded-2xl shadow-xl border border-gray-100">
+  <!-- Header avec icône dynamique -->
+  <div class="text-center mb-6">
+    <div class="relative p-3 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-inner transition-all duration-300"
+         [class.bg-green-100]="data.responseStatus === 'accepted'"
+         [class.text-green-600]="data.responseStatus === 'accepted'"
+         [class.bg-red-100]="data.responseStatus === 'declined'"
+         [class.text-red-600]="data.responseStatus === 'declined'"
+         [class.bg-amber-100]="data.responseStatus === 'pending' || !data.responseStatus"
+         [class.text-amber-600]="data.responseStatus === 'pending' || !data.responseStatus">
+      
+      <!-- Icône accepté -->
+      <div *ngIf="data.responseStatus === 'accepted'" class="text-3xl animate-bounce-gentle">
+        ✅
+      </div>
+      
+      <!-- Icône refusé -->
+      <div *ngIf="data.responseStatus === 'declined'" class="text-3xl animate-shake">
+        ❌
+      </div>
+      
+      <!-- Icône en attente -->
+      <div *ngIf="data.responseStatus === 'pending' || !data.responseStatus" class="relative">
+        <div class="text-3xl animate-pulse-gentle">📝</div>
+        <div class="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping opacity-75"></div>
+      </div>
+      
+      <!-- Effet de brillance -->
+      <div class="absolute inset-0 rounded-full bg-gradient-to-br from-white/40 via-white/20 to-transparent pointer-events-none"></div>
+    </div>
+    
+    <h3 class="text-xl font-bold text-gray-800 mb-2">
+      {{data.eventTitle}}
+    </h3>
+    <p class="text-sm text-gray-600 flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 0v4m0 0l3-3m-3 3l-3-3m12 9a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      {{data.eventDate | date:'fullDate'}}
+    </p>
+  </div>
+
+  <!-- Status indicator dynamique -->
+  <div class="mb-6 p-4 rounded-xl border-2 transition-all duration-300"
+       [class.bg-green-50]="data.responseStatus === 'accepted'"
+       [class.border-green-200]="data.responseStatus === 'accepted'"
+       [class.bg-red-50]="data.responseStatus === 'declined'"
+       [class.border-red-200]="data.responseStatus === 'declined'"
+       [class.bg-amber-50]="data.responseStatus === 'pending' || !data.responseStatus"
+       [class.border-amber-200]="data.responseStatus === 'pending' || !data.responseStatus">
+    
+    <!-- Statut accepté -->
+    <div *ngIf="data.responseStatus === 'accepted'" class="flex items-center justify-center gap-3 text-green-700">
+      <div class="relative">
+        <span class="text-2xl">✅</span>
+      </div>
+      <div class="text-center">
+        <div class="font-semibold text-lg">Invitation acceptée</div>
+        <div class="text-sm opacity-75">Vous avez confirmé votre participation</div>
+      </div>
+    </div>
+    
+    <!-- Statut refusé -->
+    <div *ngIf="data.responseStatus === 'declined'" class="flex items-center justify-center gap-3 text-red-700">
+      <div class="relative">
+        <span class="text-2xl">❌</span>
+      </div>
+      <div class="text-center">
+        <div class="font-semibold text-lg">Invitation refusée</div>
+        <div class="text-sm opacity-75">Vous avez décliné cette invitation</div>
+      </div>
+    </div>
+    
+    <!-- Statut en attente -->
+    <div *ngIf="data.responseStatus === 'pending' || !data.responseStatus" class="flex items-center justify-center gap-3 text-amber-700">
+      <div class="relative">
+        <span class="text-2xl animate-bounce">📝</span>
+        <div class="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full animate-ping opacity-75"></div>
+      </div>
+      <div class="text-center">
+        <div class="font-semibold text-lg">Votre réponse est attendue</div>
+        <div class="text-sm opacity-75">Choisissez votre réponse ci-dessous</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message field -->
+  <div class="mb-6">
+    <label class="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1.586l-4.707 4.707z" />
+      </svg>
+      Message (optionnel)
+    </label>
+    <textarea [(ngModel)]="message" rows="3"
+      class="w-full px-4 py-3 text-sm border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-200 resize-none bg-gray-50 focus:bg-white hover:border-gray-300"
+      placeholder="Ajoutez une note personnelle..."></textarea>
+  </div>
+
+  <!-- Buttons avec design amélioré -->
+  <div class="flex flex-col gap-3">
+    <button (click)="onAccept()" 
+      class="group w-full px-6 py-3.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-semibold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+      <div class="flex items-center justify-center w-6 h-6 bg-white/20 rounded-full group-hover:scale-110 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <span>J'accepte avec plaisir</span>
+      <div class="w-6"></div> <!-- Spacer pour centrer le texte -->
+    </button>
+    
+    <button (click)="onDecline()" 
+      class="group w-full px-6 py-3.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 font-semibold flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+      <div class="flex items-center justify-center w-6 h-6 bg-white/20 rounded-full group-hover:scale-110 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <span>Je ne peux pas participer</span>
+      <div class="w-6"></div> <!-- Spacer pour centrer le texte -->
+    </button>
+    
+    <button (click)="onCancel()" 
+      class="w-full px-6 py-3 text-gray-600 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium shadow-sm hover:shadow">
+      Annuler
+    </button>
+  </div>
+
+  <!-- Footer note avec design amélioré -->
+  <div class="mt-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200/50">
+    <div class="flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="text-xs text-blue-700 text-center font-medium">
+        L'organisateur sera notifié de votre réponse
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Animations personnalisées */
+@keyframes bounce-gentle {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 2s infinite ease-in-out;
+}
+
+.animate-shake {
+  animation: shake 0.8s ease-in-out infinite;
+}
+
+.animate-pulse-gentle {
+  animation: pulse-gentle 2s infinite ease-in-out;
+}
+
+/* Effets de hover améliorés */
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Effets de focus améliorés */
+textarea:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .relative.p-6 {
+    padding: 1rem;
+  }
+  
+  button {
+    padding: 0.75rem 1rem;
+  }
+}
+</style>
