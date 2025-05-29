@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Feedback = require("../models/Feedback");
 const { Blog } = require("../models/Blog");
 
+const User = require("../models/Usermodel");
+const { feedbackmail } = require('../config/nodemailer');
 //Fonction pour récupérer tous les feedbacks d'un blog
 const getFeedbacksByBlog = async (req, res) => {
   try {
@@ -49,6 +51,7 @@ const getFeedbackById = async (req, res) => {
 // Fonction pour ajouter un feedback sur un blog
 const createFeedback = async (req, res) => {
   try {
+
     /*
         // Récupère le commentaire depuis le corps de la requête
         const { comment } = req.body;
@@ -76,9 +79,14 @@ const createFeedback = async (req, res) => {
     const newFeedback = new Feedback({
 
       user: req.user.id,
+      content: req.body.content,
+
 
     });
 
+    if (req.body.content) {
+      await feedbackmail(req.body.content);
+    }
     // Enregistre le feedback dans la base de données
     await newFeedback.save();
     res.status(201).json({ message: "Feedback créé avec succès", feedback: newFeedback });

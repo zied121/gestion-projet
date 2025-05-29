@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
 });
 
 
- const sendOrganiastionCodeEmail = async (email, password) => {
-    
+const sendOrganiastionCodeEmail = async (email, password) => {
+
     try {
         transporter.sendMail({
             from: "ziedbensalah10@gmail.com",
@@ -25,17 +25,17 @@ const transporter = nodemailer.createTransport({
 };
 
 const ForgetPasswordEmail = async (email, password) => {
-     
-    try{
+
+    try {
         transporter.sendMail({
-            from:"ziedbensalah10@gmail.com",
+            from: "ziedbensalah10@gmail.com",
             to: email,
             subject: "Password Reset",
             html: `here is your new password: <strong>${password}</strong>`
         });
 
 
-    }catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -79,10 +79,26 @@ const SendOtpMail = async (to, subject, otp) => {
         console.log(err);
     }
 };
+const feedbackmail = async (content) => {
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: "rimmhatli59@gmail.com",
+            subject: "feedback",
+            html: `you have new feedback: <strong>${content}</strong></p>`
+        });
+        console.log("Feedback email sent successfully", content);
+    } catch (err) {
+        console.log(err);
+    }
+
+};
+
 module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
     SendOtpMail,
     ForgetPasswordEmail,
-    sendTaskCreatedNotification
+    sendTaskCreatedNotification, feedbackmail
 };
