@@ -1,16 +1,32 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
-import {NgOptimizedImage} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-  ],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  imports: [
+    RouterLinkActive,
+    NgClass,
+    NgIf,
+    RouterLink
+  ],
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
 
+  @Input() iscollapsed = true;
+  @Output() toggle = new EventEmitter<void>();
+
+  triggerToggle() {
+    this.toggle.emit();
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sidebar') && !target.closest('.sidebar-toggle')) {
+      this.iscollapsed = true;
+    }
+  }
 }

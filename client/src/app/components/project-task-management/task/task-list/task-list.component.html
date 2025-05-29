@@ -1,5 +1,6 @@
 <div class="task-list">
-  <h2>Liste des tâches</h2>
+  <h2>Liste des tâches pour "{{ projectname }}" </h2>
+
 
   <button class="btn btn-primary mb-3" (click)="openTaskModal()">Ajouter une tâche</button>
 
@@ -9,7 +10,7 @@
       <th>Nom</th>
       <th>Description</th>
       <th>Statut</th>
-      <th>Progression</th>
+      <th>Priorité</th>
       <th>Actions</th>
     </tr>
     </thead>
@@ -19,7 +20,7 @@
         <td>{{ task.title }}</td>
         <td>{{ task.description }}</td>
         <td>{{ task.status }}</td>
-        <td>{{ calculateProgress(task.subtasks) }}</td>
+        <td>{{ task.priority }}</td>
         <td>
           <div class="btn-group">
             <button class="btn btn-sm btn-outline-primary" (click)="openTaskDetail(task)">

@@ -1,4 +1,5 @@
 <div class="kanban-board">
+  <button class="btn btn-primary mb-3" (click)="openTaskModals()">Ajouter une tâche</button>
   <div class="kanban-column" *ngFor="let column of columns">
     <div class="kanban-header">
       <span class="status-icon" [ngClass]="column.iconClass"></span>

@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../../../services/project.service';
 import { TaskService } from '../../../../services/task.service';
 import { ChartConfiguration } from 'chart.js';
-import {DatePipe, NgClass, NgForOf} from '@angular/common';
+import {DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {NgChartsModule} from 'ng2-charts';
 import {UserService} from '../../../../services/user.service';
+import {AiService} from '../../../../services/ai.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-member-dashboard',
@@ -13,13 +15,19 @@ import {UserService} from '../../../../services/user.service';
     DatePipe,
     NgForOf,
     NgClass,
-    NgChartsModule
+    NgChartsModule,
+    FormsModule,
+    NgIf
   ],
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
   projects: any[] = [];
   tasks: any[] = [];
+  userMessage: string = '';
+  chatMessages: { content: string, sender: string }[] = [];
+ response: { content: string, sender: string }[] = [];
+
   employees = [
     { name: 'Marcus Levin', location: 'Sunnyvale, CA' },
     { name: 'Wilson Workman', location: 'Mount Olympus, Greece' },
@@ -56,7 +64,8 @@ export class DashboardComponent implements OnInit {
     indexAxis: 'y'
   };
 
-  constructor(private projectService: ProjectService, private userService: UserService) {}
+
+  constructor(private projectService: ProjectService, private userService: UserService,private AiService:AiService) {}
 
   ngOnInit(): void {
     this.userService.setcredentials();
@@ -89,5 +98,15 @@ export class DashboardComponent implements OnInit {
   buildCharts() {
     this.barChartData.labels = this.projects.map(p => p.name);
     this.barChartData.datasets[0].data = this.projects.map(p => p.tasks.length);
+  }
+  sendMessage(): void {
+    if (this.userMessage.trim()) {
+      this.chatMessages.push({ content: this.userMessage, sender: 'user' });
+      this.AiService.getDeepSeekResponse(this.userMessage).subscribe((response) => {
+        this.response.push({ content: response, sender: 'assistant' });
+        console.log('Response from AI:', response);
+        this.userMessage = '';
+      });
+    }
   }
 }

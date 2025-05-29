@@ -1,5 +1,5 @@
-<div class="app-container">
-  <app-sidebar></app-sidebar>
+<div class="app-container" [class.collapsed]="isSidebarCollapsed">
+  <app-sidebar (toggle)="toggleSidebar()" [iscollapsed]="isSidebarCollapsed"></app-sidebar>
 
   <div class="main-content">
     <router-outlet></router-outlet>

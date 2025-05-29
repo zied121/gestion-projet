@@ -65,5 +65,21 @@
       </ul>
     </div>
 
+    <!-- Chat with DeepSeek -->
+    <div class="card chat-card">
+      <h5>Chat with Assistant</h5>
+      <div class="chat-box">
+        <div class="messages">
+          <div *ngFor="let message of chatMessages">
+           <div class="message">{{ message.content }}</div>
+            <div *ngFor="let response of response">
+            <div *ngIf="response" class="ai-response">Réponse de l'assistant : {{ response.content }}</div>
+            </div>
+          </div>
+        </div>
+        <input type="text" [(ngModel)]="userMessage" placeholder="Ask something..." (keydown.enter)="sendMessage()">
+      </div>
+    </div>
+
   </div>
 </div>

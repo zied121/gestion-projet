@@ -99,7 +99,6 @@ export const routes: Routes = [
           import('./components/project-task-management/task/task.module').then(
             (m) => m.TaskModule
           ),
-        canActivate: [adminGuard]
       },
 
     ]

@@ -7,9 +7,9 @@
       <button class="btn btn-outline-secondary btn-sm me-1" (click)="useCardView = false">
         <i class="bi bi-list"></i> Vue tableau
       </button>
-      <button class="btn btn-outline-secondary btn-sm" (click)="useCardView = true">
-        <i class="bi bi-grid"></i> Vue cartes
-      </button>
+<!--      <button class="btn btn-outline-secondary btn-sm" (click)="useCardView = true">-->
+<!--        <i class="bi bi-grid"></i> Vue cartes-->
+<!--      </button>-->
     </div>
   </div>
 
@@ -55,13 +55,13 @@
           </td>
         </tr>
         <tr *ngIf="expandedProjectId === project._id">
-          <td colspan="4">
-            <ul *ngIf="project.members && project.members.length > 0">
-              <li *ngFor="let user of project.members">
-                {{ user.nom }}
-              </li>
-            </ul>
-          </td>
+<!--          <td colspan="4">-->
+<!--            <ul *ngIf="project.members && project.members.length > 0">-->
+<!--              <li *ngFor="let user of project.members">-->
+<!--                {{ user.nom }}-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </td>-->
           <td colspan="4">
             <h6>👤 Membres du projet :</h6>
             <ul *ngIf="project.members && project.members.length > 0">
@@ -94,7 +94,23 @@
       </tbody>
     </table>
   </div>
-
+  <!-- Dashboard Graphs -->
+  <div class="row mb-5">
+    <div class="col-md-4">
+      <canvas *ngIf="taskStatusChartData" baseChart
+              [data]="taskStatusChartData"
+              [options]="taskStatusChartOptions"
+              [type]="'pie'">
+      </canvas>
+    </div>
+    <div class="col-md-4">
+      <canvas *ngIf="memberStatsChartData" baseChart
+              [data]="memberStatsChartData"
+              [options]="memberStatsChartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
   <!-- Card View -->
   <div *ngIf="useCardView">
     <div class="row">

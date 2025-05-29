@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-
 import { ProjectRoutingModule } from './project-routing.module';
 
 import { ProjectListComponent } from './project-list/project-list.component';
@@ -25,6 +24,7 @@ import { AssignUsersModalComponent } from './assign-users-modal/assign-users-mod
     ProjectDetailComponent,
     ProjectCardComponent,
     AssignUsersModalComponent
+
   ]
 })
 export class ProjectModule {}

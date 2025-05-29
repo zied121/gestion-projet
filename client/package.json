@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^19.2.3",
+    "@angular/animations": "^19.2.13",
     "@angular/cdk": "^19.2.6",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
@@ -30,7 +30,9 @@
     "chart.js": "^4.4.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "font-awesome": "^4.7.0",
     "ng2-charts": "^4.1.1",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

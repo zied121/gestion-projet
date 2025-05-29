@@ -10,9 +10,9 @@
 // module.exports = router;
 const express = require('express');
 const router = express.Router();
-const { suggestTasks } = require('../controllers/aiController');
+const { generateTitleOrDescription ,chatWithPromptHandler} = require('../controllers/aiController');
 const isAuth = require('../Middleware/isauth');
 
-router.post('/ai/suggest-tasks', isAuth, suggestTasks);
-
+router.post('/generate-title-desc', isAuth, generateTitleOrDescription);
+router.post('/ai/chat', isAuth, chatWithPromptHandler);
 module.exports = router;

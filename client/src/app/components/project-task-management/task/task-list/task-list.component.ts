@@ -22,6 +22,7 @@ export class TaskListComponent implements OnInit {
   tasks: any[] = [];
   expandedTaskId: string | null = null;
   projectId: string | null = null;
+  protected projectname: any;
   constructor(private taskService: TaskService,
               private modalService: NgbModal,
               private route: ActivatedRoute) {}
@@ -30,6 +31,7 @@ export class TaskListComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.projectId = params.get('projectId');
       this.loadTasks();
+
     });
   }
 
@@ -37,10 +39,12 @@ export class TaskListComponent implements OnInit {
     if (this.projectId) {
       this.taskService.getTasksByProject(this.projectId).subscribe(tasks => {
         this.tasks = tasks;
+       this.projectname = this.tasks[0].project.name;
       });
     } else {
       this.taskService.getTasks().subscribe(tasks => {
         this.tasks = tasks;
+        this.projectname = this.tasks[0].project.name;
       });
     }
   }
@@ -73,10 +77,5 @@ export class TaskListComponent implements OnInit {
   toggleExpand(taskId: string) {
     this.expandedTaskId = this.expandedTaskId === taskId ? null : taskId;
   }
-
-  calculateProgress(subtasks: any[]): string {
-    if (!subtasks?.length) return '0%';
-    const done = subtasks.filter(t => t.status === 'DONE').length;
-    return `${Math.round((done / subtasks.length) * 100)}%`;
-  }
 }
+

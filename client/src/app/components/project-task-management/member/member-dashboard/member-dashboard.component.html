@@ -1,14 +1,56 @@
-<div class="container mt-3">
-  <div class="form-group">
-    <label for="projectSelect"><strong>Choisir un projet :</strong></label>
-    <select id="projectSelect" class="form-control" (change)="onProjectChange($event)">
-      <option *ngFor="let p of projects" [value]="p._id" [selected]="p._id === selectedProjectId">
-        {{ p.name }}
-      </option>
-    </select>
+<div class="dashboard-container">
+
+  <label for="project-select">Sélectionnez un projet :</label>
+  <select
+    id="project-select"
+    class="project-selector"
+    [value]="selectedProjectId"
+    (change)="onProjectChange($event)"
+  >
+    <option *ngFor="let p of projects" [value]="p._id">{{ p.name }}</option>
+  </select>
+
+  <div class="stats-cards">
+    <div class="stat-card total-tasks">
+      <h3>Total Tâches</h3>
+      <p>{{ totalTasks }}</p>
+    </div>
+
+    <div class="stat-card overdue-tasks">
+      <h3>Tâches en retard</h3>
+      <p>
+        <span class="badge" *ngIf="overdueTasks.length > 0">{{ overdueTasks.length }}</span>
+        <span *ngIf="overdueTasks.length === 0">0</span>
+      </p>
+      <ul *ngIf="overdueTasks.length > 0" class="task-list">
+        <li *ngFor="let task of overdueTasks">
+          {{ task.title }} (Projet : {{ task.project?.name || 'N/A' }})
+        </li>
+      </ul>
+    </div>
+
+    <div class="stat-card today-tasks">
+      <h3>Tâches du jour</h3>
+      <ul *ngIf="todayTasks.length > 0" class="task-list">
+        <li *ngFor="let task of todayTasks">
+          {{ task.title }} (Projet : {{ task.project?.name || 'N/A' }})
+        </li>
+      </ul>
+      <p *ngIf="todayTasks.length === 0">Aucune tâche pour aujourd'hui</p>
+    </div>
   </div>
 
-  <hr>
+  <div class="activity-log">
+    <h3>Activités récentes</h3>
+    <ul>
+      <li *ngFor="let act of recentActivities">
+        <strong>{{ act.userName }}</strong> : {{ act.action }} <br />
+        <small>{{ formatDate(act.timestamp) }}</small>
+      </li>
+    </ul>
+  </div>
 
-  <app-kanban-board *ngIf="selectedProjectId" [projectId]="selectedProjectId"></app-kanban-board>
+
+
+<app-kanban-board *ngIf="selectedProjectId" [projectId]="selectedProjectId"></app-kanban-board>
 </div>

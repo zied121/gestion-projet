@@ -1,28 +1,33 @@
-
-<div class="sidebar">
+<div class="sidebar" [class.collapsed]="iscollapsed">
   <div class="logo">
-    <img class="title" src="assets/logo.png" />
+    <img src="assets/logo.png" alt="Logo" />
+
   </div>
+
   <nav class="nav-links">
-    <a href="/member" routerLinkActive="active">
-      <i class="icon-clock"></i>
-      <span>Dashboard</span>
+    <a routerLink="/member" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+    <i class="bi bi-speedometer2"></i>
+      <span *ngIf="!iscollapsed">Dashboard</span>
     </a>
     <a routerLink="/timelines" routerLinkActive="active">
-      <i class="icon-timeline"></i>
-      <span>Timelines</span>
+      <i class="bi bi-calendar-event"></i>
+      <span *ngIf="!iscollapsed">Timelines</span>
     </a>
-    <a  href="/member/projects" routerLinkActive="active">
-      <i class="icon-projects"></i>
-      <span>Projects</span>
+    <a routerLink="/member/projects" routerLinkActive="active">
+      <i class="bi bi-kanban"></i>
+      <span *ngIf="!iscollapsed">Projects</span>
     </a>
     <a routerLink="/tasks" routerLinkActive="active">
-      <i class="icon-tasks"></i>
-      <span>Tasks</span>
+      <i class="bi bi-check2-square"></i>
+      <span *ngIf="!iscollapsed">Tasks</span>
     </a>
     <a routerLink="/collaboration" routerLinkActive="active">
-      <i class="icon-collab"></i>
-      <span>Collaboration</span>
+      <i class="bi bi-people-fill"></i>
+      <span *ngIf="!iscollapsed">Collaboration</span>
     </a>
   </nav>
+
+  <button class="sidebar-toggle" (click)="triggerToggle()">
+    <i class="bi" [ngClass]="iscollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+  </button>
 </div>

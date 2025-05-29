@@ -9,7 +9,7 @@ const {
     updateTask,
     deleteTask,
     addSubtask,
-    addCommentToTask,assignUsersToTask,getTasksByProject,updateTaskStatusOnly
+    addCommentToTask,assignUsersToTask,getTasksByProject,updateTaskStatusOnly,getMemberTaskActivities
 } = require('../controllers/taskController');
 const {Task} = require("../models/TaskModel");
 
@@ -23,6 +23,7 @@ router.post('/tasks/:taskId/comments', isAuth, addCommentToTask);
 router.post('/tasks/:taskId/assign-users', isAuth,assignUsersToTask );
 router.get('/tasks/project/:projectId', isAuth, getTasksByProject);
 router.patch('/tasks/:id/status', isAuth, updateTaskStatusOnly);
+router.get('/member/activities', isAuth, getMemberTaskActivities);
 
 
 module.exports = router;

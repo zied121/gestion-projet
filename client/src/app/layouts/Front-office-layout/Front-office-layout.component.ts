@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from "../../components/navbar/navbar.component";
 import { RouterModule } from "@angular/router";
@@ -15,5 +15,16 @@ import {NgIf} from '@angular/common';
   styleUrls: ['./Front-office-layout.component.css'],
 })
 export class FrontofficelayoutComponent {
+  isSidebarCollapsed = true;
 
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.sidebar') && !target.closest('.sidebar-toggle')) {
+      this.isSidebarCollapsed = true;
+    }
+  }
 }

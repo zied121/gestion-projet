@@ -13,10 +13,6 @@
   <ul>
     <li *ngFor="let user of task.users">{{ user.name }} ({{ user.email }})</li>
   </ul>
-  <p><strong>Sous-tâches :</strong></p>
-  <ul>
-    <li *ngFor="let sub of task.subtasks">{{ sub.title }} - {{ sub.status }}</li>
-  </ul>
 </div>
 
 <div class="modal-footer">

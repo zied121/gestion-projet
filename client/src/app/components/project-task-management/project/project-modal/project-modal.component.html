@@ -7,21 +7,34 @@
   <form [formGroup]="form" (ngSubmit)="submit()">
 
     <div class="mb-3">
-    <label for="organisation" class="form-label">Organisation</label>
-    <input type="text" id="organisation" formControlName="organisation" class="form-control" [value]="organisationId" readonly>
+      <label for="organisation" class="form-label">Organisation</label>
+      <input type="text" id="organisation" formControlName="organisation" class="form-control" readonly>
     </div>
 
     <div class="mb-3">
       <label for="name" class="form-label">Nom du projet</label>
-      <input type="text" id="name" formControlName="name" class="form-control" [ngClass]="{'is-invalid': form.get('name')?.invalid && form.get('name')?.touched}">
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-control"
+        [ngClass]="{'is-invalid': form.get('name')?.invalid && form.get('name')?.touched}">
       <div class="invalid-feedback" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
         Le nom est requis.
+      </div>
+
+      <div *ngIf="loadingTitle" class="spinner-border text-primary" role="status">
+        <span class="sr-only">Chargement...</span>
       </div>
     </div>
 
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
       <textarea id="description" formControlName="description" class="form-control" rows="3"></textarea>
+
+      <div *ngIf="loadingDescription" class="spinner-border text-primary" role="status">
+        <span class="sr-only">Chargement...</span>
+      </div>
     </div>
 
     <div class="mb-3">
@@ -44,17 +57,24 @@
         <input type="date" id="end_date" formControlName="end_date" class="form-control">
       </div>
     </div>
+
     <div>
       <label>Membres</label>
-      <div *ngFor="let member of members">
+      <div *ngFor="let member of members" class="form-check">
         <input
+          class="form-check-input"
           type="checkbox"
           [value]="member._id"
+          [checked]="selectedMembers.includes(member._id)"
           (change)="onMemberChange($event, member._id)"
+          id="member-{{member._id}}"
         />
-        {{ member.nom }}
+        <label class="form-check-label" for="member-{{member._id}}">
+          {{ member.nom }}
+        </label>
       </div>
     </div>
+
   </form>
 </div>
 

@@ -25,6 +25,7 @@ export class TaskModalComponent implements OnInit {
       title: ['', Validators.required],
       description: [''],
       status: ['To Do'],
+      priority: ['Medium'],
       startDate: [''],
       dueDate: ['']
     });

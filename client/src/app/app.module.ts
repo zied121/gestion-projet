@@ -12,6 +12,7 @@ import {NgChartsModule} from 'ng2-charts';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
     @NgModule({
       imports: [
@@ -21,9 +22,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
         RouterModule.forRoot(routes),
         AppComponent,
         ProjectListComponent,
-        BrowserAnimationsModule,
         MatFormFieldModule,
         MatInputModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
       ],
       providers: [ProjectService]
     })

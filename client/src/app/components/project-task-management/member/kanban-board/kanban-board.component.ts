@@ -93,4 +93,13 @@ export class KanbanBoardComponent implements OnChanges {
       this.loadTasks(); // Recharge les tâches après fermeture
     });
   }
+  openTaskModals(task: any = null): void {
+    const ref = this.modalService.open(TaskModalComponent);
+    ref.componentInstance.task = task;
+    ref.componentInstance.assignee = task?.assignee?.map((a: { nom: any; })=>(a.nom));
+    console.log("task", task?.assignee?.map((a: { nom: any; })=>(a.nom)));
+
+    ref.componentInstance.projectId = this.projectId; // Passer le contexte projet
+    ref.closed.subscribe(() =>  this.loadTasks());
+  }
 }
