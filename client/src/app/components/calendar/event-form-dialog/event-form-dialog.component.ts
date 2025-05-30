@@ -151,7 +151,7 @@ downloadFile(): void {
     this.downloadFileAsBlob();
 }
 
-// Nouvelle méthode pour télécharger via fetch
+  
 private async downloadFileAsBlob(): Promise<void> {
     try {
         // Afficher un indicateur de chargement
@@ -222,34 +222,8 @@ private openFileInNewTab(): void {
     document.body.removeChild(link);
 }
 
-// Méthode alternative si vous voulez essayer l'approche directe d'abord
-downloadFileAlternative(): void {
-    if (!this.filePreviewUrl) {
-        alert('Aucun fichier à télécharger');
-        return;
-    }
-    
-    // Si c'est un fichier local (localhost), essayer la méthode directe
-    if (this.filePreviewUrl.includes('localhost')) {
-        this.downloadFileAsBlob();
-    } else {
-        // Pour les fichiers externes, ouvrir dans un nouvel onglet
-        this.openFileInNewTab();
-    }
-}
 
-// Méthode pour vérifier si le fichier est accessible
-async checkFileAccess(): Promise<boolean> {
-    if (!this.filePreviewUrl) return false;
-    
-    try {
-        const response = await fetch(this.filePreviewUrl, { method: 'HEAD' });
-        return response.ok;
-    } catch (error) {
-        console.error('Erreur lors de la vérification du fichier:', error);
-        return false;
-    }
-}
+
 
 
 
@@ -318,7 +292,6 @@ async checkFileAccess(): Promise<boolean> {
         };
     }
 
-    // Enhanced participant management methods
     onParticipantSearch(): void {
         this.updateFilteredUsers();
         this.showParticipantDropdown = true;
@@ -397,16 +370,7 @@ removeParticipant(participantId: string): void {
         });
     }
 
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event): void {
-        const target = event.target as HTMLElement;
-        const searchInput = target.closest('input[name="participantSearch"]');
-        const dropdown = target.closest('.absolute.z-10');
 
-        if (!searchInput && !dropdown) {
-            this.showParticipantDropdown = false;
-        }
-    }
     addReminder(): void {
         if (!this.formData.rappel) {
             this.formData.rappel = [];
@@ -639,65 +603,6 @@ onSubmit(): void {
     
     console.log('=== FIN DEBUG SUBMISSION ===');
 }
-getParticipantChanges(): { added: string[], removed: string[] } {
-    if (!this.event?._id) {
-        return { added: this.selectedParticipants, removed: [] };
-    }
 
-    const added = this.selectedParticipants.filter(id => !this.originalParticipants.includes(id));
-    const removed = this.originalParticipants.filter(id => !this.selectedParticipants.includes(id));
 
-    return { added, removed };
-}
-
-showParticipantChangesSummary(): string {
-    const changes = this.getParticipantChanges();
-    const summary = [];
-
-    if (changes.added.length > 0) {
-        summary.push(`${changes.added.length} participant(s) à ajouter`);
-    }
-
-    if (changes.removed.length > 0) {
-        summary.push(`${changes.removed.length} participant(s) à supprimer`);
-    }
-
-    return summary.length > 0 ? summary.join(', ') : 'Aucun changement';
-}
-    closeDialog(): void {
-        console.log('Fermeture du dialog');
-        this.close.emit();
-    }
-    private showValidationError(message: string): void {
-        console.log('Message affiché:', message);
-        alert(message);
-    }
-    getParticipantCount(): number {
-        return this.selectedParticipants.length;
-    }
-    clearAllParticipants(): void {
-        if (this.originalParticipants.length > 0 && this.event?._id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer tous les participants de cet événement ?')) {
-                // Supprimer tous les participants originaux du backend
-                this.originalParticipants.forEach(participantId => {
-                    this.deleteParticipantFromEvent(participantId);
-                });
-            }
-        } else {
-            this.selectedParticipants = [];
-            this.updateFilteredUsers();
-        }
-    }
-    isFormValid(): boolean {
-        return !!(
-            this.formData.titre?.trim() &&
-            this.formData.date_debut &&
-            this.formData.date_fin &&
-            this.formData.type &&
-            new Date(this.formData.date_fin) > new Date(this.formData.date_debut)
-        );
-    }
-    isOriginalParticipant(participantId: string): boolean {
-        return this.originalParticipants.includes(participantId);
-    }
 }

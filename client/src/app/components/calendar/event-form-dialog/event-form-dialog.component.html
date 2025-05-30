@@ -6,9 +6,9 @@
       <div class="flex justify-between items-center">
         <div>
           <h3 class="text-xl font-bold">
-            {{ event ? 'Edit Event' : 'Create New Event' }}
+            {{ event ? 'Event' : 'Create New Event' }}
           </h3>
-          <p class="text-blue-100 text-sm mt-1">{{ event ? 'Update event details' : 'Fill in the event information below' }}</p>
+          <p class="text-blue-100 text-sm mt-1">{{ event ? event.titre : 'Fill in the event information below' }}</p>
         </div>
         <button (click)="close.emit()" class="text-blue-200 hover:text-white hover:bg-blue-800 rounded-full p-2 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -376,7 +376,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-            {{ event ? 'Update Event' : 'Create Event' }}
+            {{ event ? 'Submit' : 'Create Event' }}
           </button>
         </div>
       </form>
