@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
 });
 
 
- const sendOrganiastionCodeEmail = async (email, password) => {
-    
+const sendOrganiastionCodeEmail = async (email, password) => {
+
     try {
         transporter.sendMail({
             from: "ziedbensalah10@gmail.com",
@@ -25,17 +25,17 @@ const transporter = nodemailer.createTransport({
 };
 
 const ForgetPasswordEmail = async (email, password) => {
-     
-    try{
+
+    try {
         transporter.sendMail({
-            from:"ziedbensalah10@gmail.com",
+            from: "ziedbensalah10@gmail.com",
             to: email,
             subject: "Password Reset",
             html: `here is your new password: <strong>${password}</strong>`
         });
 
 
-    }catch (err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -79,10 +79,34 @@ const SendOtpMail = async (to, subject, otp) => {
         console.log(err);
     }
 };
+const feedbackmail = async (content) => {
+
+    try {
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: "rimmhatli59@gmail.com",
+            subject: "Feedback",
+            html: `
+            <p>Type: <strong>comment</strong></p>
+            <p>Title: <strong>${content.title || 'Untitled'}</strong></p>
+            <p>Content: <strong>${content.content}</strong></p>
+            <p>Category: <strong>${content.category || 'Général'}</strong></p>
+            <p>Email: <strong>${content.email || 'N/A'}</strong></p>
+            <p>Notify Me: <strong>${content.notifyMe || false}</strong></p>
+            <p>Created At: <strong>${new Date().toISOString()}</strong></p>
+            `
+        });
+        console.log("Feedback email sent successfully", content);
+    } catch (err) {
+        console.log(err);
+    }
+
+};
+
 module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
     SendOtpMail,
     ForgetPasswordEmail,
-    sendTaskCreatedNotification
+    sendTaskCreatedNotification, feedbackmail
 };
