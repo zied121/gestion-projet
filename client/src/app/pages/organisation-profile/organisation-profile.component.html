@@ -1,0 +1,115 @@
+<div class="flex justify-center p-4">
+    <form class="w-full max-w-3xl rounded-lg bg-white p-8 shadow-md" action="#" method="POST">
+      <div class="space-y-12 mt-2">
+        <div class="border-b border-gray-900/10 pb-12">
+          <h2 class="text-base font-semibold text-gray-900">Company Information</h2>
+          <p class="mt-1 text-sm text-gray-600">Provide accurate details about your company profile.</p>
+  
+          <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+            
+            <div class="col-span-full">
+              <label for="photo" class="block text-sm font-medium text-gray-900">Logo</label>
+              <div class="mt-2 flex items-center gap-x-3">
+                <img
+                  class="object-cover w-16 h-16 rounded-full"
+                  [src]="companyData.image || 'https://via.placeholder.com/150'"
+                  alt="Company logo"
+                />
+                <label
+                  for="file-upload"
+                  class="cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
+                >
+                  Change
+                  <input
+                    id="file-upload"
+                    name="photo"
+                    type="file"
+                    accept="image/*"
+                    (change)="onCompanyImageSelected($event)"
+                    class="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+  
+            <div class="sm:col-span-3">
+              <label for="company-name" class="block text-sm font-medium text-gray-900">Nom</label>
+              <div class="mt-2">
+                <input
+                  type="text"
+                  id="company-name"
+                  name="nom"
+                  [(ngModel)]="companyData.nom"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+              </div>
+            </div>
+  
+            <div class="sm:col-span-3">
+              <label for="matricule" class="block text-sm font-medium text-gray-900">Matricule Fiscal</label>
+              <div class="mt-2">
+                <input
+                  type="text"
+                  id="matricule"
+                  name="matricule_fiscal"
+                  [(ngModel)]="companyData.matricule_fiscal"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+              </div>
+            </div>
+  
+            <div class="sm:col-span-3">
+              <label for="type" class="block text-sm font-medium text-gray-900">Type</label>
+              <div class="mt-2">
+                <input
+                  type="text"
+                  id="type"
+                  name="type"
+                  [(ngModel)]="companyData.type"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+              </div>
+            </div>
+  
+            <div class="col-span-full">
+              <label for="description" class="block text-sm font-medium text-gray-900">Description</label>
+              <div class="mt-2">
+                <textarea
+                  id="description"
+                  name="description"
+                  [(ngModel)]="companyData.description"
+                  rows="4"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                ></textarea>
+              </div>
+            </div>
+  
+            <div class="col-span-full">
+              <label for="location" class="block text-sm font-medium text-gray-900">Location</label>
+              <div class="mt-2">
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  [(ngModel)]="companyData.location"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+                />
+              </div>
+            </div>
+  
+          </div>
+        </div>
+      </div>
+  
+      <div class="mt-6 flex items-center justify-end gap-x-6">
+        <button type="button" class="text-sm font-semibold text-gray-900">Cancel</button>
+        <button
+          type="button"
+          (click)="saveCompanyProfile()"
+          class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>

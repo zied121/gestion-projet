@@ -1,0 +1,87 @@
+<div class="px-4 sm:px-6 lg:px-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Subscriptions</h1>
+      <p class="mt-2 text-sm text-gray-700">A list of all subscriptions in your platform including their status, plan, and organization details.</p>
+    </div>
+  </div>
+
+  <!-- Subscription Stats -->
+  <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Total Active Subscriptions</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{subscriptionStats.activeSubscriptions}}</dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Monthly Recurring Revenue</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">${{subscriptionStats.monthlyRevenue}}</dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Total Organizations</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{subscriptionStats.totalOrganizations}}</dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="truncate text-sm font-medium text-gray-500">Total Users</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">{{subscriptionStats.totalUsers}}</dd>
+    </div>
+  </div>
+
+  <!-- Subscription Table -->
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Organization</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Plan</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Users</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Revenue</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Next Payment</th>
+                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                  <span class="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <tr *ngFor="let subscription of subscriptions">
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                  <div class="font-medium text-gray-900">{{subscription.organizationName}}</div>
+                  <div class="text-gray-500">{{subscription.organizationId}}</div>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <span [class]="getPlanBadgeClass(subscription.plan.type)">
+                    {{subscription.plan.type | titlecase}}
+                  </span>
+                  <span class="ml-1 text-xs">{{subscription.plan.isAnnual ? '(Annual)' : '(Monthly)'}}</span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm">
+                  <span [class]="getStatusBadgeClass(!!subscription.active)">
+                    {{subscription.active ? 'Active' : 'Inactive'}}
+                  </span>
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{subscription.userCount}}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  ${{subscription.totalRevenue}}
+                </td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  {{subscription.currentPeriodEnd | date}}
+                </td>
+                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                  <button *ngIf="subscription.active" (click)="cancelSubscription(subscription.organizationId)" 
+                          class="text-red-600 hover:text-red-900">Cancel</button>
+                  <button *ngIf="!subscription.active" (click)="resumeSubscription(subscription.organizationId)"
+                          class="text-blue-600 hover:text-blue-900">Resume</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

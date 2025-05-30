@@ -1,0 +1,305 @@
+<div class="min-h-screen bg-gray-50 py-12 dark:bg-gray-900">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
+                Choose Your Perfect Plan
+            </h1>
+            <p class="mt-4 text-xl text-gray-600 dark:text-gray-300">
+                Get started with our flexible subscription plans designed to meet your needs
+            </p>
+        </div>
+
+        <!-- Pricing Toggle -->
+        <div class="mt-12 flex justify-center">
+            <div class="relative flex items-center">
+                <span class="mr-3 text-sm font-medium text-gray-900 dark:text-white">Monthly</span>
+                <button (click)="toggleBilling()" 
+                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                        [ngClass]="isAnnual ? 'bg-blue-600' : 'bg-gray-200'">
+                    <span class="translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                          [ngClass]="isAnnual ? 'translate-x-5' : 'translate-x-0'"></span>
+                </button>
+                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white">Annual <span class="text-green-500">(Save 20%)</span></span>
+            </div>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div *ngIf="error || success" class="mt-4 text-center">
+            <div *ngIf="error" class="text-red-600 bg-red-50 p-4 rounded-lg">
+                {{ error }}
+            </div>
+            <div *ngIf="success" class="text-green-600 bg-green-50 p-4 rounded-lg">
+                {{ success }}
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div *ngIf="loading" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                <p class="mt-4 text-gray-700">Processing your request...</p>
+            </div>
+        </div>
+
+        <!-- Current Subscription Alert -->
+        <div *ngIf="currentSubscription?.active" class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-center">
+                <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">Current Subscription</h3>
+                    <p class="mt-1 text-sm text-blue-600">
+                        You are currently on the {{ currentSubscription?.plan?.type | titlecase }} plan
+                        ({{ currentSubscription?.plan?.isAnnual ? 'Annual' : 'Monthly' }}).
+                        <span *ngIf="currentSubscription?.cancelAtPeriodEnd">
+                            Your subscription will end on {{ currentSubscription?.currentPeriodEnd | date }}.
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Cards -->
+        <div class="mt-12 grid gap-8 lg:grid-cols-3">
+            <!-- Standard Plan -->
+            <div class="relative rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                 [class.opacity-75]="loading">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Standard</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Perfect for getting started</p>
+                    <p class="mt-4">
+                        <span class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">$0</span>
+                        <span class="text-base font-medium text-gray-500 dark:text-gray-400">/month</span>
+                    </p>
+                </div>
+
+                <ul class="space-y-4">
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Up to 5 team members</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Basic analytics</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">1GB storage</span>
+                    </li>
+                </ul>
+
+                <button (click)="selectPlan('standard')" 
+                        [disabled]="loading || (currentSubscription?.active && currentSubscription?.plan?.type === 'standard')"
+                        class="mt-8 w-full rounded-lg px-4 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        [ngClass]="{
+                            'bg-blue-600 text-white hover:bg-blue-500': !(currentSubscription?.active && currentSubscription?.plan?.type === 'standard'),
+                            'bg-gray-300 cursor-not-allowed': currentSubscription?.active && currentSubscription?.plan?.type === 'standard'
+                        }">
+                    {{ currentSubscription?.active && currentSubscription?.plan?.type === 'standard' ? 'Current Plan' : 'Get Started' }}
+                </button>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="relative rounded-2xl border-2 border-blue-600 bg-white p-8 shadow-lg dark:bg-gray-800"
+                 [class.opacity-75]="loading">
+                <div class="absolute -top-4 right-8 inline-flex items-center rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
+                    Most Popular
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Premium</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Perfect for growing teams</p>
+                    <p class="mt-4">
+                        <span class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">${{isAnnual ? '32' : '40'}}</span>
+                        <span class="text-base font-medium text-gray-500 dark:text-gray-400">/month</span>
+                    </p>
+                </div>
+
+                <ul class="space-y-4">
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Up to 20 team members</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Advanced analytics</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">10GB storage</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Priority support</span>
+                    </li>
+                </ul>
+
+                <button (click)="onUpgradeToPremiumClick()"
+                        [disabled]="loading || (currentSubscription?.active && currentSubscription?.plan?.type === 'premium')"
+                        class="mt-8 w-full rounded-lg px-4 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        [ngClass]="{
+                            'bg-blue-600 text-white hover:bg-blue-500': !(currentSubscription?.active && currentSubscription?.plan?.type === 'premium'),
+                            'bg-gray-300 cursor-not-allowed': currentSubscription?.active && currentSubscription?.plan?.type === 'premium'
+                        }">
+                    {{ currentSubscription?.active && currentSubscription?.plan?.type === 'premium' ? 'Current Plan' : 'Upgrade to Premium' }}
+                </button>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="relative rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                 [class.opacity-75]="loading">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Enterprise</h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Perfect for large organizations</p>
+                    <p class="mt-4">
+                        <span class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">${{isAnnual ? '80' : '100'}}</span>
+                        <span class="text-base font-medium text-gray-500 dark:text-gray-400">/month</span>
+                    </p>
+                </div>
+
+                <ul class="space-y-4">
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Unlimited team members</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Custom analytics</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Unlimited storage</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">24/7 dedicated support</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="ml-3 text-base text-gray-700 dark:text-gray-300">Custom integrations</span>
+                    </li>
+                </ul>
+
+                <button *ngIf="!showPremiumPlusForm" (click)="onPremiumPlusClick()" [disabled]="loading || (currentSubscription?.active && currentSubscription?.plan?.type === 'premium_plus')"
+                        class="mt-8 w-full rounded-lg px-4 py-2 text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2"
+                        [ngClass]="{
+                            'bg-blue-600 text-white hover:bg-blue-500': !(currentSubscription?.active && currentSubscription?.plan?.type === 'premium_plus'),
+                            'bg-gray-300 cursor-not-allowed': currentSubscription?.active && currentSubscription?.plan?.type === 'premium_plus'
+                        }">
+                    {{ currentSubscription?.active && currentSubscription?.plan?.type === 'premium_plus' ? 'Current Plan' : 'Contact Sales' }}
+                </button>
+
+                <div *ngIf="showPremiumPlusForm" class="mt-4 p-4 border rounded bg-gray-100">
+                    <form (ngSubmit)="submitPremiumPlus()">
+                        <label>Number of Users:
+                            <input type="number" [(ngModel)]="premiumPlusUsers" name="users" min="1" required class="ml-2 border rounded px-2 py-1">
+                        </label>
+                        <br>
+                        <label>Number of Projects:
+                            <input type="number" [(ngModel)]="premiumPlusProjects" name="projects" min="1" required class="ml-2 border rounded px-2 py-1">
+                        </label>
+                        <br>
+                        <button type="submit" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+                    </form>
+                </div>
+
+                <div *ngIf="qrData" class="mt-4 flex justify-center">
+                    <qrcode [qrdata]="qrData" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Comparison -->
+        <div class="mt-16">
+            <h2 class="text-center text-2xl font-bold text-gray-900 dark:text-white">Compare Plans</h2>
+            <div class="mt-8 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="bg-gray-50 px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">Features</th>
+                                <th class="bg-gray-50 px-6 py-3 text-center text-sm font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">Standard</th>
+                                <th class="bg-gray-50 px-6 py-3 text-center text-sm font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">Premium</th>
+                                <th class="bg-gray-50 px-6 py-3 text-center text-sm font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">Team members</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Up to 5</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Up to 20</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">Storage</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">1GB</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">10GB</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">Support</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Email</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Priority</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">24/7 Dedicated</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-300">Analytics</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Basic</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Advanced</td>
+                                <td class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Custom</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-16">
+            <h2 class="text-center text-2xl font-bold text-gray-900 dark:text-white">Frequently Asked Questions</h2>
+            <div class="mt-8 grid gap-6 lg:grid-cols-2">
+                <div class="rounded-lg border border-gray-200 p-6 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Can I change plans later?</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-6 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">What payment methods do you accept?</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">We accept all major credit cards, PayPal, and bank transfers for Enterprise plans.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-6 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Is there a free trial?</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">Yes, all paid plans come with a 14-day free trial. No credit card required.</p>
+                </div>
+                <div class="rounded-lg border border-gray-200 p-6 dark:border-gray-700">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">What happens after my trial ends?</h3>
+                    <p class="mt-2 text-gray-600 dark:text-gray-400">After your trial ends, you'll be automatically switched to the free plan unless you choose to upgrade.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,667 @@
+{
+  "version": "6.0",
+  "nxVersion": "20.6.2",
+  "pathMappings": {
+    "@spartan-ng/ui-button-helm": [
+      ".\\libs/ui/ui-button-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-alert-helm": [
+      ".\\libs/ui/ui-alert-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-icon-helm": [
+      ".\\libs/ui/ui-icon-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-tabs-helm": [
+      ".\\libs/ui/ui-tabs-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-card-helm": [
+      ".\\libs/ui/ui-card-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-input-helm": [
+      ".\\libs/ui/ui-input-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-formfield-helm": [
+      ".\\libs/ui/ui-formfield-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-label-helm": [
+      ".\\libs/ui/ui-label-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-badge-helm": [
+      ".\\libs/ui/ui-badge-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-table-helm": [
+      ".\\libs/ui/ui-table-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-dialog-helm": [
+      ".\\libs/ui/ui-dialog-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-alertdialog-helm": [
+      ".\\libs/ui/ui-alertdialog-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-datepicker-helm": [
+      ".\\libs/ui/ui-datepicker-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-calendar-helm": [
+      ".\\libs/ui/ui-calendar-helm/src/index.ts"
+    ],
+    "@spartan-ng/ui-popover-helm": [
+      ".\\libs/ui/ui-popover-helm/src/index.ts"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "projectFileMap": {
+      "client": [
+        {
+          "file": ".editorconfig",
+          "hash": "8037249353422744134"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "10175894702052279752"
+        },
+        {
+          "file": ".postcssrc.json",
+          "hash": "8859462536152254982"
+        },
+        {
+          "file": ".vscode/extensions.json",
+          "hash": "11934160580685414355"
+        },
+        {
+          "file": ".vscode/launch.json",
+          "hash": "17406702432687230417"
+        },
+        {
+          "file": ".vscode/tasks.json",
+          "hash": "10093397977228577162"
+        },
+        {
+          "file": "README.md",
+          "hash": "3120405201897279701"
+        },
+        {
+          "file": "angular.json",
+          "hash": "4035435932143970219"
+        },
+        {
+          "file": "components.json",
+          "hash": "3089158842223537119"
+        },
+        {
+          "file": "libs/ui/ui-alert-helm/src/index.ts",
+          "hash": "3791802788218093072"
+        },
+        {
+          "file": "libs/ui/ui-alert-helm/src/lib/hlm-alert-description.directive.ts",
+          "hash": "10054372904229832760"
+        },
+        {
+          "file": "libs/ui/ui-alert-helm/src/lib/hlm-alert-icon.directive.ts",
+          "hash": "12879871385254423897"
+        },
+        {
+          "file": "libs/ui/ui-alert-helm/src/lib/hlm-alert-title.directive.ts",
+          "hash": "6737690058252919623"
+        },
+        {
+          "file": "libs/ui/ui-alert-helm/src/lib/hlm-alert.directive.ts",
+          "hash": "6674817542479002104"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/index.ts",
+          "hash": "8146933523089635701"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-action-button.directive.ts",
+          "hash": "1422241331487409646"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-cancel-button.directive.ts",
+          "hash": "14830594565982339429"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-content.component.ts",
+          "hash": "10092501886584486457"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-description.directive.ts",
+          "hash": "9811652057824537648"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-footer.component.ts",
+          "hash": "16661942140075421979"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-header.component.ts",
+          "hash": "12114381417388294290"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-overlay.directive.ts",
+          "hash": "6987357437767768949"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog-title.directive.ts",
+          "hash": "18055364843113896742"
+        },
+        {
+          "file": "libs/ui/ui-alertdialog-helm/src/lib/hlm-alert-dialog.component.ts",
+          "hash": "8498035084345322100"
+        },
+        {
+          "file": "libs/ui/ui-badge-helm/src/index.ts",
+          "hash": "6405281052730795437"
+        },
+        {
+          "file": "libs/ui/ui-badge-helm/src/lib/hlm-badge.directive.ts",
+          "hash": "4803382876565833571"
+        },
+        {
+          "file": "libs/ui/ui-button-helm/src/index.ts",
+          "hash": "17251273102492170138"
+        },
+        {
+          "file": "libs/ui/ui-button-helm/src/lib/hlm-button.directive.ts",
+          "hash": "11068329498313394712"
+        },
+        {
+          "file": "libs/ui/ui-button-helm/src/lib/hlm-button.token.ts",
+          "hash": "7896754714560199098"
+        },
+        {
+          "file": "libs/ui/ui-calendar-helm/src/index.ts",
+          "hash": "6362718086274469317"
+        },
+        {
+          "file": "libs/ui/ui-calendar-helm/src/lib/hlm-calendar.component.ts",
+          "hash": "6098089055195477127"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/index.ts",
+          "hash": "16562238750490677596"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card-content.directive.ts",
+          "hash": "14120040773416496629"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card-description.directive.ts",
+          "hash": "11379924620899130749"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card-footer.directive.ts",
+          "hash": "10967238700823552868"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card-header.directive.ts",
+          "hash": "15901871804019604030"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card-title.directive.ts",
+          "hash": "12874525138222134681"
+        },
+        {
+          "file": "libs/ui/ui-card-helm/src/lib/hlm-card.directive.ts",
+          "hash": "17507123041101396637"
+        },
+        {
+          "file": "libs/ui/ui-datepicker-helm/src/index.ts",
+          "hash": "3105894957903151523"
+        },
+        {
+          "file": "libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.component.ts",
+          "hash": "3871252063351294951"
+        },
+        {
+          "file": "libs/ui/ui-datepicker-helm/src/lib/hlm-date-picker.token.ts",
+          "hash": "3847623000681083560"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/index.ts",
+          "hash": "933315377037635710"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-close.directive.ts",
+          "hash": "8269856283177178458"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-content.component.ts",
+          "hash": "14301946607390417284"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-description.directive.ts",
+          "hash": "13958199224900080482"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-footer.component.ts",
+          "hash": "9580954145658853784"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-header.component.ts",
+          "hash": "18295140268813422724"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-overlay.directive.ts",
+          "hash": "475678399206782544"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog-title.directive.ts",
+          "hash": "5930239430568862540"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog.component.ts",
+          "hash": "15778212970116877255"
+        },
+        {
+          "file": "libs/ui/ui-dialog-helm/src/lib/hlm-dialog.service.ts",
+          "hash": "15552736847261766006"
+        },
+        {
+          "file": "libs/ui/ui-formfield-helm/src/index.ts",
+          "hash": "1379682831294187538"
+        },
+        {
+          "file": "libs/ui/ui-formfield-helm/src/lib/form-field.spec.ts",
+          "hash": "9247239904589969713"
+        },
+        {
+          "file": "libs/ui/ui-formfield-helm/src/lib/hlm-error.directive.ts",
+          "hash": "8559813530759281347"
+        },
+        {
+          "file": "libs/ui/ui-formfield-helm/src/lib/hlm-form-field.component.ts",
+          "hash": "10263304905217156553"
+        },
+        {
+          "file": "libs/ui/ui-formfield-helm/src/lib/hlm-hint.directive.ts",
+          "hash": "6215421755390582281"
+        },
+        {
+          "file": "libs/ui/ui-icon-helm/src/index.ts",
+          "hash": "13072002477516072914"
+        },
+        {
+          "file": "libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.spec.ts",
+          "hash": "9511563528933246212"
+        },
+        {
+          "file": "libs/ui/ui-icon-helm/src/lib/hlm-icon.directive.ts",
+          "hash": "1190767095705292823"
+        },
+        {
+          "file": "libs/ui/ui-icon-helm/src/lib/hlm-icon.token.ts",
+          "hash": "1780499468245078594"
+        },
+        {
+          "file": "libs/ui/ui-input-helm/src/index.ts",
+          "hash": "487913567356772959"
+        },
+        {
+          "file": "libs/ui/ui-input-helm/src/lib/hlm-input-error.directive.ts",
+          "hash": "13040471592513364896"
+        },
+        {
+          "file": "libs/ui/ui-input-helm/src/lib/hlm-input.directive.ts",
+          "hash": "1809643114653750158"
+        },
+        {
+          "file": "libs/ui/ui-label-helm/src/index.ts",
+          "hash": "11520514252818889827"
+        },
+        {
+          "file": "libs/ui/ui-label-helm/src/lib/hlm-label.directive.ts",
+          "hash": "9552035975350433381"
+        },
+        {
+          "file": "libs/ui/ui-popover-helm/src/index.ts",
+          "hash": "14206434168979323056"
+        },
+        {
+          "file": "libs/ui/ui-popover-helm/src/lib/hlm-popover-close.directive.ts",
+          "hash": "4622613224409152589"
+        },
+        {
+          "file": "libs/ui/ui-popover-helm/src/lib/hlm-popover-content.directive.ts",
+          "hash": "16039638436507169784"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/index.ts",
+          "hash": "10469680382427192649"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-caption.component.ts",
+          "hash": "8365153485822053352"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-table.component.ts",
+          "hash": "11435970391368970768"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-table.directive.ts",
+          "hash": "16926324896027948178"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-td.component.ts",
+          "hash": "128832280663156114"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-th.component.ts",
+          "hash": "13159417758523778545"
+        },
+        {
+          "file": "libs/ui/ui-table-helm/src/lib/hlm-trow.component.ts",
+          "hash": "17656523312901049612"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/index.ts",
+          "hash": "1841781438202689908"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/lib/hlm-tabs-content.directive.ts",
+          "hash": "2696862438070259346"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/lib/hlm-tabs-list.component.ts",
+          "hash": "250101444536536143"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/lib/hlm-tabs-paginated-list.component.ts",
+          "hash": "1757031709345841866"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/lib/hlm-tabs-trigger.directive.ts",
+          "hash": "8061236442068126127"
+        },
+        {
+          "file": "libs/ui/ui-tabs-helm/src/lib/hlm-tabs.component.ts",
+          "hash": "5629936876467848805"
+        },
+        {
+          "file": "package-lock.json",
+          "hash": "16605438028924215162"
+        },
+        {
+          "file": "package.json",
+          "hash": "4668996795772919804",
+          "deps": [
+            "npm:@angular-devkit/build-angular",
+            "npm:@angular/cli",
+            "npm:@angular/compiler-cli",
+            "npm:@spartan-ng/cli",
+            "npm:@types/jasmine",
+            "npm:autoprefixer",
+            "npm:jasmine-core",
+            "npm:karma",
+            "npm:karma-chrome-launcher",
+            "npm:karma-coverage",
+            "npm:karma-jasmine",
+            "npm:karma-jasmine-html-reporter",
+            "npm:postcss",
+            "npm:tailwind-merge",
+            "npm:tailwindcss",
+            "npm:tailwindcss-animate",
+            "npm:typescript",
+            "npm:@angular/cdk",
+            "npm:@angular/common",
+            "npm:@angular/compiler",
+            "npm:@angular/core",
+            "npm:@angular/forms",
+            "npm:@angular/platform-browser",
+            "npm:@angular/platform-browser-dynamic",
+            "npm:@angular/router",
+            "npm:@ng-icons/core",
+            "npm:@ng-icons/lucide",
+            "npm:@spartan-ng/brain",
+            "npm:@tailwindcss/postcss",
+            "npm:class-variance-authority",
+            "npm:clsx",
+            "npm:rxjs",
+            "npm:tslib",
+            "npm:zone.js"
+          ]
+        },
+        {
+          "file": "public/favicon.ico",
+          "hash": "3988961587069885523"
+        },
+        {
+          "file": "src/app/app.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/app.component.html",
+          "hash": "16498897523005705592"
+        },
+        {
+          "file": "src/app/app.component.spec.ts",
+          "hash": "8982914096599258101"
+        },
+        {
+          "file": "src/app/app.component.ts",
+          "hash": "13302837523707557004"
+        },
+        {
+          "file": "src/app/app.config.ts",
+          "hash": "15711866000353522597"
+        },
+        {
+          "file": "src/app/app.routes.ts",
+          "hash": "8262061382161429933"
+        },
+        {
+          "file": "src/app/components/navbar/navbar.component.css",
+          "hash": "2628494032694182100"
+        },
+        {
+          "file": "src/app/components/navbar/navbar.component.html",
+          "hash": "4259927719456295310"
+        },
+        {
+          "file": "src/app/components/navbar/navbar.component.spec.ts",
+          "hash": "18132722331439589879"
+        },
+        {
+          "file": "src/app/components/navbar/navbar.component.ts",
+          "hash": "15932874713395336351"
+        },
+        {
+          "file": "src/app/guards/admin.guard.spec.ts",
+          "hash": "12588256335686302006"
+        },
+        {
+          "file": "src/app/guards/admin.guard.ts",
+          "hash": "13608993169043159259"
+        },
+        {
+          "file": "src/app/guards/auth.guard.spec.ts",
+          "hash": "8826885499913990525"
+        },
+        {
+          "file": "src/app/guards/auth.guard.ts",
+          "hash": "13593337789691227965"
+        },
+        {
+          "file": "src/app/layouts/auth-layout/auth-layout.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/layouts/auth-layout/auth-layout.component.html",
+          "hash": "16498897523005705592"
+        },
+        {
+          "file": "src/app/layouts/auth-layout/auth-layout.component.spec.ts",
+          "hash": "16053031761057046572"
+        },
+        {
+          "file": "src/app/layouts/auth-layout/auth-layout.component.ts",
+          "hash": "6246915494154217612"
+        },
+        {
+          "file": "src/app/layouts/main-layout/main-layout.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/layouts/main-layout/main-layout.component.html",
+          "hash": "9894231646928150310"
+        },
+        {
+          "file": "src/app/layouts/main-layout/main-layout.component.spec.ts",
+          "hash": "4756936756584899640"
+        },
+        {
+          "file": "src/app/layouts/main-layout/main-layout.component.ts",
+          "hash": "16349780805364525631"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.html",
+          "hash": "3161852000771947446"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.spec.ts",
+          "hash": "8213465137135699087"
+        },
+        {
+          "file": "src/app/pages/dashboard/dashboard.component.ts",
+          "hash": "14149947247856640171"
+        },
+        {
+          "file": "src/app/pages/forgetpswd/forgetpswd.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/forgetpswd/forgetpswd.component.html",
+          "hash": "2220595320112834957"
+        },
+        {
+          "file": "src/app/pages/forgetpswd/forgetpswd.component.spec.ts",
+          "hash": "15401671655261276783"
+        },
+        {
+          "file": "src/app/pages/forgetpswd/forgetpswd.component.ts",
+          "hash": "14378737706411235577"
+        },
+        {
+          "file": "src/app/pages/login/login.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/login/login.component.html",
+          "hash": "17044739709620147068"
+        },
+        {
+          "file": "src/app/pages/login/login.component.spec.ts",
+          "hash": "10730385221617188498"
+        },
+        {
+          "file": "src/app/pages/login/login.component.ts",
+          "hash": "282733437101812856"
+        },
+        {
+          "file": "src/app/pages/profile-details/profile-details.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/profile-details/profile-details.component.html",
+          "hash": "18386802444917474499"
+        },
+        {
+          "file": "src/app/pages/profile-details/profile-details.component.spec.ts",
+          "hash": "10979400685496039004"
+        },
+        {
+          "file": "src/app/pages/profile-details/profile-details.component.ts",
+          "hash": "7302921003371849671"
+        },
+        {
+          "file": "src/app/pages/signup/signup.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/signup/signup.component.html",
+          "hash": "6195105336194359731"
+        },
+        {
+          "file": "src/app/pages/signup/signup.component.spec.ts",
+          "hash": "9658236958820425033"
+        },
+        {
+          "file": "src/app/pages/signup/signup.component.ts",
+          "hash": "9980998443517370802"
+        },
+        {
+          "file": "src/app/pages/workspaceform/workspaceform.component.css",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "src/app/pages/workspaceform/workspaceform.component.html",
+          "hash": "14258063937358121428"
+        },
+        {
+          "file": "src/app/pages/workspaceform/workspaceform.component.spec.ts",
+          "hash": "12066109939857248949"
+        },
+        {
+          "file": "src/app/pages/workspaceform/workspaceform.component.ts",
+          "hash": "6513627368598961930"
+        },
+        {
+          "file": "src/app/services/auth.service.spec.ts",
+          "hash": "6927655796975040699"
+        },
+        {
+          "file": "src/app/services/auth.service.ts",
+          "hash": "2465733424425489930"
+        },
+        {
+          "file": "src/app/services/organisation.service.spec.ts",
+          "hash": "783310752715992270"
+        },
+        {
+          "file": "src/app/services/organisation.service.ts",
+          "hash": "15314193281573234138"
+        },
+        {
+          "file": "src/app/services/user.service.spec.ts",
+          "hash": "18148047139486964869"
+        },
+        {
+          "file": "src/app/services/user.service.ts",
+          "hash": "5086530737700699733"
+        },
+        {
+          "file": "src/index.html",
+          "hash": "10727473434864545363"
+        },
+        {
+          "file": "src/main.ts",
+          "hash": "4169901790405087765"
+        },
+        {
+          "file": "src/styles.css",
+          "hash": "1300477706141766540"
+        },
+        {
+          "file": "tailwind.config.js",
+          "hash": "18129903238798157113"
+        },
+        {
+          "file": "tsconfig.app.json",
+          "hash": "14560978611694835822"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "12325336178568205827"
+        },
+        {
+          "file": "tsconfig.spec.json",
+          "hash": "11023685540591620072"
+        }
+      ]
+    },
+    "nonProjectFiles": []
+  }
+}
