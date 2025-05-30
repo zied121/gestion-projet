@@ -16,7 +16,8 @@ const {
   searchEvents, 
   searchByUser,
   addParticipants,
-  updateParticipantResponse
+  updateParticipantResponse, 
+  participant_status
 } = require('../Controllers/eventController');
 
 // Data sanitization middleware
@@ -61,25 +62,18 @@ router.post(
   '/create',
   (req, res, next) => {
     console.log('--- Debugging Create Event Route ---');
-    console.log('Incoming request body:', req.body);
-    console.log('Authenticated user:', req.user);
+    console.log('Incoming headers:', req.headers);
+    console.log('Content-Type:', req.headers['content-type']);
     next();
   },
   upload.single('file'),
   (req, res, next) => {
     console.log('Uploaded file:', req.file);
+    console.log('Request body:', req.body);
     next();
   },
-  sanitizeEventData, // Sanitize data BEFORE validation
-  (req, res, next) => {
-    console.log('Data after sanitization:', req.body);
-    next();
-  },
+  sanitizeEventData,
   validateEvent,
-  (req, res, next) => {
-    console.log('Validation passed for event creation.');
-    next();
-  },
   createEvent
 );
 
@@ -98,6 +92,20 @@ router.put('/add_participant/:id', addParticipants);
 router.put('/update_participant/:id', updateParticipantResponse);
 // Dans vos routes
 router.delete('/events/:id/participants/:participantId', isAuth, deleteParticipant);
+
+
+
+router.get('/:eventId/participant-status', async (req, res) => {
+    const { eventId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const status = await participant_status(eventId, userId);
+        return res.json(status);
+    } catch (error) {
+        return res.status(500).json({ error: 'Erreur lors de la récupération du statut du participant' });
+    }
+});
 // Nouvelle route pour supprimer des participants
 
 module.exports = router;

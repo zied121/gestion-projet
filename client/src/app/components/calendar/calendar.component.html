@@ -1,85 +1,139 @@
-<!-- Dans calendar.component.html -->
+<!-- calendar.component.html -->
 <div class="flex justify-between items-center mb-6 px-4 container my-8">
   <h2 class="text-2xl font-semibold text-gray-900">Calendar</h2>
+
   <div class="flex items-center gap-4">
-    <!-- Ajoutez ce bloc de recherche -->
-    <div class="flex items-center gap-2">
-      <select [(ngModel)]="searchType" class="border rounded px-2 py-1 text-sm">
-        <option value="event">Search by Event</option>
-        <option value="user">Search by User</option>
-      </select>
-      
-      <input [(ngModel)]="searchQuery" 
-             placeholder="Search..." 
-             class="border rounded px-3 py-1 text-sm w-64"
-             (keyup.enter)="onSearch()">
-      
-      <select *ngIf="searchType === 'event'" [(ngModel)]="eventType" class="border rounded px-2 py-1 text-sm">
-        <option value="">All Types</option>
-        <option value="Réunion">Meeting</option>
-        <option value="Tâche">Task</option>
-        <option value="Deadline">Deadline</option>
-        <option value="Holiday">Holiday</option>
-        <option value="Évenement">Event</option>
-      </select>
-      
-      <button (click)="onSearch()" class="bg-blue-100 px-3 py-1 rounded text-sm hover:bg-blue-200">
-        Search
+    <!-- Sélecteur de vue -->
+    <div class="flex bg-gray-100 rounded-lg p-1">
+      <button 
+        (click)="onViewChange('month')"
+        [class]="'px-3 py-1 text-sm rounded-md transition ' + (currentView === 'month' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900')">
+        Month
+      </button>
+      <button 
+        (click)="onViewChange('week')"
+        [class]="'px-3 py-1 text-sm rounded-md transition ' + (currentView === 'week' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900')">
+        Week
+      </button>
+      <button 
+        (click)="onViewChange('day')"
+        [class]="'px-3 py-1 text-sm rounded-md transition ' + (currentView === 'day' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-600 hover:text-gray-900')">
+        Day
       </button>
     </div>
-    
+
+    <!-- Filtres par type -->
+    <div class="relative group">
+      <button class="flex items-center gap-2 px-4 py-2 bg-white border rounded-lg shadow-sm hover:bg-gray-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
+            clip-rule="evenodd" />
+        </svg>
+        Filter
+      </button>
+
+      <div
+        class="absolute right-0 z-10 mt-0 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block">
+        <div class="p-2">
+          <div class="space-y-2">
+            <div *ngFor="let type of eventTypes" class="flex items-center">
+              <input type="checkbox" [id]="'type-'+type.value" [checked]="selectedTypes.includes(type.value)"
+                (change)="toggleTypeSelection(type.value)"
+                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+              <label [for]="'type-'+type.value" class="ml-2 text-sm text-gray-700">{{type.label}}</label>
+            </div>
+          </div>
+          <div class="mt-2 pt-2 border-t">
+            <button (click)="resetFilters()" class="text-sm text-blue-600 hover:text-blue-800">
+              Reset filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recherche par titre -->
+    <div class="relative">
+      <input [(ngModel)]="searchTitle" (keyup.enter)="applyFilters()" placeholder="Search by title..."
+        class="border rounded-full pl-4 pr-10 py-2 text-sm w-64 focus:ring-2 focus:ring-blue-200">
+
+      <button (click)="applyFilters()"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+
     <button (click)="onCreateEvent()"
       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-md">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd"
-          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+          clip-rule="evenodd" />
       </svg>
       Create Event
     </button>
   </div>
 </div>
 
-<!-- Ajoutez cette section pour afficher les résultats -->
-<section *ngIf="showSearchResults" class="relative py-4 px-4">
-  <div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold">Search Results</h3>
-      <button (click)="backToCalendar()" class="text-blue-600 hover:text-blue-800">
-        Back to Calendar
+<!-- Indicateur de filtres actifs -->
+<div *ngIf="selectedTypes.length > 0 || searchTitle" class="px-4 mb-2">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center gap-2 text-sm text-gray-600">
+      <span>Active filters:</span>
+
+      <span *ngIf="selectedTypes.length > 0" class="flex items-center gap-1">
+        <span>Types:</span>
+        <span *ngFor="let type of selectedTypes" class="px-2 py-1 bg-gray-100 rounded-full text-xs">
+          {{ getEventTypeLabel(type) }}
+        </span>
+      </span>
+
+      <span *ngIf="searchTitle" class="flex items-center gap-1">
+        <span>Title:</span>
+        <span class="px-2 py-1 bg-gray-100 rounded-full">{{ searchTitle }}</span>
+      </span>
+
+      <button (click)="resetFilters()" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+            clip-rule="evenodd" />
+        </svg>
+        Clear all
       </button>
     </div>
-    
-    <div *ngIf="searchType === 'event'">
-      <div *ngFor="let event of searchResults" class="mb-4 p-3 border rounded hover:bg-gray-50">
-        <h4 class="font-medium">{{event.titre}}</h4>
-        <p class="text-sm text-gray-600">{{event.type}} • {{event.date_debut | date}}</p>
-        <p class="text-sm">{{event.description}}</p>
-      </div>
-      <p *ngIf="searchResults.length === 0" class="text-gray-500">No events found</p>
-    </div>
-    
-    <div *ngIf="searchType === 'user'">
-      <div *ngFor="let user of searchResults" class="mb-4 p-3 border rounded hover:bg-gray-50">
-        <h4 class="font-medium">{{user.nom}} {{user.prenom}}</h4>
-        <p class="text-sm text-gray-600">{{user.email}}</p>
-      </div>
-      <p *ngIf="searchResults.length === 0" class="text-gray-500">No users found</p>
-    </div>
   </div>
-</section>
+</div>
 
-<!-- Affichez le calendrier seulement si on ne montre pas les résultats de recherche -->
-<section *ngIf="!showSearchResults" class="relative py-4 px-4">
+<!-- Calendrier avec les événements filtrés -->
+<section class="relative py-4 px-4">
   <div class="max-w-7xl mx-auto">
-    <app-calendar-header [currentMonth]="currentMonth" (monthChange)="onMonthChange($event)">
+    <app-calendar-header 
+      [currentMonth]="currentMonth" 
+      [currentView]="currentView"
+      (monthChange)="onMonthChange($event)">
     </app-calendar-header>
 
-    <app-calendar-grid [currentMonth]="currentMonth" [events]="events" (editEvent)="onEditEvent($event)"
-      (deleteEvent)="onDeleteEvent($event)" (createEventForDay)="onCreateEventForDay($event)">
+    <app-calendar-grid 
+      [currentMonth]="currentMonth" 
+      [currentView]="currentView"
+      [events]="filteredEvents" 
+      (editEvent)="onEditEvent($event)"
+      (deleteEvent)="onDeleteEvent($event)" 
+      (createEventForDay)="onCreateEventForDay($event)"
+      (eventUpdated)="loadEvents()">
     </app-calendar-grid>
   </div>
 </section>
 
-<app-event-form-dialog *ngIf="showForm" [event]="selectedEvent" [users]="users" (close)="showForm = false"
+<app-event-form-dialog *ngIf="showForm" [event]="selectedEvent" (close)="showForm = false"
   (submitSuccess)="onSubmitSuccess()">
 </app-event-form-dialog>
+
+<!-- Chat Interface -->
+<app-chat-bot></app-chat-bot>

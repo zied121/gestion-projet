@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateEventModel, EventModel, UpdateEventModel } from '../models/event.model';
 import { tap as rxjsTap } from 'rxjs/operators';
@@ -31,6 +31,8 @@ export class EventService {
       headers: this.getAuthHeaders()
     });
   }
+
+
 
   createEvent(data: any): Observable<any> {
     console.log('Creating event with data:', data);
@@ -66,16 +68,14 @@ export class EventService {
     );
   }
 
-  // Nouvelle méthode pour mettre à jour la réponse du participant
-  updateParticipantResponse(eventId: string, responseData: { response: string; message?: string }): Observable<any> {
-    return this.http.put(`${this.baseUrl}/update_participant/${eventId}`, responseData);
-  }
+updateParticipantResponse(eventId: string, responseData: { response: string; message?: string }): Observable<any> {
+  return this.http.put(`${this.baseUrl}/update_participant/${eventId}`, responseData, {
+    headers: this.getAuthHeaders()
+  });
+}
 
-  // Méthode pour récupérer les événements où l'utilisateur est participant
-  getEventsByParticipant(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/event_participant`);
-  }
-
+ 
+ 
 
   // Dans event.service.ts
 
@@ -83,24 +83,38 @@ export class EventService {
 // Dans event.service.ts
 
 // Ajoutez ces deux nouvelles méthodes
-searchEvents(type: string, search: string): Observable<EventModel[]> {
+// Dans event.service.ts
+// event.service.ts
+searchEvents(types: string[], search: string): Observable<EventModel[]> {
+  let params = new HttpParams();
+  
+  // Envoyez chaque type séparément avec le même paramètre 'type'
+  if (types && types.length > 0) {
+    types.forEach(type => {
+      params = params.append('type', type);
+    });
+  }
+  
+  if (search) {
+    params = params.append('search', search);
+  }
+
   return this.http.get<EventModel[]>(`${this.baseUrl}/search`, {
-    params: { type, search },
+    params: params,
+    headers: this.getAuthHeaders()
+  });
+}
+// Dans event.service.ts
+getParticipantStatus(eventId: string): Observable<any> {
+  return this.http.get(`${this.baseUrl}/${eventId}/participant-status`, {
     headers: this.getAuthHeaders()
   });
 }
 
-searchByUser(email: string): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/search_user`, {
-    params: { email },
-    headers: this.getAuthHeaders()
-  });
 }
 
-}
 
 
 function tap(arg0: (event: any) => void): import("rxjs").OperatorFunction<EventModel, EventModel> {
   throw new Error('Function not implemented.');
 }
-

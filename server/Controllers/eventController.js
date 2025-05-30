@@ -1,196 +1,244 @@
-const Event = require('../models/Event');
-const Holiday = require('../models/Holiday'); 
-const Utilisateur = require('../models/Usermodel'); 
-const Project = require('../models/ProjectModel');
-const emailService = require('../config/nodemailer');
-const { scheduleEventReminders } = require('../services/reminderScheduler');
-const mongoose = require('mongoose');
-const { createRecurringEventInstances, deleteRecurringEventInstances, updateRecurringEventInstances } = require('../services/recurringEventService');
-const isAdmin = require("../Middleware/adminorganisation");
-//const User = require("../models/Usermodel");
+    const Event = require('../models/Event');
+    const Holiday = require('../models/Holiday'); 
+    const Utilisateur = require('../models/Usermodel'); 
+    const { Project } = require('../models/ProjectModel');     const emailService = require('../config/nodemailer');
+    const { scheduleEventReminders } = require('../services/reminderScheduler');
+    const mongoose = require('mongoose');
+    const { createRecurringEventInstances, deleteRecurringEventInstances, updateRecurringEventInstances } = require('../services/recurringEventService');
+    const isAdmin = require("../Middleware/adminorganisation");
+    //const User = require("../models/Usermodel");
+    const syncHolidayEvents = async () => {
+        try {
+            // Récupération des données
+            const [allUsers, holidays] = await Promise.all([
+                Utilisateur.User.find({}, '_id nom email'), 
+                Holiday.find()
+            ]);
+            
+            const results = [];
 
-const syncHolidayEvents = async () => {
-    try {
-        // Récupération des données
-        const [allUsers, holidays] = await Promise.all([
-            Utilisateur.User.find({}, '_id nom email'), 
-            Holiday.find()
-        ]);
-        
-        const results = [];
-
-        // Pour chaque holiday
-        for (const holiday of holidays) {
-            try {
-                // Trouver ou créer l'événement
-                let event = await Event.findOneAndUpdate(
-                    {
-                        type: 'Holiday',
-                        date_debut: holiday.date,
-                        titre: holiday.titre
-                    },
-                    {
-                        $setOnInsert: { // Seulement pour les nouveaux
-                            description: holiday.description,
-                            date_fin: holiday.date,
-                            organisateur_id: null,
-                            status: 'Confirme'
-                        }
-                    },
-                    {
-                        upsert: true,
-                        new: true,
-                        setDefaultsOnInsert: true
-                    }
-                );
-
-                // Obtenir les IDs des participants actuels
-                const currentParticipantIds = new Set(
-                    event.participants?.map(p => p.participant_id?.toString()) || []
-                );
-
-                // Ajouter les utilisateurs manquants
-                const participantsToAdd = allUsers.filter(user => 
-                    !currentParticipantIds.has(user._id.toString())
-                );
-
-                if (participantsToAdd.length > 0) {
-                    const newParticipants = participantsToAdd.map(user => ({
-                        participant_id: user._id,
-                        accept: true, // Pour les holidays, on accepte par défaut
-                        refuse: false,
-                        message: ''
-                    }));
-
-                    // Mettre à jour l'événement avec les nouveaux participants
-                    await Event.findByIdAndUpdate(
-                        event._id,
-                        { 
-                            $push: { 
-                                participants: { 
-                                    $each: newParticipants 
-                                } 
-                            } 
+            // Pour chaque holiday
+            for (const holiday of holidays) {
+                try {
+                    // Trouver ou créer l'événement
+                    let event = await Event.findOneAndUpdate(
+                        {
+                            type: 'Holiday',
+                            date_debut: holiday.date,
+                            titre: holiday.titre
+                        },
+                        {
+                            $setOnInsert: { // Seulement pour les nouveaux
+                                description: holiday.description,
+                                date_fin: holiday.date,
+                                organisateur_id: null,
+                                status: 'Confirme'
+                            }
+                        },
+                        {
+                            upsert: true,
+                            new: true,
+                            setDefaultsOnInsert: true
                         }
                     );
+
+                    // Obtenir les IDs des participants actuels
+                    const currentParticipantIds = new Set(
+                        event.participants?.map(p => p.participant_id?.toString()) || []
+                    );
+
+                    // Ajouter les utilisateurs manquants
+                    const participantsToAdd = allUsers.filter(user => 
+                        !currentParticipantIds.has(user._id.toString())
+                    );
+
+                    if (participantsToAdd.length > 0) {
+                        const newParticipants = participantsToAdd.map(user => ({
+                            participant_id: user._id,
+                            accept: true, // Pour les holidays, on accepte par défaut
+                            refuse: false,
+                            message: ''
+                        }));
+
+                        // Mettre à jour l'événement avec les nouveaux participants
+                        await Event.findByIdAndUpdate(
+                            event._id,
+                            { 
+                                $push: { 
+                                    participants: { 
+                                        $each: newParticipants 
+                                    } 
+                                } 
+                            }
+                        );
+                    }
+
+                    results.push({
+                        event: event._id,
+                        title: event.titre,
+                        existingParticipants: currentParticipantIds.size,
+                        addedParticipants: participantsToAdd.length,
+                        totalParticipants: currentParticipantIds.size + participantsToAdd.length
+                    });
+
+                } catch (error) {
+                    //console.error(`Erreur traitement ${holiday.titre}:`, error);
                 }
-
-                results.push({
-                    event: event._id,
-                    title: event.titre,
-                    existingParticipants: currentParticipantIds.size,
-                    addedParticipants: participantsToAdd.length,
-                    totalParticipants: currentParticipantIds.size + participantsToAdd.length
-                });
-
-            } catch (error) {
-                //console.error(`Erreur traitement ${holiday.titre}:`, error);
             }
-        }
 
-        return results;
-    } catch (error) {
-        throw error;
-    }
-};
+            return results;
+        } catch (error) {
+            throw error;
+        }
+    };
 
 const syncDeadlineEvents = async () => {
     try {
-        const projects = await Project.find()
-            .populate('owner', 'nom email')
-            .populate('members', 'nom email');
+        // Vérification que Project est bien un modèle Mongoose valide
+        if (!Project || typeof Project.find !== 'function') {
+            throw new Error('Project model is not properly initialized');
+        }
+
+        const projects = await Project.find({ 
+            end_date: { $exists: true, $ne: null } 
+        })
+        .populate('owner', 'nom email')
+        .populate('members', 'nom email');
 
         const createdEvents = [];
         
         for (const project of projects) {
-            const existingEvent = await Event.findOne({
-                type: 'Deadline',
-                projet_id: project._id,  
-                date_fin: project.end_date
-            });
+            try {
+                if (!project.end_date) continue;
 
-            if (!existingEvent) {
-                // Préparer les participants pour l'événement
-                const participants = project.members?.map(member => ({
-                    participant_id: member._id,
-                    accept: true,
-                    refuse: false,
-                    message: ''
-                })) || [];
-
-                const deadlineEvent = new Event({
+                const existingEvent = await Event.findOne({
                     type: 'Deadline',
-                    titre: project.name,
-                    description: project.description,
-                    date_debut: project.start_date,
-                    date_fin: project.end_date,
-                    organisateur_id: project.owner,
-                    projet_id: project._id,
-                    status: 'Confirme',
-                    participants: participants
+                    projet_id: project._id
                 });
 
-                await deadlineEvent.save();
-                createdEvents.push(deadlineEvent);
-            } else {
-                // Mise à jour de l'événement si nécessaire
-                if (existingEvent.date_fin.getTime() !== project.end_date.getTime()) {
-                    existingEvent.date_fin = project.end_date;
-                    await existingEvent.save();
-                }
+                const deadlineDate = new Date(project.end_date);
                 
-                // Mettre à jour les participants si nécessaire
-                if (project.members?.length > 0) {
-                    // Identifiants des membres du projet
-                    const projectMemberIds = project.members.map(member => member._id.toString());
-                    
-                    // Identifiants des participants actuels
-                    const currentParticipantIds = existingEvent.participants
-                        .map(p => p.participant_id?.toString())
-                        .filter(id => id); // Filtrer les null/undefined
-                    
-                    // Ajouter les nouveaux membres qui ne sont pas encore participants
-                    const newMembers = project.members.filter(member => 
-                        !currentParticipantIds.includes(member._id.toString())
-                    );
-                    
-                    if (newMembers.length > 0) {
-                        const newParticipants = newMembers.map(member => ({
+                if (!existingEvent) {
+                    const deadlineEvent = new Event({
+                        type: 'Deadline',
+                        titre: `Échéance: ${project.name}`,
+                        description: project.description || `Date limite pour ${project.name}`,
+                        date_debut: deadlineDate,
+                        date_fin: deadlineDate,
+                        organisateur_id: project.owner?._id,
+                        projet_id: project._id,
+                        status: 'Confirme',
+                        participants: project.members?.map(member => ({
                             participant_id: member._id,
-                            accept: true,
+                            accept: false,
                             refuse: false,
                             message: ''
-                        }));
+                        })) || [],
+                        isAutoGenerated: true
+                    });
+
+                    await deadlineEvent.save();
+                    createdEvents.push(deadlineEvent);
+                } else {
+                        // 5. Mettre à jour l'événement existant
+                        let updated = false;
                         
-                        existingEvent.participants.push(...newParticipants);
-                        await existingEvent.save();
+                        // Vérifier les dates
+                        if (existingEvent.date_fin.getTime() !== deadlineDate.getTime()) {
+                            existingEvent.date_debut = deadlineDate;
+                            existingEvent.date_fin = deadlineDate;
+                            updated = true;
+                        }
+
+                        // Vérifier le titre
+                        const newTitle = `Échéance: ${project.name}`;
+                        if (existingEvent.titre !== newTitle) {
+                            existingEvent.titre = newTitle;
+                            updated = true;
+                        }
+
+                        // Mettre à jour les participants
+                        const currentParticipants = existingEvent.participants.map(p => p.participant_id?.toString());
+                        const newMembers = project.members?.filter(member => 
+                            !currentParticipants.includes(member._id.toString())
+                        ) || [];
+
+                        if (newMembers.length > 0) {
+                            newMembers.forEach(member => {
+                                existingEvent.participants.push({
+                                    participant_id: member._id,
+                                    accept: false,
+                                    refuse: false,
+                                    message: ''
+                                });
+                            });
+                            updated = true;
+                        }
+
+                        if (updated) {
+                            await existingEvent.save();
+                            createdEvents.push({
+                                action: 'updated',
+                                event: existingEvent
+                            });
+                        }
                     }
+                } catch (error) {
+                    console.error(`Erreur lors du traitement du projet ${project.name}:`, error);
                 }
-                
-                createdEvents.push(existingEvent);
             }
+
+            return createdEvents;
+        } catch (error) {
+            console.error('Erreur dans syncDeadlineEvents:', error);
+            throw error;
         }
+    };
+    const getEvents = async (req, res) => {
+        try {
+            // Synchronisation des événements Holiday et Deadline
+            await Promise.all([syncHolidayEvents(), syncDeadlineEvents()]);
 
-        return createdEvents;
-    } catch (error) {
-        //console.error('Erreur lors de la synchronisation des événements de deadline:', error);
-    }
-};
+            // Récupérer tous les événements avec les références résolues
+            const events = await Event.find()
+                .populate('organisateur_id', 'nom prenom email')
+                .populate('participants.participant_id', 'nom prenom email')
+                .lean();
 
-const getEvents = async (req, res) => {
-    try {
-        // Synchronisation des événements Holiday et Deadline
-        await Promise.all([syncHolidayEvents(), syncDeadlineEvents()]);
+            // Formater les données pour la réponse
+            const formattedEvents = events.map(event => {
+                // Format participants for consistency with old API
+                const formattedParticipants = event.participants?.map(p => ({
+                    id: p.participant_id?._id,
+                    nom: p.participant_id?.nom,
+                    email: p.participant_id?.email,
+                    reponse: p.accept ? 'accepter' : (p.refuse ? 'refuser' : 'en_attente')
+                })) || [];
 
-        // Récupérer tous les événements avec les références résolues
-        const events = await Event.find()
-            .populate('organisateur_id', 'nom prenom email')
-            .populate('participants.participant_id', 'nom prenom email')
-            .lean();
+                return {
+                    ...event,
+                    participants: formattedParticipants
+                };
+            });
 
-        // Formater les données pour la réponse
-        const formattedEvents = events.map(event => {
-            // Format participants for consistency with old API
+            res.status(200).json(formattedEvents);
+        } catch (err) {
+            res.status(400).json({ message: err.message });
+        }
+    };
+
+    const getEventById = async (req, res) => {
+        try {
+            const event = await Event.findById(req.params.id)
+                .populate('organisateur_id', 'nom prenom email')
+                .populate('participants.participant_id', 'nom prenom email')
+                .lean();
+                    
+            if (!event) {
+                return res.status(404).json({ message: 'Événement non trouvé' });
+            }
+
+            // Formater les participants pour être compatibles avec l'ancien format
             const formattedParticipants = event.participants?.map(p => ({
                 id: p.participant_id?._id,
                 nom: p.participant_id?.nom,
@@ -198,47 +246,16 @@ const getEvents = async (req, res) => {
                 reponse: p.accept ? 'accepter' : (p.refuse ? 'refuser' : 'en_attente')
             })) || [];
 
-            return {
+            const formattedEvent = {
                 ...event,
                 participants: formattedParticipants
             };
-        });
 
-        res.status(200).json(formattedEvents);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};
-
-const getEventById = async (req, res) => {
-    try {
-        const event = await Event.findById(req.params.id)
-            .populate('organisateur_id', 'nom prenom email')
-            .populate('participants.participant_id', 'nom prenom email')
-            .lean();
-                
-        if (!event) {
-            return res.status(404).json({ message: 'Événement non trouvé' });
+            res.status(200).json(formattedEvent);
+        } catch (err) {
+            res.status(400).json({ message: err.message });
         }
-
-        // Formater les participants pour être compatibles avec l'ancien format
-        const formattedParticipants = event.participants?.map(p => ({
-            id: p.participant_id?._id,
-            nom: p.participant_id?.nom,
-            email: p.participant_id?.email,
-            reponse: p.accept ? 'accepter' : (p.refuse ? 'refuser' : 'en_attente')
-        })) || [];
-
-        const formattedEvent = {
-            ...event,
-            participants: formattedParticipants
-        };
-
-        res.status(200).json(formattedEvent);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-};
+    };
 
 const createEvent = async (req, res) => {
     try {
@@ -1062,14 +1079,23 @@ const generateJitsiLink = (titre, date) => {
 
 const searchEvents = async (req, res) => {
     try {
-        const { type, search } = req.query; 
-        let query = {};
+        const { type, search } = req.query;
+        const userId = req.user._id; // L'utilisateur connecté (doit être fourni par le middleware d'authentification)
+        
+        // Construction de la requête de base
+        let query = {
+            $or: [
+                { organisateur_id: userId }, // Événements où l'utilisateur est organisateur
+                { 'participants.participant_id': userId } // Événements où l'utilisateur est participant
+            ]
+        };
 
+        // Ajout des filtres optionnels
         if (type) {
             query.type = type;
         }
+        
         if (search) {
-            // Recherche insensible à la casse et partielle dans le titre
             query.titre = { $regex: search, $options: 'i' };
         }
 
@@ -1079,7 +1105,7 @@ const searchEvents = async (req, res) => {
             .populate('participants.participant_id', 'nom prenom email')
             .lean();
 
-        // Formater les événements pour la réponse
+        // Formater les résultats
         const formattedEvents = events.map(event => {
             const formattedParticipants = event.participants?.map(p => ({
                 id: p.participant_id?._id,
@@ -1090,7 +1116,9 @@ const searchEvents = async (req, res) => {
 
             return {
                 ...event,
-                participants: formattedParticipants
+                participants: formattedParticipants,
+                // Ajout optionnel pour identifier le rôle de l'utilisateur
+                userRole: event.organisateur_id._id.equals(userId) ? 'Organisateur' : 'Participant'
             };
         });
 
@@ -1100,24 +1128,59 @@ const searchEvents = async (req, res) => {
     }
 };
 
+      
+
+// Modifiez la fonction searchByUser dans votre backend
 const searchByUser = async (req, res) => {
     try {
         const { email } = req.query;
-        let userQuery = {};
-
-        if (email) {
-            // Recherche partielle insensible à la casse
-            userQuery.email = { $regex: email, $options: 'i' };
+        
+        // Trouver l'utilisateur par email
+        const user = await Utilisateur.findOne({ email: { $regex: email, $options: 'i' } });
+        
+        if (!user) {
+            return res.status(200).json([]);
         }
 
-        const users = await Utilisateur.User.find(userQuery, 'nom prenom email');
+        // Rechercher les événements où l'utilisateur est organisateur ou participant
+        const events = await Event.find({
+            $or: [
+                { organisateur_id: user._id },
+                { 'participants.participant_id': user._id }
+            ]
+        })
+        .populate('organisateur_id', 'nom prenom email')
+        .populate('participants.participant_id', 'nom prenom email')
+        .lean();
 
-        res.status(200).json(users);
+        // Formater les résultats
+        const formattedEvents = events.map(event => {
+            const formattedParticipants = event.participants?.map(p => ({
+                id: p.participant_id?._id,
+                nom: p.participant_id?.nom,
+                email: p.participant_id?.email,
+                reponse: p.accept ? 'accepter' : (p.refuse ? 'refuser' : 'en_attente')
+            })) || [];
+
+            return {
+                ...event,
+                participants: formattedParticipants,
+                userRole: event.organisateur_id._id.equals(user._id) ? 'Organisateur' : 'Participant'
+            };
+        });
+
+        res.status(200).json({
+            userInfo: {
+                nom: user.nom,
+                prenom: user.prenom,
+                email: user.email
+            },
+            events: formattedEvents
+        });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
 };
-
 // TO DO : controller to add multi participants to an event
 
     
@@ -1173,6 +1236,49 @@ const searchByUser = async (req, res) => {
 //     }
 // }
 
+//Fonction pour récupérer le statut du participant selon event et id de user connecté 
+const participant_status = async (eventId, userId) => {
+    try {
+        const event = await Event.findById(eventId).populate('participants.participant_id', 'nom prenom email');
+        if (!event) {
+            throw new Error('Événement non trouvé');
+        }
+
+        const participant = event.participants.find(p => 
+            p.participant_id && p.participant_id._id.toString() === userId.toString()
+        );
+
+        if (!participant) {
+            return {
+                statut: 'en_attente',
+                message: '',
+                participantDetails: null
+            };
+        }
+
+        let statut = 'en_attente';
+        if (participant.accept) {
+            statut = 'accepter';
+        } else if (participant.refuse) {
+            statut = 'refuser';
+        }
+
+        return {
+            statut,
+            message: participant.message || '',
+            participantDetails: {
+                nom: participant.participant_id.nom,
+                prenom: participant.participant_id.prenom,
+                email: participant.participant_id.email
+            }
+        };
+    } catch (error) {
+        console.error('Erreur lors de la récupération du statut du participant:', error);
+        throw error;
+    }
+};
+
+
 
 module.exports = {
     getEvents,
@@ -1190,7 +1296,8 @@ module.exports = {
     addParticipants,
     validateRecurringEventData,
     sanitizeEventData, 
-    deleteParticipant
+    deleteParticipant, 
+    participant_status
     // updateReponse
 };
 

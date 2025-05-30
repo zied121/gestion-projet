@@ -28,6 +28,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     filteredUsers: any[] = [];
 
     constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
+    selectedFile: File | null = null;
+    filePreviewUrl: string | null = null;
 
     ngOnInit(): void {
         this.loadUsers();
@@ -52,7 +54,12 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
                     : [],
                 type_recurrence: this.event.type_recurrence,
                 rappel: this.event.rappel ? [...this.event.rappel] : [],
+                file: this.event.file || ''
             };
+             // Si un fichier existe déjà, préparez l'URL de prévisualisation
+            if (this.event.file) {
+                this.filePreviewUrl = this.event.file;
+            }
 
             // Gestion des participants
             this.selectedParticipants = [];
@@ -72,10 +79,63 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             this.formData = this.getDefaultFormData();
             this.selectedParticipants = [];
             this.originalParticipants = [];
+            this.selectedFile = null;
+            this.filePreviewUrl = null;
         }
 
         this.updateFilteredUsers();
     }
+
+
+     onFileSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            // Validation de la taille (exemple: max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Le fichier est trop volumineux. Taille maximale: 10MB');
+                return;
+            }
+
+            // Validation du type de fichier (optionnel)
+            const allowedTypes = [
+                'image/jpeg', 'image/png', 'image/gif',
+                'application/pdf', 
+                'application/msword', 
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Type de fichier non autorisé. Types acceptés: JPG, PNG, GIF, PDF, DOC, DOCX, TXT');
+                return;
+            }
+
+            this.selectedFile = file;
+            
+            // Créer une URL de prévisualisation pour les images
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e: any) => {
+                    this.filePreviewUrl = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                this.filePreviewUrl = null;
+            }
+        }
+    }
+
+    removeSelectedFile(): void {
+        this.selectedFile = null;
+        this.filePreviewUrl = null;
+        this.formData.file = '';
+        // Reset l'input file
+        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    }
+
     private getParticipantId(participant: {
         participant_id?: string | { _id?: string; nom?: string; prenom?: string; email?: string };
         id?: string;
@@ -109,6 +169,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             error: (err) => console.error('Error fetching users:', err),
         });
     }
+
+
 
     private getDefaultFormData(): CreateEventModel {
         const now = new Date();
@@ -210,7 +272,6 @@ removeParticipant(participantId: string): void {
         });
     }
 
-    // Close dropdown when clicking outside
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: Event): void {
         const target = event.target as HTMLElement;
@@ -221,21 +282,17 @@ removeParticipant(participantId: string): void {
             this.showParticipantDropdown = false;
         }
     }
-
-    // Existing methods
     addReminder(): void {
         if (!this.formData.rappel) {
             this.formData.rappel = [];
         }
         this.formData.rappel.push({ time: 15, unit: 'minutes', sent: false });
     }
-
     removeReminder(index: number): void {
         if (this.formData.rappel) {
             this.formData.rappel.splice(index, 1);
         }
     }
-
     formatDateTimeLocal(date: Date): string {
         if (!date || isNaN(date.getTime())) {
             return '';
@@ -244,8 +301,8 @@ removeParticipant(participantId: string): void {
         const pad = (num: number) => num.toString().padStart(2, '0');
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
-
 onSubmit(): void {
+    const formData = new FormData();
     console.log('Form submitted with data:', this.formData);
     console.log('Selected participants:', this.selectedParticipants);
     console.log('Original participants:', this.originalParticipants);
@@ -333,8 +390,6 @@ onSubmit(): void {
         });
     }
 }
-
-// Nouvelle méthode pour obtenir un aperçu des changements de participants
 getParticipantChanges(): { added: string[], removed: string[] } {
     if (!this.event?._id) {
         return { added: this.selectedParticipants, removed: [] };
@@ -345,8 +400,6 @@ getParticipantChanges(): { added: string[], removed: string[] } {
 
     return { added, removed };
 }
-
-// Méthode pour afficher un résumé des changements
 showParticipantChangesSummary(): string {
     const changes = this.getParticipantChanges();
     const summary = [];
@@ -361,23 +414,17 @@ showParticipantChangesSummary(): string {
 
     return summary.length > 0 ? summary.join(', ') : 'Aucun changement';
 }
-
     closeDialog(): void {
         console.log('Fermeture du dialog');
         this.close.emit();
     }
-
     private showValidationError(message: string): void {
         console.log('Message affiché:', message);
         alert(message);
     }
-
-    // Utility method to get participant count for display
     getParticipantCount(): number {
         return this.selectedParticipants.length;
     }
-
-    // Method to clear all participants
     clearAllParticipants(): void {
         if (this.originalParticipants.length > 0 && this.event?._id) {
             if (confirm('Êtes-vous sûr de vouloir supprimer tous les participants de cet événement ?')) {
@@ -391,9 +438,6 @@ showParticipantChangesSummary(): string {
             this.updateFilteredUsers();
         }
     }
-
-
-    // Method to check if form is valid
     isFormValid(): boolean {
         return !!(
             this.formData.titre?.trim() &&
@@ -403,8 +447,6 @@ showParticipantChangesSummary(): string {
             new Date(this.formData.date_fin) > new Date(this.formData.date_debut)
         );
     }
-
-    // Méthode utilitaire pour vérifier si un participant était original
     isOriginalParticipant(participantId: string): boolean {
         return this.originalParticipants.includes(participantId);
     }
