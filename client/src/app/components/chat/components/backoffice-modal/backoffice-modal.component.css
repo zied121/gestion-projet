@@ -1,0 +1,14 @@
+.modal-header {
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  text-align: right;
+}

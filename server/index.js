@@ -5,8 +5,7 @@ const app = express();
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-const path = require('path');
-const fs = require('fs');
+
 const projectRoutes = require('./Routes/ProjectRoutes');
 const taskRoutes = require('./Routes/TaskRoutes');
 const userRouter = require('./Routes/UserRoutes');
@@ -14,22 +13,34 @@ const AuthRoutes = require('./Routes/AuthRoutes');
 const OrganisationRoutes = require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
+const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
+const roomRoutes = require('./Routes/RoomRoutes');
+const messageRoutes = require('./Routes/MessageRoute');
+const GoogleAuth = require('./Routes/GoogleAuthRoute')
+const projectRoutes = require('./Routes/ProjectRoutes');
+const taskRoutes = require('./Routes/TaskRoutes');
 const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
-const categorieRoutes = require('./Routes/categorieRoutes');
-const multer = require("multer");
 
-const eventRoutes = require('./Routes/eventRoutes');
-const participantRoutes = require('./Routes/participantRoutes');
-const chatbotRoutes = require('./Routes/chatbot');
-const holidayRoutes = require('./Routes/holidayRoutes');
+const app = express();
+const server = http.createServer(app);
 
 
+// ✅ Configure CORS BEFORE routes
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors());
+
+// Connect DB
+const connectDb = require('./config/ConnectDb');
 connectDb();
+
 app.use(express.json());
-app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -90,26 +101,28 @@ app.set('io', io);
 app.use('/api/organisation',OrganisationRoutes);
 app.use('/api',AuthRoutes);
 app.use('/api/users',userRouter);
-
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
-app.use('/api/categories', categorieRoutes);
-
 app.use('/api/subscription', SubscriptionRoutes);
 app.use('/api/organisation', OrganisationRoutes);
 app.use('/api', AuthRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/blogs', blogRoutes);
-app.use('/api/subscription', SubscriptionRoutes);
 app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
 app.use('/api', aiRoutes);
 app.use('/api', notificationRoutes);
 app.use('/api/events', eventRoutes);
-    app.use('/api', participantRoutes);
-    app.use('/api/holiday', holidayRoutes);
-    app.use('/api', chatbotRoutes);
+app.use('/api', participantRoutes);
+app.use('/api/holiday', holidayRoutes);
+app.use('/api', chatbotRoutes);
+app.use('/api', require('./Routes/NotificationRoutes'));
+app.use('/google', GoogleAuth);
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
+app.use('/api/rooms', roomRoutes);
+app.use('/api/message', messageRoutes);
+
 
 io.on('connection', (socket) => {
     console.log(`User connecté : ${socket.id}`);

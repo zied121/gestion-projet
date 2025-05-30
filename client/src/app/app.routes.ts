@@ -13,11 +13,16 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
+import { RoomComponent } from './components/chat/components/room/room.component';
+import { InboxComponent } from './components/chat/components/inbox/inbox.component';
+import { ChatComponent } from './components/chat/components/chat/chat.component';
+import { PlaceholderComponent } from './components/chat/components/placeholder/placeholder.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
 import {BlogModule} from './components/blog/blog.module';
 import { memberGuard } from './guards/member.guard';
 import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
+import {BackofficeComponent} from './components/chat/components/backoffice/backoffice.component';
 {ownerGuard}
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {CalendarBackofficeComponent} from './components/calendar/calendar-backoffice/calendar-backoffice.component';
@@ -52,6 +57,15 @@ export const routes: Routes = [
     component: WorkspaceformComponent,
     canActivate: [authGuard]
   },
+  {
+    path: 'rooms/:id',
+    component: RoomComponent
+  },
+  {
+    path: 'inbox',
+    component: InboxComponent
+  },
+
 
   // Protected routes with navbar via MainLayoutComponent
   {
@@ -83,6 +97,11 @@ export const routes: Routes = [
         canActivate: [ownerGuard]
       },
       {
+        path: 'backoffice/rooms',
+        component: BackofficeComponent,
+        //canActivate: [authGuard, adminGuard] // Protégez l'accès si nécessaire
+      },
+      {
         path: 'backoffice/calendar',
         component: CalendarBackofficeComponent,
       },
@@ -92,7 +111,7 @@ export const routes: Routes = [
           import('./components/project-task-management/project/project.module').then(
             (m) => m.ProjectModule
           ),
-
+        canActivate: [adminGuard]
 
       },
       {
@@ -101,6 +120,7 @@ export const routes: Routes = [
           import('./components/project-task-management/task/task.module').then(
             (m) => m.TaskModule
           ),
+        canActivate: [adminGuard]
       },
 
     ]
@@ -122,6 +142,12 @@ export const routes: Routes = [
       {
         path: 'calendar',
         component: CalendarComponent,
+      },
+      {
+        path: 'chat',
+        loadChildren: () =>
+          import('./components/chat/chat.module').then(
+            (m) => m.ChatModule),
       },
 
 
