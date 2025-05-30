@@ -69,9 +69,9 @@ export class CalendarBackofficeDetailComponent {
    */
   getParticipantDisplay(p: any): string {
     if (!p) return 'Participant inconnu';
-    
+
     const participant = p.participant || p.participant_id || p;
-    
+
     if (!participant) return 'Participant inconnu';
 
     // Si c'est une string (ID non peuplé)
@@ -82,7 +82,7 @@ export class CalendarBackofficeDetailComponent {
     // Si c'est un objet peuplé
     const nom = participant.nom || '';
     const email = participant.email || '';
-    
+
     return `${nom}${email ? ` <${email}>` : ''}`.trim() || 'Participant inconnu';
   }
 
@@ -93,5 +93,52 @@ export class CalendarBackofficeDetailComponent {
     if (p?.accept || p?.reponse === 'accepter') return 'Accepté';
     if (p?.refuse || p?.reponse === 'refuser') return 'Refusé';
     return 'En attente';
+  }
+  getFileUrl(filename: string): string {
+    if (!filename) return '';
+
+    // Si c'est déjà une URL complète
+    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+      return filename;
+    }
+
+    // Si le fichier est dans le dossier uploads
+    if (filename.startsWith('/uploads/')) {
+      return `http://localhost:5000${filename}`;
+    }
+
+    // Fallback pour un nom de fichier simple
+    return `http://localhost:5000/uploads/${filename}`;
+  }
+
+  getFilename(filePath: string): string {
+    if (!filePath) return 'fichier';
+
+    // Extraire le nom du fichier depuis l'URL ou le chemin
+    return filePath.split('/').pop() || 'fichier';
+  }
+
+  downloadFile(filePath: string): void {
+    const fileUrl = this.getFileUrl(filePath);
+
+    fetch(fileUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = this.getFilename(filePath);
+        link.click();
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch(error => {
+        console.error('Erreur lors du téléchargement:', error);
+        alert('Erreur lors du téléchargement du fichier.');
+      });
   }
 }
