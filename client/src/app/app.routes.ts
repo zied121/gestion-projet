@@ -15,7 +15,9 @@ import { SuccessPaiementComponent } from './components/success-paiement/success-
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
-{ownerGuard}
+
+import { AuthRedirectGuard } from './guards/auth-redirect.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -24,11 +26,13 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+       canActivate: [AuthRedirectGuard]
   },
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
+       canActivate: [AuthRedirectGuard]
   },
   {
     path: 'forgetpswd',

@@ -1,158 +1,298 @@
-<div class="overflow-x-auto mt-6 p-8">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-semibold">Manage Users of your Workspace</h2>
+<div class="p-8 space-y-10">
 
+ <div class="flex flex-wrap gap-6 mb-8 mt-10">
+
+  <!-- Users Overview Card -->
+  <div class="p-6 bg-white shadow rounded flex-1 min-w-[280px]">
+    <h3 class="text-gray-600 text-sm font-medium mb-2">Users Overview</h3>
+    <div class="text-2xl font-semibold mb-1">
+      Total: {{ analyticsData.totalUsers || 0 }}
+    </div>
+    <div class="flex justify-between text-sm text-gray-600">
+      <div>Active: <span class="font-medium text-green-600">{{ analyticsData.activeUsers || 0 }}</span></div>
+      <div>Inactive: <span class="font-medium text-red-500">{{ analyticsData.notActiveUsers || 0 }}</span></div>
+    </div>
+  </div>
+
+  <!-- Total Projects Card -->
+  <div class="p-6 bg-white shadow rounded flex-1 min-w-[180px]">
+    <h3 class="text-gray-600 text-sm font-medium">Total Projects</h3>
+    <p class="text-2xl font-semibold">{{ analyticsData.totalProjects || 0 }}</p>
+  </div>
+
+  
+  <div class="p-6 bg-white shadow rounded flex-1 min-w-[180px]">
+    <h3 class="text-gray-600 text-sm font-medium">Total Teams</h3>
+    <p class="text-2xl font-semibold">{{ analyticsData.totalTeams || 0 }}</p>
+  </div>
+</div>
+
+  <div class="flex justify-between items-center">
+    <h2 class="text-3xl font-semibold text-gray-800">Manage Users of your Workspace</h2>
     <hlm-dialog>
-      <button id="add-user" brnDialogTrigger hlmBtn class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add User</button>
-      <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
+      <button brnDialogTrigger hlmBtn class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        + Add User
+      </button>
+      <hlm-dialog-content class="sm:max-w-[600px] mx-auto my-auto" *brnDialogContent="let ctx">
         <hlm-dialog-header>
-          <h3 hlmDialogTitle>Add User</h3>
-          <p hlmDialogDescription>Fill in the form to add a new user to this workspace.</p>
+          <h3 hlmDialogTitle>Create User</h3>
+          <p hlmDialogDescription>Provide details for the new user.</p>
         </hlm-dialog-header>
-        <div class="py-4 grid gap-4">
-          <div class="items-center grid grid-cols-4 gap-4">
-            <label hlmLabel for="add-name" class="text-right">Name</label>
-            <input hlmInput id="add-name" [(ngModel)]="newUserData.nom" class="col-span-3" />
+        <div class="grid gap-5 py-4">
+          <div>
+            <label hlmLabel for="add-name">Name</label>
+            <input hlmInput id="add-name" [(ngModel)]="newUserData.nom" class="w-full" />
           </div>
-          <div class="items-center grid grid-cols-4 gap-4">
-            <label hlmLabel for="add-email" class="text-right">Email</label>
-            <input hlmInput id="add-email" [(ngModel)]="newUserData.email" class="col-span-3" />
+          <div>
+            <label hlmLabel for="add-email">Email</label>
+            <input hlmInput id="add-email" [(ngModel)]="newUserData.email" class="w-full" />
           </div>
-          <div class="items-center grid grid-cols-4 gap-4">
-            <label hlmLabel for="add-role" class="text-right">Role</label>
-            <select id="add-role" [(ngModel)]="newUserData.role" class="col-span-3 block w-full px-3 py-2 border rounded-md shadow-sm">
+          <div>
+            <label hlmLabel for="add-role">Role</label>
+            <select id="add-role" [(ngModel)]="newUserData.role" class="w-full border rounded px-3 py-2">
               <option disabled value="">Select role</option>
               <option value="Member">Member</option>
               <option value="Manager">Manager</option>
             </select>
           </div>
-          <div class="items-center grid grid-cols-4 gap-4">
-            <label for="add-password" class="text-right">Password</label>
-            <div class="col-span-3 flex gap-2">
-              <input type="text" id="add-password" [(ngModel)]="newUserData.motDePasse" class="w-full px-3 py-2 border rounded-md shadow-sm" placeholder="Generated password" />
-              <button type="button" (click)="generatePassword()" class="px-3 py-2 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">Generate</button>
+          <div>
+            <label hlmLabel>Teams</label>
+            <select multiple [(ngModel)]="newUserData.teams" class="w-full border rounded px-3 py-2">
+              <option *ngFor="let team of teamList" [value]="team._id">{{ team.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label hlmLabel>Password</label>
+            <div class="flex gap-2">
+              <input hlmInput type="text" [(ngModel)]="newUserData.motDePasse" placeholder="Generated password" class="w-full" />
+              <button type="button" (click)="generatePassword()" class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 text-sm">Generate</button>
             </div>
           </div>
         </div>
         <hlm-dialog-footer>
-          <button hlmBtn type="submit" (click)="addUser(ctx)">Create</button>
+          <button hlmBtn (click)="addUser(ctx)" class="w-full">Create</button>
         </hlm-dialog-footer>
       </hlm-dialog-content>
     </hlm-dialog>
   </div>
+<!-- FILTER SECTION -->
+<div class="flex flex-wrap items-center gap-4 mb-6 mt-6">
+  <!-- Search by Name or Email -->
+  <input
+    type="text"
+    placeholder="Search by name or email"
+    [(ngModel)]="searchTerm"
+    (input)="applyFilters()"
+    class="border px-3 py-2 rounded w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
 
-  <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+  <!-- Filter by Role -->
+  <select
+    [(ngModel)]="selectedRole"
+    (change)="applyFilters()"
+    class="border px-3 py-2 rounded w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="">All Roles</option>
+    <option value="Member">Member</option>
+    <option value="Manager">Manager</option>
+  </select>
+
+  <!-- Filter by Status -->
+  <select
+    [(ngModel)]="selectedStatus"
+    (change)="applyFilters()"
+    class="border px-3 py-2 rounded w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="">All Statuses</option>
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+  </select>
+</div>
+
+  <!-- USER TABLE -->
+  <table class="min-w-full border divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
-        <th class="py-3.5 px-4 text-sm font-normal text-left text-gray-500">Name</th>
-        <th class="px-12 py-3.5 text-sm font-normal text-left text-gray-500">Status</th>
-        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Role</th>
-        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Email</th>
-        <th class="px-4 py-3.5 text-sm font-normal text-left text-gray-500">Teams</th>
-        <th class="px-4 py-3.5 text-sm text-gray-500">Action</th>
+        <th class="text-left px-4 py-3">Name</th>
+        <th class="text-left px-4 py-3">Status</th>
+        <th class="text-left px-4 py-3">Role</th>
+        <th class="text-left px-4 py-3">Email</th>
+        <th class="text-left px-4 py-3">Teams</th>
+        <th class="text-left px-4 py-3">Actions</th>
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-      <tr *ngFor="let user of listUsers; let i = index" class="hover:bg-gray-50">
-        <td class="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-          <div class="flex items-center gap-x-3">
-            <img class="object-cover w-10 h-10 rounded-full" [src]="user.image ? user.image : 'https://ui-avatars.com/api/?name=' + user.nom + '&background=random'" alt="Avatar" />
+      <tr *ngFor="let user of listUsers; let i = index">
+        <td class="px-4 py-3">
+          <div class="flex items-center gap-3">
+            <img [src]="user.image ? user.image : 'https://ui-avatars.com/api/?name=' + user.nom + '&background=random'" class="w-10 h-10 rounded-full" />
             <div>
-              <h2 class="font-medium text-gray-800">{{ user.nom }}</h2>
-              <p class="text-sm text-gray-600">{{ user.nom | lowercase }}</p>
+              <p class="font-medium">{{ user.nom }}</p>
+              <p class="text-sm text-gray-500 lowercase">{{ user.nom }}</p>
             </div>
           </div>
         </td>
-        <td class="px-12 py-4 text-sm text-gray-700 whitespace-nowrap">
-          <div class="inline-flex items-center px-3 py-1 rounded-full gap-x-2"
-            [ngClass]="{'bg-emerald-100/60': user.Status === 'active', 'bg-red-100/60': user.Status !== 'active'}">
-            <span class="h-1.5 w-1.5 rounded-full"
-              [ngClass]="{'bg-emerald-500': user.Status === 'active', 'bg-red-500': user.Status !== 'active'}"></span>
-            <span class="text-sm"
-              [ngClass]="{'text-emerald-500': user.Status === 'active', 'text-red-500': user.Status !== 'active'}">
-              {{user.Status}}
-            </span>
+        <td class="px-4 py-3">
+          <span [ngClass]="{
+            'bg-green-100 text-green-700': user.Status === 'active',
+            'bg-red-100 text-red-700': user.Status !== 'active'
+          }" class="px-2 py-1 rounded-full text-xs font-medium">
+            {{ user.Status }}
+          </span>
+        </td>
+        <td class="px-4 py-3 text-sm text-gray-600">{{ user.role }}</td>
+        <td class="px-4 py-3 text-sm text-gray-600">{{ user.email }}</td>
+        <td class="px-4 py-3">
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let teamName of getTeamNames(user.teams)" class="px-2 py-1 bg-gray-100 text-xs rounded-full text-gray-800">{{ teamName }}</span>
           </div>
         </td>
-        <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.role }}</td>
-        <td class="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">{{ user.email }}</td>
-        <td class="px-4 py-4 text-sm whitespace-nowrap">
-          <div class="flex items-center gap-x-2">
-            <p class="px-3 py-1 text-xs text-indigo-500 rounded-full bg-indigo-100/60">Design</p>
-            <p class="px-3 py-1 text-xs text-blue-500 rounded-full bg-blue-100/60">Product</p>
-            <p class="px-3 py-1 text-xs text-pink-500 rounded-full bg-pink-100/60">Marketing</p>
-          </div>
-        </td>
-        <td class="px-4 py-4 text-sm whitespace-nowrap">
-          <div class="flex items-center gap-x-4">
-            <hlm-dialog>
-              <button brnDialogTrigger (click)="editUser(i)" title="Edit" class="text-gray-500 hover:text-yellow-500">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-              </svg>
-              </button>
-              <hlm-dialog-content class="sm:max-w-[425px]" *brnDialogContent="let ctx">
-                <hlm-dialog-header>
-                  <h3 hlmDialogTitle>Edit User</h3>
-                  <p hlmDialogDescription>Update user info here.</p>
-                </hlm-dialog-header>
-                <div class="grid gap-4 py-4">
-                  <label>Name <input hlmInput [(ngModel)]="editUserData.nom" /></label>
-                  <label>Email <input hlmInput [(ngModel)]="editUserData.email" /></label>
-                  <label>Role
-                    <select [(ngModel)]="editUserData.role" class="w-full px-2 py-1 border rounded">
-                      <option disabled value="">Select role</option>
-                      <option value="Member">Member</option>
-                      <option value="Manager">Manager</option>
-                    </select>
-                  </label>
-                </div>
-                <hlm-dialog-footer>
-                  <button hlmBtn (click)="saveEditUser(ctx)">Save</button>
-                </hlm-dialog-footer>
-              </hlm-dialog-content>
-            </hlm-dialog>
+        <td class="px-4 py-3 flex gap-3">
+          <hlm-dialog>
+            <button brnDialogTrigger (click)="editUser(i)" title="Edit" class="text-yellow-500 hover:text-yellow-600">✏️</button>
+            <hlm-dialog-content class="sm:max-w-[600px] mx-auto my-auto" *brnDialogContent="let ctx">
+              <hlm-dialog-header>
+                <h3 hlmDialogTitle>Edit User</h3>
+                <p hlmDialogDescription>Modify user details below.</p>
+              </hlm-dialog-header>
+              <div class="grid gap-5 py-4">
+                <label>Name <input hlmInput [(ngModel)]="editUserData.nom" class="w-full" /></label>
+                <label>Email <input hlmInput [(ngModel)]="editUserData.email" class="w-full" /></label>
+                <label>Role
+                  <select [(ngModel)]="editUserData.role" class="w-full border px-3 py-2 rounded">
+                    <option disabled value="">Select role</option>
+                    <option value="Member">Member</option>
+                    <option value="Manager">Manager</option>
+                  </select>
+                </label>
+                <label>Teams
+                  <select multiple [(ngModel)]="editUserData.teams" class="w-full border px-3 py-2 rounded">
+                    <option *ngFor="let team of teamList" [value]="team._id">{{ team.name }}</option>
+                  </select>
+                </label>
+              </div>
+              <hlm-dialog-footer>
+                <button hlmBtn (click)="saveEditUser(ctx)" class="w-full">Save</button>
+              </hlm-dialog-footer>
+            </hlm-dialog-content>
+          </hlm-dialog>
 
-            <hlm-alert-dialog>
-                <button brnAlertDialogTrigger title="Delete" class="text-gray-500 hover:text-red-500"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-            </svg></button>
-              <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
-                <hlm-alert-dialog-header>
-                  <h3 hlmAlertDialogTitle>Are you sure?</h3>
-                  <p hlmAlertDialogDescription>This action will permanently remove the user.</p>
-                </hlm-alert-dialog-header>
-                <hlm-alert-dialog-footer>
-                  <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
-                  <button hlmAlertDialogAction (click)="deleteUser(i); ctx.close()">Delete</button>
-                </hlm-alert-dialog-footer>
-              </hlm-alert-dialog-content>
-            </hlm-alert-dialog>
-          </div>
+          <hlm-alert-dialog>
+            <button brnAlertDialogTrigger title="Delete" class="text-red-500 hover:text-red-600">🗑</button>
+            <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+              <hlm-alert-dialog-header>
+                <h3 hlmAlertDialogTitle>Delete User?</h3>
+                <p hlmAlertDialogDescription>This action cannot be undone.</p>
+              </hlm-alert-dialog-header>
+              <hlm-alert-dialog-footer>
+                <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
+                <button hlmAlertDialogAction (click)="deleteUser(i); ctx.close()">Delete</button>
+              </hlm-alert-dialog-footer>
+            </hlm-alert-dialog-content>
+          </hlm-alert-dialog>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Pagination -->
-  <div class="flex justify-between items-center mt-6">
+  <!-- PAGINATION -->
+  <div class="flex justify-center items-center gap-4 mt-6">
     <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
-      class="px-4 py-2 text-sm bg-white border rounded disabled:opacity-50">Previous</button>
+      class="px-4 py-2 text-sm border rounded bg-white disabled:opacity-40">Previous</button>
 
-    <div class="flex items-center gap-1">
-      <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
-        <button (click)="changePage(i + 1)"
-          [ngClass]="{
-            'bg-blue-600 text-white': currentPage === i + 1,
-            'bg-white text-gray-700': currentPage !== i + 1
-          }"
-          class="px-3 py-1 text-sm border rounded">
-          {{ i + 1 }}
-        </button>
-      </ng-container>
-    </div>
+    <ng-container *ngFor="let page of [].constructor(totalPages); let i = index">
+      <button (click)="changePage(i + 1)"
+        [ngClass]="{
+          'bg-blue-600 text-white': currentPage === i + 1,
+          'bg-white text-gray-800': currentPage !== i + 1
+        }"
+        class="px-3 py-1 text-sm border rounded">
+        {{ i + 1 }}
+      </button>
+    </ng-container>
 
     <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages"
-      class="px-4 py-2 text-sm bg-white border rounded disabled:opacity-50">Next</button>
+      class="px-4 py-2 text-sm border rounded bg-white disabled:opacity-40">Next</button>
   </div>
+
+<!-- TEAM MANAGEMENT SECTION -->
+<div class="space-y-6 mt-16">
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-semibold text-gray-800">Manage Teams</h2>
+    <hlm-dialog>
+      <button brnDialogTrigger hlmBtn class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">+ Add Team</button>
+      <hlm-dialog-content class="sm:max-w-[500px] mx-auto my-auto" *brnDialogContent="let ctx">
+        <hlm-dialog-header>
+          <h3 hlmDialogTitle>Create Team</h3>
+          <p hlmDialogDescription>Specify a name and select a color for the new team.</p>
+        </hlm-dialog-header>
+        <div class="grid gap-4 py-4">
+          <label>Name <input hlmInput [(ngModel)]="newTeam.name" class="w-full" /></label>
+          <label>Color
+            <input hlmInput [(ngModel)]="newTeam.code_hex" type="color" class="w-full h-10 cursor-pointer" />
+          </label>
+        </div>
+        <hlm-dialog-footer>
+          <button hlmBtn (click)="addTeam(ctx)" class="w-full">Create</button>
+        </hlm-dialog-footer>
+      </hlm-dialog-content>
+    </hlm-dialog>
+  </div>
+
+  <table class="min-w-full border divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="text-left px-4 py-3">Name</th>
+        <th class="text-left px-4 py-3">Color</th>
+        <th class="text-left px-4 py-3">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr *ngFor="let team of teamList; let i = index">
+        <td class="px-4 py-3 text-sm text-gray-800">{{ team.name }}</td>
+        <td class="px-4 py-3">
+          <div class="w-6 h-6 rounded-full border" [style.backgroundColor]="team.code_hex" title="{{ team.code_hex }}"></div>
+        </td>
+        <td class="px-4 py-3 flex gap-3">
+          <hlm-dialog>
+            <button brnDialogTrigger (click)="editTeam(i)" title="Edit" class="text-yellow-500 hover:text-yellow-600">✏️</button>
+            <hlm-dialog-content class="sm:max-w-[500px] mx-auto my-auto" *brnDialogContent="let ctx">
+              <hlm-dialog-header>
+                <h3 hlmDialogTitle>Edit Team</h3>
+                <p hlmDialogDescription>Update team name or color.</p>
+              </hlm-dialog-header>
+              <div class="grid gap-4 py-4">
+                <label>Name <input hlmInput [(ngModel)]="editTeamData.name" class="w-full" /></label>
+                <label>Color
+                  <input hlmInput [(ngModel)]="editTeamData.code_hex" type="color" class="w-full h-10 cursor-pointer" />
+                </label>
+              </div>
+              <hlm-dialog-footer>
+                <button hlmBtn (click)="saveEditTeam(ctx)" class="w-full">Save</button>
+              </hlm-dialog-footer>
+            </hlm-dialog-content>
+          </hlm-dialog>
+
+          <!-- Tailwind-based Custom Modal for Delete Confirmation -->
+          <div class="relative">
+            <input type="checkbox" id="delete-confirm-{{i}}" class="modal-toggle hidden">
+            <label for="delete-confirm-{{i}}" class="text-red-500 cursor-pointer">🗑</label>
+            <div class="fixed inset-0 bg-black bg-opacity-40 z-40 hidden" id="modal-bg-{{i}}"></div>
+            <div class="modal fixed z-50 inset-0 flex items-center justify-center hidden" id="modal-box-{{i}}">
+              <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Confirm Deletion</h3>
+                <p class="text-gray-600 mb-4">Are you sure you want to delete <strong>{{ team.name }}</strong>? This action cannot be undone.</p>
+                <div class="flex justify-end gap-3">
+                  <label for="delete-confirm-{{i}}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer">Cancel</label>
+                  <label for="delete-confirm-{{i}}" (click)="deleteTeam(i)" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer">Delete</label>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>

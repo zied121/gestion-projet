@@ -16,6 +16,8 @@ const blogRoutes = require('./Routes/blogRoutes');
 const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
+const teamRoutes = require('./Routes/TeamRoutes');
+
 
 connectDb();
 app.use(express.json());
@@ -46,6 +48,8 @@ app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
 app.use('/api', aiRoutes);
 app.use('/api', notificationRoutes);
+app.use('/api/team', teamRoutes);
+
 
 io.on('connection', (socket) => {
     console.log(`User connecté : ${socket.id}`);
