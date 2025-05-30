@@ -1,7 +1,8 @@
     const Event = require('../models/Event');
     const Holiday = require('../models/Holiday'); 
     const Utilisateur = require('../models/Usermodel'); 
-    const { Project } = require('../models/ProjectModel');     const emailService = require('../config/nodemailer');
+    const { Project } = require('../models/ProjectModel');    
+     const emailService = require('../config/nodemailer');
     const { scheduleEventReminders } = require('../services/reminderScheduler');
     const mongoose = require('mongoose');
     const { createRecurringEventInstances, deleteRecurringEventInstances, updateRecurringEventInstances } = require('../services/recurringEventService');
@@ -294,6 +295,7 @@ const createEvent = async (req, res) => {
         }
 
         // Process participants for "Réunion" and "Évenement"
+        let participantUsers = []; // Stocker les utilisateurs participants
         if (['Réunion', 'Évenement'].includes(eventData.type)) {
             console.log('Processing participants for event type:', eventData.type);
             let participantIds = Array.isArray(req.body.participants)
@@ -343,6 +345,9 @@ const createEvent = async (req, res) => {
                 });
             }
 
+            // Stocker les utilisateurs participants pour l'envoi d'emails
+            participantUsers = existingUsers;
+
             // Prepare participants for the event
             eventData.participants = participantIds.map(id => ({
                 participant_id: id,
@@ -351,18 +356,6 @@ const createEvent = async (req, res) => {
                 message: ''
             }));
             console.log('Prepared participants for the event:', eventData.participants);
-        }
-
-        // Generate Jitsi link for online events
-        if (['Réunion', 'Évenement'].includes(eventData.type) && eventData.emplacement === 'En ligne') {
-            eventData.lien = generateJitsiLink(eventData.titre || 'event', eventData.date_debut);
-            console.log('Generated Jitsi link:', eventData.lien);
-        }
-
-        // Handle file upload
-        if (req.file) {
-            eventData.fichier = `/uploads/${req.file.filename}`;
-            console.log('Uploaded file path:', eventData.fichier);
         }
 
         // Set reminders based on event type
@@ -440,6 +433,12 @@ const createEvent = async (req, res) => {
                 }
             }
         }
+        
+        eventData.lien = generateJitsiLink(eventData.titre || 'event', eventData.date_debut);
+        
+        if (req.file) {
+            eventData.file = `/uploads/${req.file.filename}`;
+        }
 
         console.log('Final event data before saving:', eventData);
 
@@ -447,6 +446,7 @@ const createEvent = async (req, res) => {
         const event = new Event(eventData);
         await event.save();
         console.log('Base event created successfully:', event);
+await scheduleEventReminders(event);
 
         // Generate recurring instances if needed
         let createdEvents = [event];
@@ -456,20 +456,55 @@ const createEvent = async (req, res) => {
             console.log(`Created ${createdEvents.length} recurring instances`);
         }
 
-        // Schedule reminders for all created events
-        for (const eventInstance of createdEvents) {
-            await scheduleEventReminders(eventInstance);
-        }
+
         console.log('Reminders scheduled successfully for all instances.');
+
+        // ============== ENVOI D'EMAILS AUX PARTICIPANTS ==============
+        if (['Réunion', 'Évenement'].includes(eventData.type) && participantUsers.length > 0) {
+            console.log('Sending invitation emails to participants...');
+            
+            try {
+                // Récupérer les informations de l'organisateur
+                const organizer = await Utilisateur.User.findById(req.user._id);
+                
+                // Envoyer un email à chaque participant
+                for (const participant of participantUsers) {
+                    try {
+                        // Générer le contenu de l'email d'invitation
+                        const emailContent = emailService.getEventCreationEmail(
+                            event, 
+                            participant, 
+                            participant.email
+                        );
+                        
+                        // Envoyer l'email
+                        await emailService.sendEmail(participant.email, emailContent);
+                        console.log(`✅ Email d'invitation envoyé à: ${participant.email}`);
+                        
+                    } catch (emailError) {
+                        console.error(`❌ Erreur envoi email à ${participant.email}:`, emailError);
+                        // Continue avec les autres participants même si un email échoue
+                    }
+                }
+                
+                console.log('📧 Tous les emails d\'invitation ont été traités');
+                
+            } catch (emailProcessError) {
+                console.error('❌ Erreur lors du processus d\'envoi des emails:', emailProcessError);
+                // L'événement est créé même si les emails échouent
+            }
+        }
 
         res.status(201).json({
             success: true,
             data: event,
             message: eventData.isRecurring ? 
-                `Événement récurrent créé avec ${createdEvents.length} instances` : 
-                'Événement créé avec succès',
-            instances_created: createdEvents.length
+                `Événement récurrent créé avec ${createdEvents.length} instances. Invitations envoyées aux participants.` : 
+                'Événement créé avec succès. Invitations envoyées aux participants.',
+            instances_created: createdEvents.length,
+            participants_notified: participantUsers.length
         });
+        
     } catch (err) {
         console.error('Erreur lors de la création de l\'événement:', err);
 
@@ -688,17 +723,55 @@ const updateParticipantResponse = async (req, res) => {
 
         await Event.findByIdAndUpdate(id, { $set: updateData });
 
-        // Récupérer l'événement mis à jour
+        // Récupérer l'événement mis à jour avec les informations complètes
         const updatedEvent = await Event.findById(id)
             .populate('organisateur_id', 'nom prenom email')
             .populate('participants.participant_id', 'nom prenom email');
 
+        // ============== ENVOI D'EMAIL À L'ORGANISATEUR ==============
+        try {
+            // Récupérer les informations du participant qui répond
+            const participant = await Utilisateur.User.findById(userId);
+            
+            if (participant && updatedEvent.organisateur_id && updatedEvent.organisateur_id.email) {
+                console.log('Envoi d\'email de notification à l\'organisateur...');
+                
+                // Préparer les informations du participant pour l'email
+                const participantInfo = {
+                    nom: participant.nom + ' ' + (participant.prenom || ''),
+                    reponse: response === 'accepter' ? 'Accepté' : 
+                            response === 'refuser' ? 'Refusé' : 'En attente',
+                    message: message || 'Aucun message'
+                };
+
+                // Générer le contenu de l'email de notification
+                const emailContent = emailService.getParticipantResponseEmail(
+                    updatedEvent,
+                    participantInfo,
+                    updatedEvent.organisateur_id.email
+                );
+
+                // Envoyer l'email à l'organisateur
+                await emailService.sendEmail(updatedEvent.organisateur_id.email, emailContent);
+                console.log(`✅ Email de notification envoyé à l'organisateur: ${updatedEvent.organisateur_id.email}`);
+                
+            } else {
+                console.log('❗ Impossible d\'envoyer l\'email: informations manquantes');
+            }
+            
+        } catch (emailError) {
+            console.error('❌ Erreur lors de l\'envoi de l\'email à l\'organisateur:', emailError);
+            // La réponse est enregistrée même si l'email échoue
+        }
+
         res.status(200).json({
             success: true,
-            message: `Votre réponse a été enregistrée.`,
+            message: `Votre réponse a été enregistrée et l'organisateur a été notifié.`,
             data: updatedEvent
         });
+        
     } catch (err) {
+        console.error('Erreur lors de la mise à jour de la réponse:', err);
         res.status(400).json({ 
             success: false,
             message: err.message 
@@ -920,34 +993,122 @@ const validateRecurringEventData = (eventData) => {
 };
 
 const sanitizeEventData = (req, res, next) => {
+    console.log('--- Debugging Sanitize Event Data Middleware ---');
+    console.log('Content-Type:', req.headers['content-type']);
+    console.log('Raw request body:', req.body);
+    
     try {
-        console.log('Before sanitization:', req.body);
-        
-        // Convert string booleans to actual booleans
-        if (req.body.isRecurring !== undefined) {
-            if (typeof req.body.isRecurring === 'string') {
-                req.body.isRecurring = req.body.isRecurring.toLowerCase() === 'true';
+        // Si c'est une requête FormData (multer)
+        if (req.headers['content-type'] && req.headers['content-type'].includes('multipart/form-data')) {
+            console.log('Processing FormData request');
+            
+            // Traiter les participants
+            if (req.body['participants[]']) {
+                if (Array.isArray(req.body['participants[]'])) {
+                    req.body.participants = req.body['participants[]'];
+                } else {
+                    req.body.participants = [req.body['participants[]']];
+                }
+                delete req.body['participants[]'];
+            } else if (req.body.participants) {
+                // Si les participants sont envoyés comme JSON string
+                try {
+                    req.body.participants = JSON.parse(req.body.participants);
+                } catch (e) {
+                    console.log('Participants is not JSON, treating as array');
+                    if (!Array.isArray(req.body.participants)) {
+                        req.body.participants = [req.body.participants];
+                    }
+                }
+            } else {
+                req.body.participants = [];
+            }
+
+            // Traiter les rappels - FormData structure: rappel[0][time], rappel[0][unit], rappel[0][sent]
+            const rappelData = {};
+            const rappelKeys = Object.keys(req.body).filter(key => key.startsWith('rappel['));
+            
+            rappelKeys.forEach(key => {
+                const match = key.match(/rappel\[(\d+)\]\[(\w+)\]/);
+                if (match) {
+                    const index = parseInt(match[1]);
+                    const property = match[2];
+                    
+                    if (!rappelData[index]) {
+                        rappelData[index] = {};
+                    }
+                    
+                    let value = req.body[key];
+                    // Convertir les types appropriés
+                    if (property === 'time') {
+                        value = parseInt(value);
+                    } else if (property === 'sent') {
+                        value = value === 'true';
+                    }
+                    
+                    rappelData[index][property] = value;
+                    delete req.body[key];
+                }
+            });
+
+            // Convertir l'objet rappel en tableau
+            if (Object.keys(rappelData).length > 0) {
+                req.body.rappel = Object.keys(rappelData)
+                    .sort((a, b) => parseInt(a) - parseInt(b))
+                    .map(key => rappelData[key]);
+            } else if (req.body.rappel) {
+                // Si rappel est envoyé comme JSON string
+                try {
+                    req.body.rappel = JSON.parse(req.body.rappel);
+                } catch (e) {
+                    console.log('Rappel is not JSON, setting empty array');
+                    req.body.rappel = [];
+                }
+            } else {
+                req.body.rappel = [];
+            }
+
+            // Convertir les valeurs booléennes
+            if (req.body.isRecurring) {
+                req.body.isRecurring = req.body.isRecurring === 'true';
+            }
+
+            // Nettoyer les autres champs si nécessaire
+            Object.keys(req.body).forEach(key => {
+                if (req.body[key] === 'undefined' || req.body[key] === 'null') {
+                    delete req.body[key];
+                }
+            });
+
+        } else {
+            // Si c'est une requête JSON normale
+            console.log('Processing JSON request');
+            
+            // S'assurer que participants est un tableau
+            if (!req.body.participants) {
+                req.body.participants = [];
+            } else if (!Array.isArray(req.body.participants)) {
+                req.body.participants = [req.body.participants];
+            }
+
+            // S'assurer que rappel est un tableau
+            if (!req.body.rappel) {
+                req.body.rappel = [];
+            } else if (!Array.isArray(req.body.rappel)) {
+                req.body.rappel = [req.body.rappel];
             }
         }
 
-        // Convert string numbers to actual numbers
-        const numericFields = ['custom_recurrence_days', 'recurrence_count'];
-        numericFields.forEach(field => {
-            if (req.body[field] && typeof req.body[field] === 'string') {
-                const num = parseInt(req.body[field]);
-                if (!isNaN(num)) {
-                    req.body[field] = num;
-                }
-            }
-        });
-
-        console.log('After sanitization:', req.body);
+        console.log('Processed request body:', req.body);
+        console.log('Participants array:', req.body.participants);
+        console.log('Rappel array:', req.body.rappel);
+        
         next();
     } catch (error) {
-        console.error('Error in sanitizeEventData:', error);
-        res.status(400).json({
+        console.error('Error in sanitizeEventData middleware:', error);
+        return res.status(400).json({
             success: false,
-            message: 'Erreur lors de la validation des données'
+            message: 'Erreur lors du traitement des données: ' + error.message
         });
     }
 };
@@ -1278,7 +1439,45 @@ const participant_status = async (eventId, userId) => {
     }
 };
 
+const getEventWithParticipants = async (req, res) => {
+    try {
+        const eventId = req.params.eventId; // Changez 'id' en 'eventId' pour correspondre à la route
+        
+        if (!eventId) {
+            return res.status(400).json({ message: 'ID d\'événement manquant.' });
+        }
 
+        // Trouver l'événement avec tous les participants peuplés
+        const event = await Event.findById(eventId)
+            .populate('organisateur_id', 'nom prenom email')
+            .populate('participants.participant_id', 'nom prenom email')
+            .lean();
+
+        if (!event) {
+            return res.status(404).json({ message: 'Événement non trouvé.' });
+        }
+
+        // Formater les participants pour la réponse
+        const formattedParticipants = event.participants.map(participant => {
+            return {
+                participant_id: participant.participant_id, // objet complet peuplé
+                accept: participant.accept,
+                refuse: participant.refuse,
+                message: participant.message
+            };
+        });
+
+        // Créer la réponse formatée
+        const response = {
+            ...event,
+            participants: formattedParticipants
+        };
+
+        res.status(200).json(response);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 
 module.exports = {
     getEvents,
@@ -1297,7 +1496,8 @@ module.exports = {
     validateRecurringEventData,
     sanitizeEventData, 
     deleteParticipant, 
-    participant_status
+    participant_status,
+    getEventWithParticipants
     // updateReponse
 };
 

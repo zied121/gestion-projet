@@ -52,7 +52,7 @@ export interface EventModel {
     type_recurrence?: 'daily' | 'weekly' | 'monthly' | 'personnalise' | 'none';
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
-    file?: any;
+    file?: string;
     participants?: string[];
   }
   export interface UpdateEventModel {
@@ -70,7 +70,7 @@ export interface EventModel {
     type_recurrence?: 'daily' | 'weekly' | 'monthly' | 'personnalise' | 'none';
     rappel?: { time: number; unit: 'minutes' | 'hours' | 'days'; sent: boolean }[];
     status?: string;
-    file?: any;
+    file?: string;
     participants?: {
       participant_id: string | { _id: string, nom: string, prenom: string, email: string };
       accept: boolean;

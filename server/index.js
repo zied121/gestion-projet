@@ -2,6 +2,9 @@ require('dotenv').config({ path: './config/.env' });
 const express = require('express');
 const connectDb = require('./config/ConnectDb');
 const app = express();
+const path = require('path');
+
+
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -20,7 +23,6 @@ const eventRoutes = require('./Routes/eventRoutes');
 const participantRoutes = require('./Routes/participantRoutes');
 const chatbotRoutes = require('./Routes/chatbot');
 const holidayRoutes = require('./Routes/holidayRoutes');
-
 
 connectDb();
 app.use(express.json());
@@ -56,6 +58,7 @@ app.use('/api/events', eventRoutes);
     app.use('/api', participantRoutes);
     app.use('/api/holiday', holidayRoutes);
     app.use('/api', chatbotRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware/uploads')));
 
 io.on('connection', (socket) => {
     console.log(`User connecté : ${socket.id}`);
@@ -65,9 +68,13 @@ io.on('connection', (socket) => {
     });
 });
 
+
 const port = process.env.port || 5000;
 server.listen(port, (error) => {
-    (error) ? console.log('Server failed') : console.log(`Server running on port ${port}`);
+    (error)
+        ? console.log('Server failed')
+        : console.log(`Server running on port ${port}`);
+    console.log(`Files accessible at: http://localhost:${port}/uploads/`);
 });
 
 
