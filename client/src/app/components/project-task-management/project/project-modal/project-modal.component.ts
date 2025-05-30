@@ -17,6 +17,7 @@ import { ToastrModule } from 'ngx-toastr';
     NgForOf,
     ToastrModule,
   ],
+  standalone: true,
   templateUrl: './project-modal.component.html'
 })
 

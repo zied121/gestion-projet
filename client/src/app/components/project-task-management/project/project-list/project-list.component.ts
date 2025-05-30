@@ -22,6 +22,7 @@ import {NgChartsModule} from 'ng2-charts';
     NgForOf,
     RouterLink
   ],
+  standalone: true,
   styleUrls: ['./project-list.component.scss']
 })
 export class ProjectListComponent implements OnInit {

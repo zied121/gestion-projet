@@ -1,0 +1,117 @@
+<section class="container mt-4">
+  <!-- En-tête avec recherche et création -->
+  <div class="row mb-4 g-3 align-items-center">
+    <div class="col-md-6">
+      <input 
+        type="text"
+        [formControl]="searchControl"
+        placeholder="Rechercher des articles..."
+        class="form-control"
+      >
+    </div>
+    <div class="col-md-3">
+      <select 
+        [(ngModel)]="sortOption"
+        (change)="onSortChange(sortOption)"
+        class="form-select"
+      >
+        <option value="newest">Plus récent</option>
+        <option value="oldest">Plus ancien</option>
+        <option value="popular">Plus populaire</option>
+      </select>
+    </div>
+    <div class="col-md-3 text-end">
+      <a routerLink="/blogs/create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> Nouveau blog
+      </a>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Liste des blogs -->
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div *ngFor="let blog of filteredBlogs" class="col">
+      <div class="card h-100 shadow-sm">
+        <img *ngIf="blog.imageUrl" [src]="blog.imageUrl" class="card-img-top" [alt]="blog.title">
+        <div class="card-body">
+          <h3 class="card-title">{{ blog.title }}</h3>
+          <p class="card-text text-muted">
+            <small>{{ blog.createdAt | date:'mediumDate' }}</small>
+          </p>
+          <p class="card-text">{{ blog.content | slice:0:150 }}...</p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              <!-- Bouton Like -->
+              <button 
+                (click)="likeBlog(blog._id)" 
+                class="btn btn-sm"
+                [class.btn-outline-primary]="!blog.isLiked"
+                [class.btn-danger]="blog.isLiked"
+              >
+                <i class="bi bi-hand-thumbs-up"></i> {{ blog.likeCount || 0 }}
+              </button>
+
+              <!-- Bouton Éditer -->
+              <button 
+                (click)="editBlog(blog._id)" 
+                class="btn btn-sm btn-outline-secondary"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+
+              <!-- Bouton Supprimer -->
+              <button 
+                (click)="deleteBlog(blog._id)" 
+                class="btn btn-sm btn-outline-danger"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <a [routerLink]="['/blogs', blog._id]" class="btn btn-sm btn-outline-primary">
+              Lire la suite
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="totalPages > 1" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="onPageChange(currentPage - 1)">
+          &laquo; Précédent
+        </button>
+      </li>
+      <li class="page-item disabled">
+        <span class="page-link">
+          Page {{ currentPage }} sur {{ totalPages }}
+        </span>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="onPageChange(currentPage + 1)">
+          Suivant &raquo;
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="filteredBlogs.length === 0 && !isLoading" class="text-center py-5">
+    <h4>Aucun blog trouvé</h4>
+    <p>Essayez de modifier vos critères de recherche</p>
+    <a routerLink="/blogs/create" class="btn btn-primary mt-3">
+      Créer votre premier blog
+    </a>
+  </div>
+</section>

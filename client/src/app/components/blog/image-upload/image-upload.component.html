@@ -1,0 +1,53 @@
+<div class="upload-container card p-4 mb-4">
+  <div class="text-center mb-3">
+    <h5 class="card-title">Télécharger une image</h5>
+    <p class="text-muted small">Formats acceptés: JPG, PNG, WebP (max 5MB)</p>
+  </div>
+
+  <div class="d-flex justify-content-center gap-2 mb-3">
+    <!-- Bouton principal Cloudinary -->
+    <button class="btn btn-primary" 
+            (click)="openWidget()" 
+            [disabled]="isUploading">
+      <i class="material-icons align-middle me-2">cloud_upload</i>
+      {{ isUploading ? 'Envoi en cours...' : 'Sélectionner' }}
+    </button>
+
+    <!-- Bouton secondaire -->
+    <button *ngIf="imageUrl" 
+            class="btn btn-outline-primary" 
+            (click)="openWidget()">
+      <i class="material-icons align-middle me-2">sync</i>
+      Changer
+    </button>
+  </div>
+
+  <!-- Aperçu de l'image -->
+  <div *ngIf="imageUrl" class="position-relative mt-3">
+    <img [src]="imageUrl" 
+         class="img-thumbnail d-block mx-auto" 
+         style="max-height: 200px"
+         alt="Aperçu">
+    <button class="position-absolute top-0 end-0 btn btn-sm btn-danger m-2"
+            (click)="clearImage()">
+      <i class="material-icons align-middle">delete</i>
+    </button>
+  </div>
+
+  <!-- Barre de progression -->
+  <div *ngIf="isUploading" class="mt-3">
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" 
+           role="progressbar"
+           [style.width.%]="uploadProgress">
+        {{ uploadProgress }}%
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages d'erreur -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3 d-flex align-items-center">
+    <i class="material-icons me-2">error_outline</i>
+    <span>{{ errorMessage }}</span>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+/* Style pour le groupe de boutons */
+.btn-group {
+  gap: 0.25rem;
+}
+
+/* Adaptation mobile */
+@media (max-width: 768px) {
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* Effet hover pour les boutons */
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}

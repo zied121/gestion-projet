@@ -1,0 +1,46 @@
+.feedback-global-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feedback-types {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.feedback-type-btn {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.feedback-type-btn:hover {
+  border-color: #ced4da;
+}
+
+.feedback-type-btn.active {
+  border-color: #0d6efd;
+  background-color: #f0f7ff;
+}
+
+.feedback-type-icon {
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .feedback-types {
+    flex-direction: column;
+  }
+}

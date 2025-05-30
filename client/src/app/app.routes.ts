@@ -10,13 +10,15 @@ import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { SubscriptionComponent } from './pages/subscription/subscription.component';
+
+import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
+import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
+import {BlogModule} from './components/blog/blog.module';
 import { memberGuard } from './guards/member.guard';
 import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
 {ownerGuard}
-import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
-import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {CalendarBackofficeComponent} from './components/calendar/calendar-backoffice/calendar-backoffice.component';
 export const routes: Routes = [
@@ -122,6 +124,13 @@ export const routes: Routes = [
         component: CalendarComponent,
       },
 
+
+      {
+        path: 'blogs',
+        loadChildren: () =>
+          import('./components/blog/blog.module').then(
+            (m) => m.BlogModule),
+      },
     ]
   }
-];
+  ]
