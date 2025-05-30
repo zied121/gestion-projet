@@ -1,0 +1,293 @@
+/* Styles généraux */
+.event-section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+}
+
+.info-value {
+  color: #333;
+  word-break: break-word;
+}
+
+.link-value {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.link-value:hover {
+  text-decoration: underline;
+}
+
+/* Styles pour les rappels */
+.reminder-status {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.reminder-status.sent {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+/* Styles pour les participants */
+.participants-card {
+  background-color: #fafafa;
+}
+
+.participant-item {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.participant-item:last-child {
+  border-bottom: none;
+}
+
+.participant-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.participant-status {
+  margin-top: 4px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.badge-accepted {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.badge-refused {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.badge-pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.participant-message {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.message-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Styles pour les icônes de statut des participants */
+.status-accepted {
+  color: #4caf50;
+}
+
+.status-refused {
+  color: #f44336;
+}
+
+.status-pending {
+  color: #ff9800;
+}
+
+/* Styles pour la section fichier */
+.file-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  border: 1px solid #e3f2fd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.file-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  border-radius: 12px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.file-icon mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #1976d2;
+  font-size: 16px;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.file-type {
+  color: #666;
+  font-size: 14px;
+}
+
+.file-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: auto;
+  padding: 8px 16px;
+}
+
+.action-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Styles pour les actions du dialog */
+.close-button {
+  background-color: #f5f5f5;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Media queries pour la responsivité */
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .info-label {
+    font-weight: 600;
+    color: #1976d2;
+  }
+  
+  .file-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .file-actions {
+    justify-content: center;
+  }
+  
+  .action-button {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .file-actions {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+}
+
+/* Animations */
+.file-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.file-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-button {
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.status-badge {
+  transition: all 0.2s ease;
+}
+
+.participant-item:hover .status-badge {
+  transform: scale(1.05);
+}

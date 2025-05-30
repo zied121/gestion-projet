@@ -17,7 +17,7 @@ const {
   searchByUser,
   addParticipants,
   updateParticipantResponse, 
-  participant_status
+  participant_status, 
 } = require('../Controllers/eventController');
 
 // Data sanitization middleware

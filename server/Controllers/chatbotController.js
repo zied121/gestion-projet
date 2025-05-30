@@ -13,6 +13,7 @@ const processQuery = async (req, res) => {
         }
 
         const startTime = Date.now();
+        console.log(`Processing query for user ${userId}: ${query}`);
         const response = await chatbotService.processQuery(userId, query.trim());
         const processingTime = Date.now() - startTime;
 

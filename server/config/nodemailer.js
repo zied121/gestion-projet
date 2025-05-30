@@ -1,15 +1,18 @@
+  // server/config/nodemailer.js
   const nodemailer = require('nodemailer');
   const path = require('path');
+const fs = require('fs').promises;
 
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'tasko.tasko2001@gmail.com',
+          pass: 'oilc qrdz qhqd hbgr',
+      },
 
+  });
+  
 
   const sendOrganiastionCodeEmail = async (email, password) => {
 
@@ -87,7 +90,7 @@ const SendOtpMail = async (to, subject, otp) => {
 function getEventCreationEmail(event, user, recipientEmail) {
     const eventDate = new Date(event.date_debut);
     const eventEndDate = new Date(event.date_fin);
-
+    
     const emailContent = {
         from: 'tasko.tasko2001@gmail.com',
         to: recipientEmail,
@@ -99,23 +102,35 @@ function getEventCreationEmail(event, user, recipientEmail) {
             <p><strong>Date :</strong> du ${eventDate.toLocaleString('fr-FR')} au ${eventEndDate.toLocaleString('fr-FR')}</p>
             <p><strong>Lieu :</strong> ${event.emplacement}</p>
             ${event.lien ? `<p><strong>Lien :</strong> <a href="${event.lien}">${event.lien}</a></p>` : ''}
-            ${event.file && event.file !== 'none' ? `<p><strong>Fichier :</strong> Un fichier est joint à cet email.</p>` : ''}
             <p>Merci,</p>
         `
     };
 
-    // Ajouter la pièce jointe si elle existe
+    // SOLUTION 1: Vérifier si le fichier existe avant de l'ajouter
     if (event.file && event.file !== 'none') {
+        // Construire le chemin complet du fichier
         const filePath = path.join(process.cwd(), 'uploads', path.basename(event.file));
-        emailContent.attachments = [{
+        
+        // Vérifier si le fichier existe de manière synchrone
+        try {
+            if (require('fs').existsSync(filePath)) {
+                emailContent.attachments = [{
             filename: path.basename(event.file),
             path: filePath,
             contentType: 'application/octet-stream'
         }];
+                console.log(`✅ Fichier trouvé pour l'email: ${filePath}`);
+            } else {
+                console.log(`⚠️ Fichier non trouvé, email envoyé sans pièce jointe: ${filePath}`);
+            }
+        } catch (error) {
+            console.error(`❌ Erreur lors de la vérification du fichier: ${error.message}`);
+        }
     }
 
     return emailContent;
 }
+
 
 function getParticipantResponseEmail(event, participantInfo, organisateurEmail) {
     if (!organisateurEmail) {
@@ -141,7 +156,7 @@ function getParticipantResponseEmail(event, participantInfo, organisateurEmail) 
 function getReminderEmail(event, timeLeft, recipientEmail) {
     const eventDateDebut = new Date(event.date_debut);
     const eventDateFin = new Date(event.date_fin);
-
+    
     const emailContent = {
         from: 'tasko.tasko2001@gmail.com',
         to: recipientEmail,
@@ -190,7 +205,9 @@ const sendEmail = async (to, emailContent) => {
 module.exports = {
     sendOrganiastionCodeEmail,
     ForgetPasswordEmail,
-    SendOtpMail,
-    sendTaskCreatedNotification
+    sendEmail,
+    getEventCreationEmail,
+    getReminderEmail,
+    getParticipantResponseEmail
 };
 
