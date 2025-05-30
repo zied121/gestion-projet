@@ -5,7 +5,7 @@ const app = express();
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-
+const path = require('path');
 const projectRoutes = require('./Routes/ProjectRoutes');
 const taskRoutes = require('./Routes/TaskRoutes');
 const userRouter = require('./Routes/UserRoutes');
@@ -17,29 +17,27 @@ const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
 const roomRoutes = require('./Routes/RoomRoutes');
 const messageRoutes = require('./Routes/MessageRoute');
 const GoogleAuth = require('./Routes/GoogleAuthRoute')
-const projectRoutes = require('./Routes/ProjectRoutes');
-const taskRoutes = require('./Routes/TaskRoutes');
 const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
-const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
+const eventRoutes = require('./Routes/EventRoutes');
+const participantRoutes = require('./Routes/ParticipantRoutes');
+const holidayRoutes = require('./Routes/HolidayRoutes');
+const chatbotRoutes = require('./Routes/Chatbot');
+const fs = require('fs');
+const multer = require('multer');
 
-const app = express();
-const server = http.createServer(app);
 
 
-// ✅ Configure CORS BEFORE routes
+
+connectDb();
+app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:4200',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.options('*', cors());
-
-// Connect DB
-const connectDb = require('./config/ConnectDb');
-connectDb();
-
-app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const server = http.createServer(app);
 

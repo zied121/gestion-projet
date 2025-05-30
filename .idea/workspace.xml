@@ -5,47 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="sidebar collapsed">
-      <change afterPath="$PROJECT_DIR$/server/deepseek.ai.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/navbar/navbar.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/dashboard/dashboard.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/kanban-board/kanban-board.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/member/member-dashboard/member-dashboard.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-list/project-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project-modal/project-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/project/project.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-detail/task-detail.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-detail/task-detail.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-list/task-list.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-list/task-list.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-list/task-list.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-list/task-list.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/project-task-management/task/task-modal/task-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/layouts/Front-office-layout/Front-office-layout.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/ai.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/ai.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/notification.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/notification.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/task.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/aiController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/aiController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/taskController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/taskController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/aiRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/aiRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/config/.env" beforeDir="false" afterPath="$PROJECT_DIR$/server/config/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/guards/admin.guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +46,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="project_task_managment" />
+        <entry key="$PROJECT_DIR$" value="chaima" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -95,28 +63,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;16.16.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;16.18.126&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.scopes&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "javascript.nodejs.core.library.configured.version": "18.19.1",
+    "javascript.nodejs.core.library.typings.version": "18.19.108",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.dev.executor": "Run",
+    "npm.start.executor": "Run",
+    "settings.editor.selected.configurable": "project.scopes",
+    "ts.external.directory.path": "C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task" />

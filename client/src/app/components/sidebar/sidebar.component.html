@@ -9,7 +9,7 @@
     <i class="bi bi-speedometer2"></i>
       <span *ngIf="!iscollapsed">Dashboard</span>
     </a>
-    <a routerLink="/timelines" routerLinkActive="active">
+    <a routerLink="/calendar" routerLinkActive="active">
       <i class="bi bi-calendar-event"></i>
       <span *ngIf="!iscollapsed">Timelines</span>
     </a>
@@ -17,17 +17,13 @@
       <i class="bi bi-kanban"></i>
       <span *ngIf="!iscollapsed">Projects</span>
     </a>
-    <a routerLink="/tasks" routerLinkActive="active">
-      <i class="bi bi-check2-square"></i>
-      <span *ngIf="!iscollapsed">Tasks</span>
-    </a>
-    <a routerLink="/collaboration" routerLinkActive="active">
-      <i class="bi bi-people-fill"></i>
+    <a routerLink="/chat" routerLinkActive="active">
+      <i class="bi bi-chat"></i>
       <span *ngIf="!iscollapsed">Collaboration</span>
     </a>
-    <a routerLink="/calendar" routerLinkActive="active">
-      <i class="icon-calendar"></i>
-      <span>Calendar</span>
+    <a routerLink="/blogs" routerLinkActive="active">
+      <i class="bi bi-people-fill"></i>
+      <span *ngIf="!iscollapsed">Blog</span>
     </a>
   </nav>
 
