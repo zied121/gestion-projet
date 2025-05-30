@@ -5,16 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="merge zied+malek">
+      <change afterPath="$PROJECT_DIR$/client/models/room.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/chat-routing.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/chat-routing.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/chat.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/chat.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/sidebar/sidebar.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/Controllers/RoomController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/RoomController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Middleware/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Middleware/upload.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747471689532-9126894.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473318608-653254760.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473337159-681871683.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473342544-826029403.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/ProjectModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/ProjectModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/server/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,27 +70,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "javascript.nodejs.core.library.configured.version": "18.19.1",
-    "javascript.nodejs.core.library.typings.version": "18.19.103",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Run",
-    "npm.start.executor": "Run",
-    "ts.external.directory.path": "C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;18.19.1&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.19.103&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/personal/PI/gestion-projet/client/src/app/components/project-task-management/task&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\personal\\PI\\gestion-projet\\client\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task" />
@@ -101,7 +107,7 @@
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\project\project-list" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev">
+  <component name="RunManager" selected="npm.start">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/server/package.json" />
       <command value="run" />
@@ -122,12 +128,16 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="npm.dev" />
+      <item itemvalue="npm.start" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dev" />
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.start" />
       </list>
     </recent_temporary>

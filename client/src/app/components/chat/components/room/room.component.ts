@@ -7,7 +7,8 @@ import { SocketService } from '../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { Room, RoomService } from '../../services/room.service';
+import {  RoomService } from '../../services/room.service';
+import { Room } from '../../../../../../models/room.model'; // Import du modèle Room
 
 @Component({
   selector: 'app-room',
@@ -222,17 +223,17 @@ loadMessages(roomId: string) {
 */
 getUserColor(username: string): string {
   if (!username) return '#cccccc'; // Default gray for unknown users
-  
+
   // Simple hash function to convert name to color
   const colors = [
-    '#FFB6C1', '#FFD700', '#98FB98', '#87CEFA', 
+    '#FFB6C1', '#FFD700', '#98FB98', '#87CEFA',
     '#FFA07A', '#9370DB', '#20B2AA', '#F08080'
   ];
-  
+
   const hash = username.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
-  
+
   return colors[Math.abs(hash) % colors.length];
 }
 }

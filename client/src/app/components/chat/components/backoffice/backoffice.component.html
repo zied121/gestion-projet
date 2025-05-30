@@ -10,14 +10,39 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let room of rooms">
+          <ng-container *ngFor="let room of rooms">
+            <tr >
               <td>{{ room.name }}</td>
               <td>{{ room.project?.name }}</td>
               <td>
                 <button class="btn btn-sm btn-warning" (click)="openModal(room)">Modifier</button>
+                <button class="btn btn-outline-info btn-sm" (click)="toggleExpand(room._id)">
+                  <i class="bi" [ngClass]="expandedRoomId === room._id ? 'bi-eye-slash' : 'bi-people'"></i>
+                  {{ expandedRoomId === room._id ? 'Masquer utilisateurs' : 'Voir utilisateurs' }}
+                </button>
                 <button class="btn btn-sm btn-danger" (click)="deleteRoom(room._id)">Supprimer</button>
               </td>
             </tr>
+            <tr *ngIf="expandedRoomId === room._id">
+              <td colspan="4">
+                <ul *ngIf="room.members && room.members.length > 0">
+                  <li *ngFor="let user of room.members">
+                    {{ user.nom }}
+                  </li>
+                </ul>
+                <div class="card-body d-flex align-items-center">
+                  <!-- Room Image -->
+                  <img
+                    *ngIf="room.image"
+                    [src]="'http://localhost:5000' + room.image"
+                    alt="Room image"
+                    class="me-3"
+                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                  />
+                </div>
+              </td>
+            </tr>
+          </ng-container>
           </tbody>
         </table>
       </div>
