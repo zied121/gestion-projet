@@ -8,7 +8,7 @@ const { ValideRoomSchema } = require("../models/Room");
 const upload = require("../Middleware/upload");
 
 const {
-    getRooms,searchRooms,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom , createRoom , getProjectPerUser, createGoogleMeet , getAllRooms,updateRoom , createRoomPerProject, createPrivateRoom
+    getRooms,searchRooms,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom , createRoom ,getLastMessage, getProjectPerUser, createGoogleMeet , getAllRooms,updateRoom , createRoomPerProject, createPrivateRoom
 } = require("../Controllers/roomController");
 
 //Admin routes

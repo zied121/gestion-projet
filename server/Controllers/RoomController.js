@@ -658,5 +658,4 @@ const getLastMessage = async (req, res) => {
   }
 };
 
-module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, getLastMessage, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec,getAllRooms,getRoomsByOwner,updateRoomDetails};
-module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoom,getAllRooms,getRoomsByOwner,updateRoomDetails};
+module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, getLastMessage, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoom,getAllRooms,getRoomsByOwner,updateRoomDetails};
