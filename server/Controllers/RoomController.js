@@ -1,10 +1,11 @@
 const { Room , RoomSchema , validateRoomSchema} = require("../models/Room");
 const { Project, projectValidationSchema } = require('../models/ProjectModel');
-const { Utilisateur } = require("../models/Usermodel")
+const { User } = require("../models/Usermodel")
 const { google } = require('googleapis');
 const { oauth2Client } = require('../config/googleAuth');
 const upload = require("../Middleware/upload");
 const mongoose = require("mongoose");
+const { Message } = require("../models/MessageModal");
 /*const getRooms = async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -439,7 +440,58 @@ const createGoogleMeet = async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de la création du meeting' });
   }
 };
+const createPrivateRoom = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { otherUserId } = req.body;
 
+    if (!otherUserId) {
+      return res.status(400).json({ message: 'Other user ID is required' });
+    }
+
+    // Vérifie si la room existe déjà
+    const existingRoom = await Room.findOne({
+      isPrivate: true,
+      members: { $all: [userId, otherUserId], $size: 2 }
+    });
+
+    if (existingRoom) {
+      return res.status(200).json({ message: 'Room already exists', room: existingRoom });
+    }
+
+    // Récupérer les infos de l'autre utilisateur
+    const otherUser = await User.findById(otherUserId);
+    if (!otherUser) {
+      return res.status(404).json({ message: 'Other user not found' });
+    }
+
+    // Créer la room avec le nom de l’autre utilisateur
+    const room = new Room({
+      name: `${otherUser.nom}`, // ou otherUser.username/fullName/etc.
+      members: [userId, otherUserId],
+      owner: userId,
+      isPrivate: true
+    });
+
+    await room.save();
+
+    const populatedRoom = await Room.findById(room._id).populate('members');
+
+    const io = req.app.get('io');
+    populatedRoom.members.forEach(member => {
+      io.to(member._id.toString()).emit('newRoomCreated', populatedRoom);
+    });
+
+    res.status(201).json(populatedRoom);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+/*
 const createPrivateRoom = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -475,7 +527,7 @@ const createPrivateRoom = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-}
+}*//////
 /*
 export const getRoomsByUser = async (req, res) => {
   try {
@@ -586,5 +638,25 @@ const getRoomsByUser = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 };
+const getLastMessage = async (req, res) => {
+  try {
+    const { roomId } = req.params;
 
+    // Find the most recent message for the room - no populate needed
+    const lastMessage = await Message.findOne({ room: roomId })
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .exec();
+
+    if (!lastMessage) {
+      return res.status(404).json({ message: 'No messages found for this room' });
+    }
+
+    res.json(lastMessage);
+  } catch (error) {
+    console.error('Error getting last message:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, getLastMessage, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec,getAllRooms,getRoomsByOwner,updateRoomDetails};
 module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoom,getAllRooms,getRoomsByOwner,updateRoomDetails};

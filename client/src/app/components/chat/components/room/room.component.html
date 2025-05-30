@@ -1,6 +1,23 @@
 <div class="chat-container">
   <div class="header">
-    <h1 class="text-2xl font-bold">{{ room?.name }}</h1>
+    <div class="header-left">
+      <div class="room-info">
+        <h1 class="room-name">{{ room?.name }}</h1>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="header-icon" title="Video Call" (click)="startVideoCall()">
+        <i class="fi fi-rr-video-camera-alt"></i></button>
+      <div *ngIf="!isGoogleAuthenticated" class="google-auth-notice">
+        <small>Sign in with Google to start calls</small>
+        <button (click)="signInWithGoogle()" class="google-signin-btn">
+          Sign In with Google
+        </button>
+      </div>
+      <button class="header-icon" title="Shared Files">
+        <i class="fi fi-rr-clip"></i></button>
+    </div>
   </div>
   
   <div class="messages">
@@ -9,7 +26,7 @@
       'other-message': msg.sender !== currentUserId,
       'my-message': msg.sender === currentUserId
     }">
-      
+
       <!-- Mode affichage -->
       <div *ngIf="editingMessageId !== msg._id" class="message-display">
         <div class="avatar" [ngClass]="{
@@ -18,7 +35,7 @@
         }">
           {{ (msg.SenderName || 'U').charAt(0).toUpperCase() }}
         </div>
-        
+
         <div class="message-content">
           <div class="bubble">
             <strong>{{ msg.SenderName || 'Utilisateur inconnu' }}</strong> : {{ msg.content }}
@@ -28,8 +45,9 @@
               </a>
             </div>
           </div>
-          
-          <div class="message-actions">
+
+          <!-- Actions pour MES messages (tous les boutons) -->
+          <div *ngIf="msg.sender === currentUserId" class="message-actions">
             <button class="action-btn edit-btn" (click)="startEditing(msg._id, msg.content)">
               Modifier
             </button>
@@ -41,18 +59,26 @@
               <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
             </button>
           </div>
+
+          <!-- Actions pour les messages des AUTRES (seulement like) -->
+          <div *ngIf="msg.sender !== currentUserId" class="message-actions">
+            <button class="action-btn like-btn" (click)="toggleLike(msg._id)">
+              ❤️{{ msg.likes?.length || 0 }}
+              <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Mode édition -->
-      <div *ngIf="editingMessageId === msg._id" class="edit-container">
+      <!-- Mode édition (seulement pour mes messages) -->
+      <div *ngIf="editingMessageId === msg._id && msg.sender === currentUserId" class="edit-container">
         <div class="avatar" [ngClass]="{
           'my-avatar': msg.sender === currentUserId,
           'other-avatar': msg.sender !== currentUserId
         }">
           {{ (msg.SenderName || 'U').charAt(0).toUpperCase() }}
         </div>
-        
+
         <div class="edit-form">
           <input [(ngModel)]="editedContent" class="edit-input" />
           <div class="edit-actions">
@@ -68,7 +94,7 @@
   <form (ngSubmit)="sendMessage()" class="send-message-form">
     <input type="text" [(ngModel)]="messageText" name="message" class="message-input"
       placeholder="Écrivez un message..." required />
-    <input type="file" (change)="onFileSelected($event)" class="file-input" />
+    <input type="file" (change)="onFileSelected($event)" class="file-input" #fileInput />
     <button type="submit" class="send-btn">Envoyer</button>
   </form>
 </div>
