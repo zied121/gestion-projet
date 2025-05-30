@@ -19,7 +19,7 @@ router.get("/blog/:blogId", getFeedbacksByBlog);
 router.get("/:id", getFeedbackById);
 
 // Ajouter un feedback (auth requis)
-router.post("/blog/:blogId", authMiddleware, createFeedback);
+router.post("", authMiddleware, createFeedback);
 
 // Modifier un feedback (auth requis)
 router.put("/:id", authMiddleware, updateFeedback);
