@@ -38,8 +38,8 @@ export class RoomService {
 
   constructor(private http: HttpClient) {}
 
-  private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token'); // assuming you store token here
+ private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
     return new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -75,28 +75,17 @@ export class RoomService {
   deleteRoom(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/deleteRoom/${id}`, { headers: this.getAuthHeaders() });
   }
-  startCall(roomId: string): Observable<StartCallResponse> {
-    return this.http.post<StartCallResponse>(
-      `${this.apiUrl}/${roomId}/start-call`, 
-      {}
+  startCall(roomId: string): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/${roomId}/start-call`,
+      {}, // empty body
+      { headers: this.getAuthHeaders() }
     );
   }
-/*
-  initiateGoogleAuth(): void {
-    window.location.href = 'http://localhost:5000/google/login';
-  }
-*/
-initiateGoogleAuth(roomId?: string): void {
-  const state = roomId ? encodeURIComponent(roomId) : '';
-  window.location.href = `http://localhost:5000/google/login?state=${state}`;
-}
 
- checkGoogleAuth(): Observable<AuthCheckResponse> {
-    return this.http.get<AuthCheckResponse>(
-      `${this.apiUrl}/google/verify-session`,
-      { withCredentials: true }
-    );
-  }
+
+
+
 
   createPrivateRoom(otherUserId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/createPrivateRoom`, {

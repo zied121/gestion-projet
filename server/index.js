@@ -66,7 +66,7 @@ app.use('/api', require('./Routes/ProjectRoutes'));
 app.use('/api', require('./Routes/TaskRoutes'));
 app.use('/api', require('./Routes/aiRoutes'));
 app.use('/api', require('./Routes/NotificationRoutes'));
-app.use('/google', GoogleAuth);
+app.use('/api/google', GoogleAuth);
 app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
 
 // Start server

@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const isAuth = require("../Middleware/isauth");
+const isauth = require("../Middleware/isauth");
 const isAdmin = require("../Middleware/adminorganisation");
-const authMiddleware = require("../Middleware/isauth");
 const validate = require('../Middleware/validate');
 const { ValideRoomSchema } = require("../models/Room");
 
@@ -11,23 +10,24 @@ const {
 } = require("../Controllers/RoomController");
   
 //Admin routes
-//router.post("/addRoom", isAuth,isAdmin, createRoom)
-//router.put("/UpdateRoom", isAuth,isAdmin, updateRoom)
-//router.get("/", isAuth, getRooms)
-router.get("/",isAuth, getRooms)
-router.get("/allrooms",isAuth, getAllRooms)
-router.get("/getProjectPerUser", isAuth, getProjectPerUser)  
-router.get("/getRoomByID/:id",isAuth, getRoomById)  
-router.post("/addRoom" , isAuth ,validate(ValideRoomSchema), createRoom)
-router.post("/RoomForProject/:id" , isAuth ,validate(ValideRoomSchema), createRoomPerProject) 
-router.post('/CreatePrivateRoom', isAuth, createPrivateRoom); 
-///router.post("/addRoom" , isAuth , validate(valideRoomSchema) , createRoom) 
-router.put("/UpdateRoom/:id" , isAuth ,validate(ValideRoomSchema), updateRoomsec)
-router.delete("/DeleteRoom/:id", isAuth, deleteRoom)
-router.post('/:id/start-call', createGoogleMeet);
-router.get('/searchRoom',isAuth , searchRooms);
-router.get('/getRoomsPerUser', isAuth, getRoomsByUser);
-router.get("/getRoomsPerowner", isAuth, getRoomsByOwner);
+//router.post("/addRoom", isauth,isAdmin, createRoom)
+//router.put("/UpdateRoom", isauth,isAdmin, updateRoom)
+//router.get("/", isauth, getRooms)
+router.get("/",isauth, getRooms)
+router.get("/allrooms",isauth, getAllRooms)
+router.post('/:id/start-call', isauth,createGoogleMeet);
+router.get("/getProjectPerUser", isauth, getProjectPerUser)  
+router.get("/getRoomByID/:id",isauth, getRoomById)  
+router.post("/addRoom" , isauth ,validate(ValideRoomSchema), createRoom)
+router.post("/RoomForProject/:id" , isauth ,validate(ValideRoomSchema), createRoomPerProject) 
+router.post('/CreatePrivateRoom', isauth, createPrivateRoom); 
+///router.post("/addRoom" , isauth , validate(valideRoomSchema) , createRoom) 
+router.put("/UpdateRoom/:id" , isauth ,validate(ValideRoomSchema), updateRoomsec)
+router.delete("/DeleteRoom/:id", isauth, deleteRoom)
+
+router.get('/searchRoom',isauth , searchRooms);
+router.get('/getRoomsPerUser', isauth, getRoomsByUser);
+router.get("/getRoomsPerowner", isauth, getRoomsByOwner);
 //User routes
 router.get('/room/:roomId/last', getLastMessage );
 

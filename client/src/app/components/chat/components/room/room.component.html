@@ -7,13 +7,13 @@
     </div>
 
     <div class="header-right">
-      <button class="header-icon" title="Video Call" (click)="startVideoCall()">
+      <button (click)="connectGoogleCalendar()">Connect Google Calendar</button>
+
+      <button class="header-icon" title="Video Call"   (click)="startVideoCall()">
         <i class="fi fi-rr-video-camera-alt"></i></button>
       <div *ngIf="!isGoogleAuthenticated" class="google-auth-notice">
-        <small>Sign in with Google to start calls</small>
-        <button (click)="signInWithGoogle()" class="google-signin-btn">
-          Sign In with Google
-        </button>
+      
+  
       </div>
       <button class="header-icon" title="Shared Files">
         <i class="fi fi-rr-clip"></i></button>

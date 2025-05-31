@@ -311,6 +311,14 @@ const createGoogleMeet = async (req, res) => {
 
 const createGoogleMeet = async (req, res) => {
   try {
+ const user = await User.findById(req.user._id);
+ console.log("user", user);
+    // Set credentials directly using your access and refresh tokens
+    oauth2Client.setCredentials({
+      access_token: user.google.access_token,
+      refresh_token:  user.google.refresh_token,
+    });
+
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
     const roomId = req.params.id;

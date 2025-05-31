@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Room, RoomService } from '../../services/room.service';
+import { GoogleMeetService } from '../../services/googleservice.service';
 
 @Component({
   selector: 'app-room',
@@ -37,77 +38,45 @@ export class RoomComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private socketService: SocketService,
     private route: ActivatedRoute,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private googleMeetService: GoogleMeetService
 
   ) {
     /*
     this.checkGoogleAuth();
     this.handleAuthRedirect();*/
   }
-private handleAuthRedirect() {
-  this.route.queryParams.subscribe(params => {
-    if (params['googleAuthSuccess'] && this.room?._id) {
-      // Only start call if we have a room ID
-      this.isGoogleAuthenticated = true;
-      this.startVideoCall();
-    } else if (params['googleAuthError']) {
-      alert('Google authentication failed. Please try again.');
+connectGoogleCalendar() {
+  this.googleMeetService.loginWithGoogle().subscribe({
+    next: () => {}, // Redirect happens in the service
+    error: err => {
+      console.error('Google login failed:', err);
     }
   });
 }
 
-signInWithGoogle() {
-  if (this.room?._id) {
-    this.roomService.initiateGoogleAuth(this.room._id);
-  } else {
-    this.roomService.initiateGoogleAuth();
-  }
-}
-  checkGoogleAuth() {
-    this.roomService.checkGoogleAuth().subscribe({
-      next: (response) => {
-        this.isGoogleAuthenticated = response.authenticated;
-      },
-      error: () => {
-        this.isGoogleAuthenticated = false;
-      }
-    });
-  }
-async startVideoCall() {
-   if (!this.room?._id) return;
-  
-  try {
-    // Type is now guaranteed to be AuthCheckResponse
-    const authCheck = await this.roomService.checkGoogleAuth().toPromise();
-    
-    // No need for undefined check since we have the interface
 
-    if (!this.isGoogleAuthenticated) {
-      this.signInWithGoogle();
-      return;
+startVideoCall(): void {
+  if (!this.currentRoomId) return;
+  this.isStartingCall = true;
+  this.roomService.startCall(this.currentRoomId).subscribe({
+    next: (response) => {
+      this.isStartingCall = false;
+      if (response && response.meetLink) {
+        window.open(response.meetLink, '_blank');
+      }
+    },
+    error: (err) => {
+      this.isStartingCall = false;
+      console.error('Failed to start video call:', err);
     }
-    this.isStartingCall = true;
-    const response = await this.roomService.startCall(this.room._id).toPromise();
-    
-    if (response?.meetLink) {
-      this.messageText = `Video call started: ${response.meetLink}`;
-      this.sendMessage();
-      setTimeout(() => {
-        window.open(response.meetLink, '_blank', 'noopener,noreferrer');
-      }, 300);
-    }
-  } catch (error) {
-    // Error handling remains the same
-  } finally {
-    this.isStartingCall = false;
-  }
+  });
 }
 
   ngOnInit(): void {
 
     const userId = localStorage.getItem('userId');
     this.currentUserId = userId ? userId : '';
-    console.log("currentUserId", this.currentUserId);
     this.route.paramMap.subscribe(params => {
       this.currentRoomId = params.get('id')!;
       this.messages = [];
