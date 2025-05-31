@@ -64,11 +64,15 @@ export const routes: Routes = [
   },
   {
     path: 'rooms/:id',
-    component: RoomComponent
+    component: RoomComponent,
+        canActivate: [authGuard]
+
   },
   {
     path: 'inbox',
-    component: InboxComponent
+    component: InboxComponent,
+        canActivate: [authGuard]
+
   },
 
 
@@ -81,15 +85,16 @@ export const routes: Routes = [
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [adminGuard]
+        canActivate: [adminGuard, authGuard]
       },
       {
         path: 'profile/:id',
-        component: ProfileDetailsComponent
+        component: ProfileDetailsComponent,
+        canActivate: [authGuard]
       },
       {
         path:'workspace/:id/profile',
-        canActivate: [adminGuard],
+        canActivate: [adminGuard, authGuard],
         component: OrganisationProfileComponent
       },
       {
@@ -99,7 +104,7 @@ export const routes: Routes = [
       {
         path: 'backoffice',
         component: AdminApplicationDashboardComponent,
-        canActivate: [ownerGuard]
+        canActivate: [ownerGuard, authGuard]
       },
       {
         path: 'backoffice/rooms',

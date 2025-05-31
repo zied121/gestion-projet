@@ -7,6 +7,6 @@ export const ownerGuard: CanActivateFn = (route, state) => {
    const authService = inject(AuthService);
   const userRole:any = authService.getUserRole(); // Assume this method returns the user's role
 
-  return   userRole === 'admin'; 
+  return   userRole === 'owner'; 
 ;
 };

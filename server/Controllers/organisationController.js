@@ -26,7 +26,7 @@ const addOrganisation = async (req, res) => {
         foundUser.role = "admin";
         await foundUser.save();
 
-        res.status(201).json({message: "Organisation created successfully", organisation: savedOrganisation });
+        res.status(201).json({message: "Organisation created successfully", organisation: savedOrganisation , role: foundUser.role});
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -148,13 +148,13 @@ const joinOrganisation = async (req, res) => {
         await organisation.save();
 
         user.Organisation_id = organisation._id;
-        user.role= "Membre";
+        user.role= "member";
          await user.save();        
         // const token = jwt.sign({ id: user._id, organisation_id: User.Organisation_id}, 'zied', { expiresIn: '10h' });
         // console.log("token",token);
 
         
-        res.status(200).json({ message: 'You have successfully joined this organisation' ,organisation: organisation});
+        res.status(200).json({ message: 'You have successfully joined this organisation' ,organisation: organisation, role: user.role});
     
     } catch (err) {
 

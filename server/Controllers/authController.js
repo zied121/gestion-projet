@@ -47,7 +47,7 @@ const verifyOtp = async (req, res) => {
 
         const token = jwt.sign({ id: user._id }, 'zied', { expiresIn: '10h' });
 
-        res.status(200).json({ token, role: user.role, msg: 'Login successful' });
+        res.status(200).json({ token, role: user.role, msg: 'Login successful',organisation: user.Organisation_id });
     } catch (err) {
         res.status(500).json({ msg: 'OTP verification failed' });
     }

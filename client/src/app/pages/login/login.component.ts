@@ -92,8 +92,20 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
-        if (res.role === 'admin' || res.role === 'manager') {
-        this.router.navigate(['/workspaceform']);}else  this.router.navigate(['/member']);
+        // Ensure navigation is triggered inside Angular's zone
+        
+          if (res.role === 'admin') {
+            this.router.navigate(['/workspace/' + res.organisation]);
+          } else if (res.role === 'manager') {
+            this.router.navigate(['/projects']);
+          } else if (res.role === 'member') {
+            this.router.navigate(['/member']);
+          } else if (res.role === 'owner') {
+            this.router.navigate(['/backoffice']);
+          } else {
+            this.router.navigate(['/workspaceform']);
+          }
+        
       },
       error: (err) => {
         this.showError = true;

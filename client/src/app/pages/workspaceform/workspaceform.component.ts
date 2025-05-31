@@ -87,15 +87,11 @@ export class WorkspaceformComponent {
           console.log("reponse", response);
           this.showSuccess = true;
           this.susccessMessage = response.message;
-          if (response.role === 'admin') {
+                  localStorage.setItem('role', response.role);
+
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigate(['/workspace/' + response.organisation._id]);
-          } else if (response.role === 'manager') {
-            this.router.navigate(['/projects']);
-          } else if (response.role === 'member') {
-            this.router.navigate(['/member']);
-          } else {
-            this.router.navigate(['/backoffice']);
-          }
+          });
         },
         error: (err: any) => {
           this.showError = true;
@@ -111,6 +107,11 @@ export class WorkspaceformComponent {
         next: (response: any) => {
           this.showSuccess = true;
           this.susccessMessage = response.message;
+                  localStorage.setItem('role', response.role);
+
+           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/member']);
+          });
         },
         error: (err: any) => {
           this.showError = true;
