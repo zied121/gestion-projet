@@ -17,6 +17,8 @@ const RoomSchema = new mongoose.Schema({
             type: String,
             //required: true
         },
+  isPrivate: 
+  { type: Boolean, default: false },
 
     members: [{
         type: mongoose.Schema.Types.ObjectId,

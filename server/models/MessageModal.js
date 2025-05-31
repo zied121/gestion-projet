@@ -17,7 +17,6 @@ const messageSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: true,
   },
   file: {
     type: String,
@@ -38,7 +37,23 @@ const messageSchema = new mongoose.Schema({
   UpdatedAt: {
     type: Date,
     default: null,
-  }
+  },
+seenBy: [{
+    userId: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User' 
+    },
+    seenAt: { 
+      type: Date, 
+      default: Date.now 
+    }
+  }],
+  // NEW: Quick check for seen status
+  isSeenBy: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  }]
+
 });
 
 //module.exports = mongoose.model("Message", messageSchema);

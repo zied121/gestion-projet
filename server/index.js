@@ -11,6 +11,31 @@ const taskRoutes = require('./Routes/TaskRoutes');
 const userRouter = require('./Routes/UserRoutes');
 const AuthRoutes = require('./Routes/AuthRoutes');
 const OrganisationRoutes = require('./Routes/OrganisationRoutes');
+
+const app = express();
+const server = http.createServer(app);
+
+// ✅ Configure CORS BEFORE routes
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors());
+
+// Connect DB
+const connectDb = require('./config/ConnectDb');
+connectDb();
+
+app.use(express.json());
+
+// Routes imports (as is)
+require("dotenv").config({
+    path: "./config/.env"
+});
+const userRouter=require('./Routes/UserRoutes');
+const AuthRoutes=require('./Routes/AuthRoutes');
+const OrganisationRoutes=require('./Routes/OrganisationRoutes');
 const feedbackRoutes = require('./Routes/feedbackRoutes');
 const blogRoutes = require('./Routes/blogRoutes');
 const SubscriptionRoutes = require('./Routes/subscriptionRoutes');
@@ -94,6 +119,9 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static(uploadsDir));
 
+
+// Socket.io config (as is)
+const io = socketIo(server, { cors: { origin: '*' } });
 app.set('io', io);
 
 app.use('/api/organisation',OrganisationRoutes);
@@ -102,19 +130,21 @@ app.use('/api/users',userRouter);
 app.use("/api/feedbacks", feedbackRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use('/api/subscription', SubscriptionRoutes);
+// Routes setup
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
+app.use('/api', AuthRoutes);
+app.use('/api/users', userRouter);
 app.use('/api/organisation', OrganisationRoutes);
 app.use('/api', AuthRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/feedbacks', feedbackRoutes);
 app.use('/api/blogs', blogRoutes);
-app.use('/api', projectRoutes);
-app.use('/api', taskRoutes);
-app.use('/api', aiRoutes);
-app.use('/api', notificationRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api', participantRoutes);
-app.use('/api/holiday', holidayRoutes);
-app.use('/api', chatbotRoutes);
+app.use('/api/subscription', SubscriptionRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/message', messageRoutes);
+app.use('/api', require('./Routes/ProjectRoutes'));
+app.use('/api', require('./Routes/TaskRoutes'));
+app.use('/api', require('./Routes/aiRoutes'));
 app.use('/api', require('./Routes/NotificationRoutes'));
 app.use('/google', GoogleAuth);
 app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));

@@ -1,0 +1,64 @@
+
+<div class="meeting-container">
+  <div class="meeting-controls" *ngIf="authCheckComplete">
+    <!-- Authentication Status -->
+    <div class="auth-status" *ngIf="!isAuthenticated">
+      <p class="auth-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        You need to authenticate with Google to create meetings.
+      </p>
+    </div>
+
+    <!-- Create Meeting Button -->
+    <button 
+      class="create-meeting-btn"
+      [disabled]="isCreatingMeet"
+      (click)="createMeeting()"
+      [class.authenticated]="isAuthenticated">
+      <i class="fas fa-video" *ngIf="!isCreatingMeet"></i>
+      <i class="fas fa-spinner fa-spin" *ngIf="isCreatingMeet"></i>
+      {{ isCreatingMeet ? 'Creating Meeting...' : 'Start Google Meet' }}
+    </button>
+
+    <!-- Meeting Link Display -->
+    <div class="meeting-link-container" *ngIf="meetLink">
+      <div class="meeting-success">
+        <i class="fas fa-check-circle"></i>
+        <span>Meeting created successfully!</span>
+      </div>
+      <div class="meeting-link">
+        <a [href]="meetLink" target="_blank" rel="noopener noreferrer">
+          {{ meetLink }}
+        </a>
+        <button class="copy-btn" (click)="copyMeetLink()" title="Copy link">
+          <i class="fas fa-copy"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Display -->
+    <div class="error-container" *ngIf="error">
+      <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ error }}
+        <button class="retry-btn" (click)="createMeeting()" *ngIf="!isCreatingMeet">
+          Try Again
+        </button>
+      </div>
+    </div>
+
+    <!-- Auth Controls -->
+    <div class="auth-controls" *ngIf="isAuthenticated">
+      <button class="revoke-btn" (click)="revokeAuthentication()">
+        <i class="fas fa-sign-out-alt"></i>
+        Disconnect Google Account
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="!authCheckComplete">
+    <i class="fas fa-spinner fa-spin"></i>
+    Checking authentication status...
+  </div>
+</div>

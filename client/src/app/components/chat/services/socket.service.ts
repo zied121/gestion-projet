@@ -51,4 +51,101 @@ export class SocketService {
   listenForNewRoom(): Observable<any> {
     return this.listen('newRoom');
   }
+  
+  // NEW METHODS - Seen functionality
+  onNewMessage(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('newMessage', (message: any) => {
+        observer.next(message);
+      });
+    });
+  }
+
+  onMessagesSeen(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('messagesSeen', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  emitMessagesSeen(roomId: string): void {
+    this.socket.emit('messagesSeen', { roomId });
+  }
+
+  // NEW: Listen for user status changes
+  onUserStatusChange(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('userStatusChange', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  // NEW: Emit user online status
+  emitUserOnline(): void {
+    this.socket.emit('userOnline');
+  }
+
+  // NEW: Emit user offline status
+  emitUserOffline(): void {
+    this.socket.emit('userOffline');
+  }
+
+  // NEW: Listen for typing indicators
+  onUserTyping(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('userTyping', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  // NEW: Emit typing status
+  emitTyping(roomId: string, isTyping: boolean): void {
+    this.socket.emit('typing', { roomId, isTyping });
+  }
+
+  // NEW: Listen for room updates
+  onRoomUpdate(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('roomUpdate', (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  // UTILITY METHODS
+  isConnected(): boolean {
+    return this.socket.connected;
+  }
+
+  getSocketId(): string {
+    return this.socket.id;
+  }
+
+  // Error handling
+  onError(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('error', (error: any) => {
+        observer.next(error);
+      });
+    });
+  }
+
+  onConnect(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('connect', () => {
+        observer.next('Connected to socket server');
+      });
+    });
+  }
+
+  onDisconnect(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('disconnect', (reason: string) => {
+        observer.next(`Disconnected: ${reason}`);
+      });
+    });
+  }
 }

@@ -1,18 +1,87 @@
-.chat-container {
-  max-width: 800px;
+ .chat-container {
+  width: 100%;
   margin: 0 auto;
-  padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
-  text-align: center;
-  margin-bottom: 20px;
-  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
   background: linear-gradient(135deg, #667eea 0%, #4b5fa2 100%);
   color: white;
-  border-radius: 12px;
+  border-radius: 12px 12px 0 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.room-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.room-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.room-status {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+}
+
+.room-status::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #4ade80;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.header-right {
+  display: flex;
+  gap: 15px;
+}
+
+.header-icon {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.header-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+/* For font icons */
+.header-icon i {
+  font-size: 1.3rem;
+}
+
+/* For SVG icons */
+.header-icon img {
+  width: 24px;
+  height: 24px;
 }
 
 .text-2xl {
@@ -82,8 +151,10 @@
   margin-bottom: 8px;
   position: relative;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: inline-block; /* Changed from default */
+  max-width: 100%; /* Changed from fixed width */
+  word-wrap: break-word; /* Ensure long words break */
 }
-
 .other-message .bubble {
   background-color: white;
   border: 1px solid #e9ecef;
@@ -95,6 +166,26 @@
 }
 
 
+
+/* For my messages (right-aligned) */
+.my-message .message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* For other messages (left-aligned) */
+.other-message .message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Optional: Add min-width for very short messages */
+.bubble {
+  min-width: 60px; /* Adjust as needed */
+}
+/* */
 .file-attachment {
   margin-top: 8px;
   padding-top: 8px;
@@ -330,4 +421,23 @@
   .message-input {
     width: 100%;
   }
+}
+/* Flaticon base styles */
+.fi {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: "Flaticon";
+}
+
+/* Specific video icon styling */
+.fi-rr-video-camera:before {
+  content: "\f3ac"; /* Flaticon video camera code */
+  font-size: 1.3rem;
+  color: white;
+}
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }

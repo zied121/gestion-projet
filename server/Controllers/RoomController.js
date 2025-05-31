@@ -1,8 +1,11 @@
 const { Room , RoomSchema , validateRoomSchema} = require("../models/Room");
 const { Project, projectValidationSchema } = require('../models/ProjectModel');
-const { Utilisateur } = require("../models/Usermodel")
+const { User } = require("../models/Usermodel")
 const { google } = require('googleapis');
 const { oauth2Client } = require('../config/googleAuth');
+const upload = require("../Middleware/upload");
+const mongoose = require("mongoose");
+const { Message } = require("../models/MessageModal");
 /*const getRooms = async (req, res) => {
   try {
     const rooms = await Room.find();
@@ -52,39 +55,98 @@ const getProjectPerUser = async (req,res) => {
   }
 };
 
-
 const createRoomPerProject = async (req, res) => {
   try {
-    const projectId = req.params.id; 
-    const { name } = req.body;
+    const { name, project } = req.body;
 
-    const project = await Project.findById(projectId);
     if (!project) {
+      return res.status(400).json({ message: 'ID de projet manquant.' });
+    }
+
+    const projectDoc = await Project.findById(project);
+    if (!projectDoc) {
       return res.status(404).json({ message: 'Projet non trouvé' });
     }
 
-    if (project.owner.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: 'Vous devez être propriétaire de ce projet pour créer une room' });
-    }
-
     const newRoom = new Room({
-      name: name ? name : `Room-${project.name}`,
-      owner: req.user._id,  
-      members: project.members,
-      project: project._id
+      name: name || `Room-${projectDoc.name}`,
+      owner: req.user._id,
+      image: req.file ? `/uploads/${req.file.filename}` : '',
+      members: projectDoc.members,
+      project: projectDoc._id,
     });
-    console.log("room", req.body);
+
     const savedRoom = await newRoom.save();
+    console.log('Saved room with image:', savedRoom);
+
     const io = req.app.get('io');
-    project.members.forEach(member => {
+    projectDoc.members.forEach(member => {
       io.to(member._id.toString()).emit('newRoomCreated', savedRoom);
     });
+
     res.status(201).json(savedRoom);
   } catch (error) {
     console.error("Erreur lors de la création de la room :", error);
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
+const updateRoom = async (req, res) => {
+  try {
+    const roomId = req.params.id;
+    const userId = req.user._id;
+    const { name, members, project } = req.body;
+
+    // Vérifier si la room existe
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.status(404).json({ message: "Room non trouvée" });
+    }
+
+    // Vérifier si l'utilisateur est le propriétaire de la room
+    if (room.owner.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "Vous n'êtes pas autorisé à mettre à jour cette room" });
+    }
+
+    // Mettre à jour les champs de la room
+    if (name) room.name = name;
+    if (req.file) {
+      room.image = `/uploads/${req.file.filename}`;
+    }
+if (members) {
+  // Vérifier et convertir les membres en ObjectId
+  if (typeof members === 'string') {
+    const parsedMembers = JSON.parse(members);
+    room.members = parsedMembers
+      .filter(member => mongoose.Types.ObjectId.isValid(member))
+      .map(member => new mongoose.Types.ObjectId(member));
+  } else {
+    room.members = members
+      .filter(member => mongoose.Types.ObjectId.isValid(member))
+      .map(member => new mongoose.Types.ObjectId(member));
   }
 }
+    if (project) room.project = project;
+
+    // Sauvegarder les modifications
+    const updatedRoom = await room.save();
+
+    // Renvoyer la room mise à jour
+    const populatedRoom = await Room.findById(updatedRoom._id)
+      .populate('project', 'name description')
+      .populate('members', 'nom email')
+      .populate('owner', 'nom email');
+
+    res.status(200).json(populatedRoom);
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la room :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
 
 
 const getRoomById = async (req, res) => {
@@ -108,29 +170,44 @@ const getRoomById = async (req, res) => {
 
 
 
-const updateRoomsec = async (req, res) => {
+// const updateRoomsec = async (req, res) => {
+//   try {
+//     const roomId = req.params.id;
+//     const userId = req.user._id;
+//     const room = await Room.findById(roomId)
+//     if (!room) {
+//       return res.status(404).json({ message: "Room non trouvée" });
+//     }
+//
+//     if (!room.owner || room.owner._id.toString() !== userId.toString()) {
+//       return res.status(403).json({ message: "Vous n'êtes pas le propriétaire de cette room" });
+//     }
+// const validatedData = await (req.body);
+//     console.log(req.body);
+// const updatedRoom = await Room.findByIdAndUpdate(req.params.id, validatedData, { new: true });
+//
+//     res.status(200).json(updatedRoom);
+//   } catch (error) {
+//     console.error("Erreur lors de la mise à jour de la room :", error);
+//     res.status(500).json({ message: "Erreur serveur lors de la mise à jour de la room" });
+//   }
+// };
+
+getRoomUsers = async (req, res) => {
   try {
-    const roomId = req.params.id; 
-    const userId = req.user._id; 
-    const room = await Room.findById(roomId)
+    const roomId = req.params.id;
+
+    const room = await Room.findById(roomId).populate('members', 'nom email');
     if (!room) {
-      return res.status(404).json({ message: "Room non trouvée" });
+      return res.status(404).json({ message: 'Room non trouvée' });
     }
 
-    if (!room.owner || room.owner._id.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "Vous n'êtes pas le propriétaire de cette room" });
-    }
-const validatedData = await (req.body);
-    console.log(req.body);
-const updatedRoom = await Room.findByIdAndUpdate(req.params.id, validatedData, { new: true });
-    
-    res.status(200).json(updatedRoom); 
+    res.status(200).json(room.members);
   } catch (error) {
-    console.error("Erreur lors de la mise à jour de la room :", error);
-    res.status(500).json({ message: "Erreur serveur lors de la mise à jour de la room" });
+    console.error('Erreur lors de la récupération des membres de la room :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
-
 
 
 /*const createRoom = async (req, res) => {
@@ -180,23 +257,23 @@ const createRoomPerEvent = async (req, res) => {
 }
 
 
-const updateRoom = async (req, res) => {
-  try {
-    //const validatedData = await roomValidationSchema.validate(req.body, { abortEarly: false });
-    const validatedData = await valideRoomSchema(req.body, { abortEarly: false });
-
-    const updatedRoom = await Room.findByIdAndUpdate(req.params.id, validatedData, { new: true });
-
-    if (!updatedRoom) return res.status(404).json({ error: "Room non trouvée" });
-
-    res.json(updatedRoom);
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      return res.status(400).json({ errors: error.errors });
-    }
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-};
+// const updateRoom = async (req, res) => {
+//   try {
+//     //const validatedData = await roomValidationSchema.validate(req.body, { abortEarly: false });
+//     const validatedData = await valideRoomSchema(req.body, { abortEarly: false });
+//
+//     const updatedRoom = await Room.findByIdAndUpdate(req.params.id, validatedData, { new: true });
+//
+//     if (!updatedRoom) return res.status(404).json({ error: "Room non trouvée" });
+//
+//     res.json(updatedRoom);
+//   } catch (error) {
+//     if (error.name === "ValidationError") {
+//       return res.status(400).json({ errors: error.errors });
+//     }
+//     res.status(500).json({ error: "Erreur serveur" });
+//   }
+// };
 
 const createRoom = async (req, res) => {
   try {
@@ -363,7 +440,58 @@ const createGoogleMeet = async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de la création du meeting' });
   }
 };
+const createPrivateRoom = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { otherUserId } = req.body;
 
+    if (!otherUserId) {
+      return res.status(400).json({ message: 'Other user ID is required' });
+    }
+
+    // Vérifie si la room existe déjà
+    const existingRoom = await Room.findOne({
+      isPrivate: true,
+      members: { $all: [userId, otherUserId], $size: 2 }
+    });
+
+    if (existingRoom) {
+      return res.status(200).json({ message: 'Room already exists', room: existingRoom });
+    }
+
+    // Récupérer les infos de l'autre utilisateur
+    const otherUser = await User.findById(otherUserId);
+    if (!otherUser) {
+      return res.status(404).json({ message: 'Other user not found' });
+    }
+
+    // Créer la room avec le nom de l’autre utilisateur
+    const room = new Room({
+      name: `${otherUser.nom}`, // ou otherUser.username/fullName/etc.
+      members: [userId, otherUserId],
+      owner: userId,
+      isPrivate: true
+    });
+
+    await room.save();
+
+    const populatedRoom = await Room.findById(room._id).populate('members');
+
+    const io = req.app.get('io');
+    populatedRoom.members.forEach(member => {
+      io.to(member._id.toString()).emit('newRoomCreated', populatedRoom);
+    });
+
+    res.status(201).json(populatedRoom);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+
+/*
 const createPrivateRoom = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -399,7 +527,7 @@ const createPrivateRoom = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-}
+}*//////
 /*
 export const getRoomsByUser = async (req, res) => {
   try {
@@ -438,7 +566,7 @@ const getRoomsByOwner = async (req, res) => {
         .populate('project', '_id name')
         .populate('members', 'nom email')
         .populate('owner', 'nom email')
-        .select('name owner members project projectID'); // Inclure projectID
+        .select('name owner members project projectID image');// Inclure projectID
 
     if (!rooms || rooms.length === 0) {
       return res.status(404).json({ message: 'Aucune room trouvée pour ce propriétaire' });
@@ -510,5 +638,24 @@ const getRoomsByUser = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur', error: error.message });
   }
 };
+const getLastMessage = async (req, res) => {
+  try {
+    const { roomId } = req.params;
 
-module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoomsec,getAllRooms,getRoomsByOwner,updateRoomDetails};
+    // Find the most recent message for the room - no populate needed
+    const lastMessage = await Message.findOne({ room: roomId })
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .exec();
+
+    if (!lastMessage) {
+      return res.status(404).json({ message: 'No messages found for this room' });
+    }
+
+    res.json(lastMessage);
+  } catch (error) {
+    console.error('Error getting last message:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = { getRooms, searchRooms, getRoomsByUser, createPrivateRoom, createGoogleMeet, getRoomById, getLastMessage, deleteRoom , createRoom , getProjectPerUser ,createRoomPerProject, updateRoom,getAllRooms,getRoomsByOwner,updateRoomDetails};
