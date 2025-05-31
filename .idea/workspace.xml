@@ -4,13 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="first Prod merge">
+    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="second Prod merge">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/calendar/calendar-backoffice/calendar-backoffice.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/calendar/calendar-backoffice/calendar-backoffice.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/calendar/event-form-dialog/event-form-dialog.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/calendar/event-form-dialog/event-form-dialog.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/eventController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/eventController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/login/login.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/pages/workspaceform/workspaceform.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/pages/workspaceform/workspaceform.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/config/.env" beforeDir="false" afterPath="$PROJECT_DIR$/server/config/.env" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,7 @@
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task-list" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/server/package.json" />
       <command value="run" />
@@ -124,8 +124,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
+        <item itemvalue="npm.start" />
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.start" />
@@ -184,6 +184,7 @@
       <workItem from="1747821603794" duration="15104000" />
       <workItem from="1747855141471" duration="5005000" />
       <workItem from="1747903998359" duration="1425000" />
+      <workItem from="1748695472795" duration="643000" />
     </task>
     <task id="LOCAL-00001" summary="test first api">
       <option name="closed" value="true" />
@@ -353,7 +354,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748690685924</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="second Prod merge">
+      <option name="closed" value="true" />
+      <created>1748693179581</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1748693179581</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -396,6 +405,7 @@
     <MESSAGE value="a" />
     <MESSAGE value="merge zied+malek" />
     <MESSAGE value="first Prod merge" />
-    <option name="LAST_COMMIT_MESSAGE" value="first Prod merge" />
+    <MESSAGE value="second Prod merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="second Prod merge" />
   </component>
 </project>

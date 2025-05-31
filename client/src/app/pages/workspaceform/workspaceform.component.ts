@@ -64,7 +64,7 @@ export class WorkspaceformComponent {
   joinWorkspaceForm: FormGroup;
 
 
-  constructor( private fb: FormBuilder,private router: Router , private organisationService: OrganisationService, private userService: UserService) {
+  constructor( private fb: FormBuilder,private router: Router , private organisationService: OrganisationService,private userService: UserService) {
     this.createWorkspaceForm = this.fb.group({
       nom: ['', Validators.required],
       matricule_fiscal: ['', Validators.required],
@@ -80,7 +80,6 @@ export class WorkspaceformComponent {
   showSuccess: boolean = false;
   susccessMessage: string = '';
 
-
   onCreateWorkspace(): void {
     if (this.createWorkspaceForm.valid) {
       this.organisationService.onCreateWorkspace(this.createWorkspaceForm.value).subscribe({
@@ -88,10 +87,16 @@ export class WorkspaceformComponent {
           console.log("reponse", response);
           this.showSuccess = true;
           this.susccessMessage = response.message;
-
-this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-  this.router.navigate(['/workspace/' + response.organisation._id]);
-});        },
+          if (response.role === 'admin') {
+            this.router.navigate(['/workspace/' + response.organisation._id]);
+          } else if (response.role === 'manager') {
+            this.router.navigate(['/projects']);
+          } else if (response.role === 'member') {
+            this.router.navigate(['/member']);
+          } else {
+            this.router.navigate(['/backoffice']);
+          }
+        },
         error: (err: any) => {
           this.showError = true;
           this.errorMessage = err.error.message;
@@ -99,18 +104,13 @@ this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       });
     }
   }
+
   onJoinWorkspace(): void {
     if (this.joinWorkspaceForm.valid) {
       this.organisationService.onJoinWorkspace(this.joinWorkspaceForm.value).subscribe({
         next: (response: any) => {
-          console.log("reponse", response);
           this.showSuccess = true;
           this.susccessMessage = response.message;
-           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-  this.router.navigate(['/workspace/' + response.organisation._id]);
-});
-
-
         },
         error: (err: any) => {
           this.showError = true;
@@ -121,8 +121,19 @@ this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
   }
 
   ngOnInit(): void {
-  this.userService.setcredentials();
-}
+    this.organisationService.checkOrganisation().subscribe({
+      next: (response: any) => {
+        console.log(response.organisation);
+        localStorage.setItem('organisation', response.organisation);
+        this.router.navigate(['/workspace/' + response.organisation]);
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+    this.userService.setcredentials();
+  }
+
 
   }
 

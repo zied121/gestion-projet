@@ -116,7 +116,7 @@ export const routes: Routes = [
           import('./components/project-task-management/project/project.module').then(
             (m) => m.ProjectModule
           ),
-
+        canActivate: [adminGuard]
       },
       {
         path: 'tasks',

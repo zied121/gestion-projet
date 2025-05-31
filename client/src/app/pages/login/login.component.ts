@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.googleLogin(credential).subscribe({
       next: (res: any) => {
+        console.log((res));
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         if (res.role === 'admin' || res.role === 'manager') {
