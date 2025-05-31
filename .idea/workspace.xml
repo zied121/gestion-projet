@@ -6,6 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="first Prod merge">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/calendar/calendar-backoffice/calendar-backoffice.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/calendar/calendar-backoffice/calendar-backoffice.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/calendar/event-form-dialog/event-form-dialog.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/calendar/event-form-dialog/event-form-dialog.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/eventController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/eventController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,11 +90,11 @@
       <recent name="C:\personal\PI\gestion-projet\server" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\personal\PI\gestion-projet\server\Controllers" />
       <recent name="C:\personal\PI\gestion-projet\client\src" />
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management" />
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task_detail" />
       <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\task\task-list" />
-      <recent name="C:\personal\PI\gestion-projet\client\src\app\components\project-task-management\project\project-list" />
     </key>
   </component>
   <component name="RunManager" selected="npm.start">
@@ -340,7 +345,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748689986807</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="first Prod merge">
+      <option name="closed" value="true" />
+      <created>1748690685924</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1748690685924</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

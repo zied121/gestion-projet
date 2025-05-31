@@ -1,12 +1,13 @@
 //event-form-dialog.component.ts
 
-import { Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit, Inject} from '@angular/core';
 import { CreateEventModel, UpdateEventModel, EventType, EventModel } from '../../../models/event.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { EventService } from '../../../services/event.service';
 import {OrganisationService} from '../../../services/organisation.service';
+import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
     selector: 'app-event-form-dialog',
@@ -20,6 +21,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     @Input() users: any[] = [];
     @Output() close = new EventEmitter<void>();
     @Output() submitSuccess = new EventEmitter<void>();
+    @Inject(MAT_DIALOG_DATA)
         private readonly BACKEND_URL = 'http://localhost:5000'; // URL de votre backend
 
     protected organisationId= localStorage.getItem('organisation') || '';
@@ -30,7 +32,7 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     participantSearchTerm: string = '';
     showParticipantDropdown: boolean = false;
     filteredUsers: any[] = [];
-    
+
 
     constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
   selectedfile: File | null = null;
@@ -99,22 +101,22 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
 
 getFileUrl(filename: string): string {
     if (!filename) return '';
-    
+
     // Si c'est déjà une URL complète
     if (filename.startsWith('http://') || filename.startsWith('https://')) {
         return filename;
     }
-    
+
     // Si ça commence par /uploads, ajouter juste le backend URL
     if (filename.startsWith('/uploads/')) {
         return `${this.BACKEND_URL}${filename}`;
     }
-    
+
     // Si c'est juste un nom de fichier, construire l'URL complète
     if (!filename.startsWith('/')) {
         return `${this.BACKEND_URL}/uploads/${filename}`;
     }
-    
+
     // Fallback
     return `${this.BACKEND_URL}${filename}`;
 }
@@ -122,7 +124,7 @@ getFileUrl(filename: string): string {
 // Méthode pour obtenir le nom du fichier à partir de l'URL ou du chemin
 getFilename(filePath: string): string {
     if (!filePath) return 'fichier';
-    
+
     // Si c'est une URL, extraire le nom du fichier
     if (filePath.startsWith('http')) {
         try {
@@ -133,7 +135,7 @@ getFilename(filePath: string): string {
             return 'fichier';
         }
     }
-    
+
     // Si c'est un chemin, extraire le nom
     return filePath.split('/').pop() || 'fichier';
 }
@@ -144,65 +146,65 @@ downloadFile(): void {
         alert('Aucun fichier à télécharger');
         return;
     }
-    
+
     console.log('Téléchargement du fichier:', this.filePreviewUrl);
-    
+
     // Méthode 1: Fetch et download blob (recommandée)
     this.downloadFileAsBlob();
 }
 
-  
+
 private async downloadFileAsBlob(): Promise<void> {
     try {
         // Afficher un indicateur de chargement
         console.log('Début du téléchargement...');
-        
+
         const response = await fetch(this.filePreviewUrl!, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}` // Si nécessaire
             }
         });
-        
+
         if (!response.ok) {
             throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
         }
-        
+
         // Obtenir le blob du fichier
         const blob = await response.blob();
-        
+
         // Créer une URL temporaire pour le blob
         const blobUrl = window.URL.createObjectURL(blob);
-        
+
         // Extraire le nom du fichier depuis l'URL ou utiliser un nom par défaut
         let filename = this.event?.file || 'fichier';
-        
+
         // Si le filename contient un chemin, extraire seulement le nom
         if (filename.includes('/')) {
             filename = filename.split('/').pop() || 'fichier';
         }
-        
+
         // Créer le lien de téléchargement
         const link = document.createElement('a');
         link.href = blobUrl;
         link.download = filename;
         link.style.display = 'none';
-        
+
         // Ajouter au DOM, cliquer et supprimer
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Nettoyer l'URL blob après un délai
         setTimeout(() => {
             window.URL.revokeObjectURL(blobUrl);
         }, 100);
-        
+
         console.log('Téléchargement réussi');
-        
+
     } catch (error) {
         console.error('Erreur lors du téléchargement:', error);
-        
+
         // Fallback: ouvrir dans un nouvel onglet
         this.openFileInNewTab();
     }
@@ -211,12 +213,12 @@ private async downloadFileAsBlob(): Promise<void> {
 // Méthode de fallback pour ouvrir le fichier dans un nouvel onglet
 private openFileInNewTab(): void {
     console.log('Utilisation du fallback: ouverture dans un nouvel onglet');
-    
+
     const link = document.createElement('a');
     link.href = this.filePreviewUrl!;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -234,7 +236,7 @@ private openFileInNewTab(): void {
     }
   }
 
-  
+
     private getParticipantId(participant: {
         participant_id?: string | { _id?: string; nom?: string; prenom?: string; email?: string };
         id?: string;
@@ -400,7 +402,7 @@ onSubmit(): void {
     console.log('Selected participants:', this.selectedParticipants);
     console.log('Selected file:', this.selectedfile);
     console.log('Organisation ID:', this.organisationId);
-    
+
     // Validation
     if (!this.formData.titre?.trim()) {
         alert('Veuillez saisir un titre pour l\'événement.');
@@ -435,7 +437,7 @@ onSubmit(): void {
         console.log('📎 Using FormData (with file)');
         // Utiliser FormData si un fichier est sélectionné
         const formData = new FormData();
-        
+
         // Ajouter toutes les données du formulaire
         formData.append('type', this.formData.type || EventType.EVENEMENT);
         formData.append('titre', this.formData.titre || '');
@@ -448,7 +450,7 @@ onSubmit(): void {
         formData.append('isRecurring', this.formData.isRecurring ? 'true' : 'false');
         formData.append('status', this.formData.status || 'En_attente');
         formData.append('organisation_id', this.organisationId || '');
-        
+
         // CORRECTION: Gestion des participants - envoyer chaque participant individuellement
         if (this.selectedParticipants && this.selectedParticipants.length > 0) {
             // Pour FormData, il faut envoyer chaque participant avec participants[]
@@ -457,7 +459,7 @@ onSubmit(): void {
             });
         }
         console.log('fil')
-        
+
         // CORRECTION: Gestion des rappels - envoyer chaque rappel individuellement
         if (this.formData.rappel && this.formData.rappel.length > 0) {
             this.formData.rappel.forEach((rappel, index) => {
@@ -466,20 +468,20 @@ onSubmit(): void {
                 formData.append(`rappel[${index}][sent]`, rappel.sent.toString());
             });
         }
-        
+
         // Ajouter le fichier
         if (this.selectedfile) {
             console.log('📎 Adding file:', this.selectedfile.name, 'Size:', this.selectedfile.size);
             formData.append('file', this.selectedfile, this.selectedfile.name);
         }
-        
+
         // Pour la mise à jour, ajouter l'ID
         if (this.event?._id) {
             formData.append('_id', this.event._id);
         }
-        
+
         requestData = formData;
-        
+
         // Debug FormData
         console.log('📋 FormData entries:');
         for (let pair of formData.entries()) {
@@ -489,7 +491,7 @@ onSubmit(): void {
                 console.log(`${pair[0]}: ${pair[1]}`);
             }
         }
-        
+
     } else {
         console.log('📄 Using JSON object (no file)');
         // Utiliser un objet JSON si aucun fichier n'est sélectionné
@@ -508,12 +510,12 @@ onSubmit(): void {
             rappel: this.formData.rappel || [],
             organisation_id: this.organisationId || ''
         };
-        
+
         // Pour la mise à jour, ajouter l'ID
         if (this.event?._id) {
             requestData._id = this.event._id;
         }
-        
+
         console.log('📋 JSON object to send:', JSON.stringify(requestData, null, 2));
     }
 
@@ -585,7 +587,7 @@ onSubmit(): void {
                     message: err.message,
                     url: err.url
                 });
-                
+
                 // Message d'erreur plus détaillé
                 let errorMessage = 'Erreur lors de la création: ';
                 if (err.error?.message) {
@@ -595,12 +597,12 @@ onSubmit(): void {
                 } else {
                     errorMessage += `${err.status} ${err.statusText}`;
                 }
-                
+
                 alert(errorMessage);
             }
         });
     }
-    
+
     console.log('=== FIN DEBUG SUBMISSION ===');
 }
 

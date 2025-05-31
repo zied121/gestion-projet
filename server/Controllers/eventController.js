@@ -517,13 +517,6 @@ await scheduleEventReminders(event);
             });
         }
 
-        if (err.name === 'TypeError' && err.message.includes('branch is not a function')) {
-            return res.status(400).json({
-                success: false,
-                message: 'Erreur de type de données. Vérifiez les valeurs booléennes et les types de récurrence.'
-            });
-        }
-
         res.status(400).json({
             success: false,
             message: err.message || 'Erreur lors de la création de l\'événement'

@@ -8,6 +8,10 @@ const path = require('path');
 const projectRoutes = require('./Routes/ProjectRoutes');
 const taskRoutes = require('./Routes/TaskRoutes');
 const socketIo = require('socket.io');
+const eventRoutes = require('./Routes/EventRoutes');
+const participantRoutes = require('./Routes/ParticipantRoutes');
+const holidayRoutes = require('./Routes/holidayRoutes');
+const chatbotRoutes = require('./Routes/chatbot');
 
 const userRouter=require('./Routes/UserRoutes');
 const AuthRoutes=require('./Routes/AuthRoutes');
@@ -130,6 +134,12 @@ app.use('/api', require('./Routes/NotificationRoutes'));
 app.use('/api/google', GoogleAuth);
 app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
 app.use('/api/rooms', roomRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api', participantRoutes);
+app.use('/api/holiday', holidayRoutes);
+app.use('/api', chatbotRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware/uploads')));
+
 
 
 

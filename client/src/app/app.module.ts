@@ -13,6 +13,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
+import {EventFormDialogComponent} from './components/calendar/event-form-dialog/event-form-dialog.component';
+import {CalendarComponent} from './components/calendar/calendar.component';
 
     @NgModule({
       imports: [
@@ -26,6 +28,8 @@ import {ToastrModule} from 'ngx-toastr';
         MatInputModule,
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
+        CalendarComponent,
+        EventFormDialogComponent,
       ],
       providers: [ProjectService]
     })
