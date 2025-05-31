@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 const isAuth = require("../Middleware/isauth");
 const isAdmin = require("../Middleware/adminorganisation");
-const authMiddleware = require("../Middleware/isauth");
 const validate = require('../Middleware/validate');
 const { ValideRoomSchema } = require("../models/Room");
 const upload = require("../Middleware/upload");
 
 const {
-    getRooms,searchRooms,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom , createRoom ,getLastMessage, getProjectPerUser, createGoogleMeet , getAllRooms,updateRoom , createRoomPerProject, createPrivateRoom
+  getRooms,searchRooms,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom , createRoom ,getLastMessage, getProjectPerUser, createGoogleMeet , getAllRooms,updateRoom , createRoomPerProject, createPrivateRoom
 } = require("../Controllers/roomController");
 
 //Admin routes
@@ -17,15 +16,15 @@ const {
 //router.get("/", isAuth, getRooms)
 router.get("/",isAuth, getRooms)
 router.get("/allrooms",isAuth, getAllRooms)
-router.get("/getProjectPerUser", isAuth, getProjectPerUser)  
-router.get("/getRoomByID/:id",isAuth, getRoomById)  
+router.get("/getProjectPerUser", isAuth, getProjectPerUser)
+router.get("/getRoomByID/:id",isAuth, getRoomById)
 router.post("/addRoom" , isAuth ,validate(ValideRoomSchema), createRoom)
 router.post("/RoomForProject/:id" , isAuth, upload.single('image') ,validate(ValideRoomSchema), createRoomPerProject)
-router.post('/CreatePrivateRoom', isAuth, createPrivateRoom); 
-///router.post("/addRoom" , isAuth , validate(valideRoomSchema) , createRoom) 
+router.post('/CreatePrivateRoom', isAuth, createPrivateRoom);
+///router.post("/addRoom" , isAuth , validate(valideRoomSchema) , createRoom)
 router.put("/UpdateRoom/:id" , isAuth, upload.single('image'), updateRoom)
 router.delete("/DeleteRoom/:id", isAuth, deleteRoom)
-router.post('/:id/start-call', createGoogleMeet);
+router.post('/:id/start-call', isAuth,createGoogleMeet);
 router.get('/searchRoom',isAuth , searchRooms);
 router.get('/getRoomsPerUser', isAuth, getRoomsByUser);
 router.get("/getRoomsPerowner", isAuth, getRoomsByOwner);
@@ -41,10 +40,10 @@ router.get('/:roomId', async (req, res) => {
     const skip = (page - 1) * limit;
 
     const messages = await Message.find({ roomId })
-      .populate('sender', 'name email')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+        .populate('sender', 'name email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
     res.json({
       messages: messages.reverse(),
@@ -63,8 +62,8 @@ router.get('/:roomId/last', async (req, res) => {
     const { roomId } = req.params;
 
     const lastMessage = await Message.findOne({ roomId })
-      .populate('sender', 'name email')
-      .sort({ createdAt: -1 });
+        .populate('sender', 'name email')
+        .sort({ createdAt: -1 });
 
     if (!lastMessage) {
       return res.status(404).json({ message: 'No messages found' });
@@ -128,22 +127,22 @@ router.put('/:roomId/seen', async (req, res) => {
 
     // Update all unread messages in the room for this user
     const updateResult = await Message.updateMany(
-      {
-        roomId: roomId,
-        sender: { $ne: userId }, // Don't mark own messages as seen
-        'seenBy.userId': { $ne: userId } // Only messages not already seen
-      },
-      {
-        $push: {
-          seenBy: {
-            userId: userId,
-            seenAt: new Date()
-          }
+        {
+          roomId: roomId,
+          sender: { $ne: userId }, // Don't mark own messages as seen
+          'seenBy.userId': { $ne: userId } // Only messages not already seen
         },
-        $addToSet: {
-          isSeenBy: userId // Add to quick lookup array
+        {
+          $push: {
+            seenBy: {
+              userId: userId,
+              seenAt: new Date()
+            }
+          },
+          $addToSet: {
+            isSeenBy: userId // Add to quick lookup array
+          }
         }
-      }
     );
 
     // Emit socket event
@@ -251,11 +250,11 @@ router.get('/:roomId/with-seen', async (req, res) => {
     }
 
     const messages = await Message.find({ roomId })
-      .populate('sender', 'name email')
-      .populate('seenBy.userId', 'name email')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+        .populate('sender', 'name email')
+        .populate('seenBy.userId', 'name email')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
     res.json({
       messages: messages.reverse(),
@@ -278,7 +277,7 @@ router.put('/:messageId/seen', async (req, res) => {
     if (!message) {
       return res.status(404).json({ error: 'Message not found' });
     } }
-    catch (error) {
-        console.error('Error marking message as seen:', error);}
-    })
+  catch (error) {
+    console.error('Error marking message as seen:', error);}
+})
 module.exports = router;

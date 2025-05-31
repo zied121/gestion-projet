@@ -51,7 +51,7 @@ export class SocketService {
   listenForNewRoom(): Observable<any> {
     return this.listen('newRoom');
   }
-  
+
   // NEW METHODS - Seen functionality
   onNewMessage(): Observable<any> {
     return new Observable(observer => {

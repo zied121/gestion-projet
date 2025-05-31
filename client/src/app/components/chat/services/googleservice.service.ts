@@ -1,34 +1,31 @@
-// google-meet.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-
-export interface AuthStatus {
-  isAuthenticated: boolean;
-}
-
-export interface MeetResponse {
-  meetLink: string;
-}
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleMeetService {
-  private googleAuthUrl = 'http://localhost:5000/google'; // For auth endpoints
-  private roomsUrl = 'http://localhost:5000/rooms'; // For room endpoints
+
+  private baseUrl = 'http://localhost:5000/api/google';
 
   constructor(private http: HttpClient) {}
 
-  checkAuthStatus(): Observable<AuthStatus> {
-    return this.http.get<AuthStatus>(`${this.googleAuthUrl}/auth-status`);
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
   }
 
-  createMeeting(roomId: string): Observable<MeetResponse> {
-    return this.http.post<MeetResponse>(`${this.roomsUrl}/${roomId}/start-call`, {});
-  }
-
-  revokeAuth(): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.googleAuthUrl}/revoke-auth`, {});
+  loginWithGoogle(): Observable<void> {
+    return this.http.get(`${this.baseUrl}/login`, {
+      headers: this.getAuthHeaders(),
+      responseType: 'text',
+    }).pipe(
+      map((googleRedirectUrl: string) => {
+        window.location.href = googleRedirectUrl;
+      })
+    );
   }
 }

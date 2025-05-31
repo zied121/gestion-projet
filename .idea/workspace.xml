@@ -5,22 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="merge zied+malek">
-      <change afterPath="$PROJECT_DIR$/client/models/room.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice-modal/backoffice-modal.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/backoffice/backoffice.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/models/room.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/models/room.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/googleservice.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/googleservice.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/RoomController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/RoomController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Middleware/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Middleware/upload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747471689532-9126894.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473318608-653254760.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473337159-681871683.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Middleware/uploads/1747473342544-826029403.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/socket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/socket.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/app/services/task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/task.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Controllers/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/projectController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/GoogleAuthRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/GoogleAuthRoute.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/models/Usermodel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Usermodel.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

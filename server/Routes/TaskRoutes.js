@@ -22,7 +22,7 @@ router.post('/tasks/:parentTaskId/subtasks', isAuth, addSubtask);
 router.post('/tasks/:taskId/comments', isAuth, addCommentToTask);
 router.post('/tasks/:taskId/assign-users', isAuth,assignUsersToTask );
 router.get('/tasks/project/:projectId', isAuth, getTasksByProject);
-router.patch('/tasks/:id/status', isAuth, updateTaskStatusOnly);
+router.put('/tasks/:id/status', isAuth, updateTaskStatusOnly);
 router.get('/member/activities', isAuth, getMemberTaskActivities);
 
 

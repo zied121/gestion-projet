@@ -11,9 +11,10 @@ const createProject = async (req, res) => {
             owner: req.user._id
         });
         const savedProject = await project.save();
+        const populatedProject = await Project.findById(savedProject._id).populate('organisation');
 
         const io = req.app.get('io');
-        io.emit('projectCreated', savedProject);
+        io.emit('projectCreated', populatedProject);
 
         res.status(201).json(savedProject);
     } catch (err) {

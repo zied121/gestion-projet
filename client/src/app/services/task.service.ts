@@ -56,7 +56,7 @@ import { Injectable } from '@angular/core';
           return this.http.post(`${this.baseUrl}/${taskId}/assign-users`, { userIds }, { headers: this.getAuthHeaders() });
         }
         updateTaskStatus(taskId: string, status: string) {
-          return this.http.patch(`${this.baseUrl}/${taskId}/status`, { status }, { headers: this.getAuthHeaders() });
+          return this.http.put(`${this.baseUrl}/${taskId}/status`, { status }, { headers: this.getAuthHeaders() });
         }
         getRecentActivitiesForMember(){
           return this.http.get<any[]>(`${this.baseUrl}/member/activities`, { headers: this.getAuthHeaders() });
