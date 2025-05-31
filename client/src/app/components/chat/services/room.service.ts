@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-export interface Room {
-  _id: string;
-  id: string;
-  projectId: string;
-  name: string;
-  owner: { nom: string , _id: string };
-
-}
+import {Room} from '../../../../../models/room.model';
+// export interface Room {
+//   _id: string;
+//   id: string;
+//   projectId: string;
+//   name: string;
+//   owner: { nom: string , _id: string };
+//
+// }
 interface StartCallResponse {
   meetLink: string;
   success: boolean;
@@ -28,6 +29,12 @@ interface User {
   image?: string;
 }
 
+// export interface Room {
+//   name: string;
+//   owner: { nom: string , _id: string };
+//
+// }
+//import {Room} from '../../../../../models/room.model'; // Adjust the import path as necessary
 @Injectable({
   providedIn: 'root'
 })
@@ -63,12 +70,17 @@ export class RoomService {
       headers: this.getAuthHeaders()
     });
   }
-
-  createRoom(data: any,projectId:string  ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/RoomForProject/${projectId}`, data, { headers: this.getAuthHeaders() });
+  getRoomUsers(roomId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/getRoomUsers/${roomId}`, { headers: this.getAuthHeaders() });
   }
 
-  updateRoom(id: string, data: any): Observable<any> {
+  createRoom(data: FormData, projectId: string): Observable<any> {
+    console.log(data);
+    return this.http.post(`${this.apiUrl}/RoomForProject/${projectId}`, data, { headers: this.getAuthHeaders() })
+
+  }
+
+  updateRoom(id: string, data: FormData): Observable<any> {
     return this.http.put(`${this.apiUrl}/UpdateRoom/${id}`, data, { headers: this.getAuthHeaders() });
   }
 
@@ -96,7 +108,7 @@ export class RoomService {
  getUsersByOrganization(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/organization`);
   }
-  
+
   searchRooms(query: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/searchRoom?query=${query}` , {
       headers: this.getAuthHeaders()

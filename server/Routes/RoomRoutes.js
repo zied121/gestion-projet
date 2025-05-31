@@ -4,30 +4,31 @@ const isauth = require("../Middleware/isauth");
 const isAdmin = require("../Middleware/adminorganisation");
 const validate = require('../Middleware/validate');
 const { ValideRoomSchema } = require("../models/Room");
+const upload = require("../Middleware/upload");
 
 const {
-    getRooms,searchRooms,getLastMessage,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom, createRoom , getProjectPerUser, createGoogleMeet , getAllRooms,updateRoomsec , createRoomPerProject, createPrivateRoom
-} = require("../Controllers/RoomController");
-  
-//Admin routes
-//router.post("/addRoom", isauth,isAdmin, createRoom)
-//router.put("/UpdateRoom", isauth,isAdmin, updateRoom)
-//router.get("/", isauth, getRooms)
-router.get("/",isauth, getRooms)
-router.get("/allrooms",isauth, getAllRooms)
-router.post('/:id/start-call', isauth,createGoogleMeet);
-router.get("/getProjectPerUser", isauth, getProjectPerUser)  
-router.get("/getRoomByID/:id",isauth, getRoomById)  
-router.post("/addRoom" , isauth ,validate(ValideRoomSchema), createRoom)
-router.post("/RoomForProject/:id" , isauth ,validate(ValideRoomSchema), createRoomPerProject) 
-router.post('/CreatePrivateRoom', isauth, createPrivateRoom); 
-///router.post("/addRoom" , isauth , validate(valideRoomSchema) , createRoom) 
-router.put("/UpdateRoom/:id" , isauth ,validate(ValideRoomSchema), updateRoomsec)
-router.delete("/DeleteRoom/:id", isauth, deleteRoom)
+    getRooms,searchRooms,getRoomsByUser, getRoomsByOwner,getRoomById,deleteRoom , createRoom ,getLastMessage, getProjectPerUser, createGoogleMeet , getAllRooms,updateRoom , createRoomPerProject, createPrivateRoom
+} = require("../Controllers/roomController");
 
-router.get('/searchRoom',isauth , searchRooms);
-router.get('/getRoomsPerUser', isauth, getRoomsByUser);
-router.get("/getRoomsPerowner", isauth, getRoomsByOwner);
+//Admin routes
+//router.post("/addRoom", isAuth,isAdmin, createRoom)
+//router.put("/UpdateRoom", isAuth,isAdmin, updateRoom)
+//router.get("/", isAuth, getRooms)
+router.get("/",isAuth, getRooms)
+router.get("/allrooms",isAuth, getAllRooms)
+router.get("/getProjectPerUser", isAuth, getProjectPerUser)  
+router.get("/getRoomByID/:id",isAuth, getRoomById)  
+router.post("/addRoom" , isAuth ,validate(ValideRoomSchema), createRoom)
+router.post("/RoomForProject/:id" , isAuth, upload.single('image') ,validate(ValideRoomSchema), createRoomPerProject)
+router.post('/CreatePrivateRoom', isAuth, createPrivateRoom); 
+///router.post("/addRoom" , isAuth , validate(valideRoomSchema) , createRoom) 
+router.put("/UpdateRoom/:id" , isAuth, upload.single('image'), updateRoom)
+router.delete("/DeleteRoom/:id", isAuth, deleteRoom)
+router.post('/:id/start-call', isauth,createGoogleMeet);
+router.get('/searchRoom',isAuth , searchRooms);
+router.get('/getRoomsPerUser', isAuth, getRoomsByUser);
+router.get("/getRoomsPerowner", isAuth, getRoomsByOwner);
+router.get('/getRoomUsers/:id', isAuth, getRoomUsers);
 //User routes
 router.get('/room/:roomId/last', getLastMessage );
 
@@ -59,7 +60,7 @@ router.get('/:roomId', async (req, res) => {
 router.get('/:roomId/last', async (req, res) => {
   try {
     const { roomId } = req.params;
-    
+
     const lastMessage = await Message.findOne({ roomId })
       .populate('sender', 'name email')
       .sort({ createdAt: -1 });
@@ -126,13 +127,13 @@ router.put('/:roomId/seen', async (req, res) => {
 
     // Update all unread messages in the room for this user
     const updateResult = await Message.updateMany(
-      { 
+      {
         roomId: roomId,
         sender: { $ne: userId }, // Don't mark own messages as seen
         'seenBy.userId': { $ne: userId } // Only messages not already seen
       },
-      { 
-        $push: { 
+      {
+        $push: {
           seenBy: {
             userId: userId,
             seenAt: new Date()
@@ -145,14 +146,14 @@ router.put('/:roomId/seen', async (req, res) => {
     );
 
     // Emit socket event
-    req.io.to(roomId).emit('messagesSeen', { 
-      roomId: roomId, 
+    req.io.to(roomId).emit('messagesSeen', {
+      roomId: roomId,
       userId: userId,
       count: updateResult.modifiedCount
     });
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Messages marked as seen',
       markedCount: updateResult.modifiedCount
     });
@@ -193,8 +194,8 @@ router.get('/unread-counts', async (req, res) => {
     const userId = req.user.id;
 
     // Get all rooms user belongs to
-    const userRooms = await Room.find({ 
-      members: userId 
+    const userRooms = await Room.find({
+      members: userId
     }).select('_id');
 
     const roomIds = userRooms.map(room => room._id);
@@ -279,4 +280,4 @@ router.put('/:messageId/seen', async (req, res) => {
     catch (error) {
         console.error('Error marking message as seen:', error);}
     })
-module.exports = router;    
+module.exports = router;
