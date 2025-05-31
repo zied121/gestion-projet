@@ -98,10 +98,10 @@ const eventSchema = new mongoose.Schema({
         enum: ['En_attente', 'Confirme', 'Annule', 'Terminé'],
         default: 'En_attente'
     },
-    file: {
-        type: String,
-        default: 'none'
-    },
+        file: {
+            type: String,
+            default: 'none'
+        },
     participants: [{
         participant_id: {
             type: Schema.Types.ObjectId,

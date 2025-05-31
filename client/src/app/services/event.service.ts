@@ -1,3 +1,5 @@
+// service/event.service.ts - Corrections pour l'upload de fichiers
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -12,12 +14,19 @@ export class EventService {
 
   constructor(private http: HttpClient) {}
 
-  private getAuthHeaders(): HttpHeaders {
+  // Headers pour JSON (sans Content-Type pour FormData)
+  private getAuthHeaders(includeContentType: boolean = true): HttpHeaders {
     const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+    const headers: any = {
+      'Authorization': `Bearer ${token}`
+    };
+    
+    // Ne pas définir Content-Type pour FormData - le navigateur le fait automatiquement
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
+    return new HttpHeaders(headers);
   }
 
   getEventsByUser(): Observable<EventModel[]> {
@@ -25,6 +34,7 @@ export class EventService {
       headers: this.getAuthHeaders()
     });
   }
+  
 
   getAllEvents(): Observable<EventModel[]> {
     return this.http.get<EventModel[]>(`${this.baseUrl}/list`, {
@@ -32,19 +42,42 @@ export class EventService {
     });
   }
 
-
-
+  // Méthode corrigée pour la création d'événements avec fichiers
   createEvent(data: any): Observable<any> {
     console.log('Creating event with data:', data);
-    return this.http.post(`${this.baseUrl}/create`, data, {
-      headers: this.getAuthHeaders()
-    });
+
+    // Si c'est un FormData, ne pas ajouter Content-Type
+    if (data instanceof FormData) {
+      const headers = this.getAuthHeaders(false); // Sans Content-Type
+      return this.http.post(`${this.baseUrl}/create`, data, { 
+        headers: headers
+      });
+    } else {
+      // Pour les données JSON normales
+      const headers = this.getAuthHeaders(true); // Avec Content-Type
+      return this.http.post(`${this.baseUrl}/create`, data, { 
+        headers: headers
+      });
+    }
   }
+
+  // Méthode corrigée pour la mise à jour d'événements avec fichiers
   updateEvent(id: string, data: any): Observable<any> {
     console.log('Updating event with data:', data);
-    return this.http.put(`${this.baseUrl}/update/${id}`, data, {
-      headers: this.getAuthHeaders()
-    });
+
+    // Si c'est un FormData, ne pas ajouter Content-Type
+    if (data instanceof FormData) {
+      const headers = this.getAuthHeaders(false); // Sans Content-Type
+      return this.http.put(`${this.baseUrl}/update/${id}`, data, { 
+        headers: headers
+      });
+    } else {
+      // Pour les données JSON normales
+      const headers = this.getAuthHeaders(true); // Avec Content-Type
+      return this.http.put(`${this.baseUrl}/update/${id}`, data, { 
+        headers: headers
+      });
+    }
   }
 
   deleteEvent(id: string): Observable<any> {
@@ -68,53 +101,42 @@ export class EventService {
     );
   }
 
-updateParticipantResponse(eventId: string, responseData: { response: string; message?: string }): Observable<any> {
-  return this.http.put(`${this.baseUrl}/update_participant/${eventId}`, responseData, {
-    headers: this.getAuthHeaders()
-  });
-}
-
- 
- 
-
-  // Dans event.service.ts
-
-// Ajoutez ces deux nouvelles méthodes
-// Dans event.service.ts
-
-// Ajoutez ces deux nouvelles méthodes
-// Dans event.service.ts
-// event.service.ts
-searchEvents(types: string[], search: string): Observable<EventModel[]> {
-  let params = new HttpParams();
-  
-  // Envoyez chaque type séparément avec le même paramètre 'type'
-  if (types && types.length > 0) {
-    types.forEach(type => {
-      params = params.append('type', type);
+  updateParticipantResponse(eventId: string, responseData: { response: string; message?: string }): Observable<any> {
+    return this.http.put(`${this.baseUrl}/update_participant/${eventId}`, responseData, {
+      headers: this.getAuthHeaders()
     });
   }
-  
-  if (search) {
-    params = params.append('search', search);
+
+  getEventWithParticipants(eventId: string): Observable<EventModel> {
+    return this.http.get<EventModel>(`${this.baseUrl}/${eventId}/participants`, {
+      headers: this.getAuthHeaders()
+    }).pipe(
+      rxjsTap(event => console.log('Event with participants:', event))
+    );
   }
 
-  return this.http.get<EventModel[]>(`${this.baseUrl}/search`, {
-    params: params,
-    headers: this.getAuthHeaders()
-  });
-}
-// Dans event.service.ts
-getParticipantStatus(eventId: string): Observable<any> {
-  return this.http.get(`${this.baseUrl}/${eventId}/participant-status`, {
-    headers: this.getAuthHeaders()
-  });
-}
+  searchEvents(types: string[], search: string): Observable<EventModel[]> {
+    let params = new HttpParams();
 
-}
+    if (types && types.length > 0) {
+      types.forEach(type => {
+        params = params.append('type', type);
+      });
+    }
 
+    if (search) {
+      params = params.append('search', search);
+    }
 
+    return this.http.get<EventModel[]>(`${this.baseUrl}/search`, {
+      params: params,
+      headers: this.getAuthHeaders()
+    });
+  }
 
-function tap(arg0: (event: any) => void): import("rxjs").OperatorFunction<EventModel, EventModel> {
-  throw new Error('Function not implemented.');
+  getParticipantStatus(eventId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${eventId}/participant-status`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

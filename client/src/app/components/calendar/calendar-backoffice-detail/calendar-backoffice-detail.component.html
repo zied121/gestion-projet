@@ -1,19 +1,223 @@
-<h2 mat-dialog-title>Détails de l'événement</h2>
+<h2 mat-dialog-title>
+  Détails de l'événement
+</h2>
+
 <mat-dialog-content>
-  <p><strong>Titre :</strong> {{ data.event.titre }}</p>
-  <p><strong>Type :</strong> {{ data.event.type }}</p>
-  <p><strong>Description :</strong> {{ data.event.description }}</p>
-  <p><strong>Date de début :</strong> {{ data.event.dateDebut | date:'dd/MM/yyyy HH:mm' }}</p>
-  <p><strong>Date de fin :</strong> {{ data.event.dateFin | date:'dd/MM/yyyy HH:mm' }}</p>
-  <p><strong>Lieu :</strong> {{ data.event.lieu }}</p>
-  <p><strong>Organisateur :</strong> {{ data.event.organisateur }}</p>
-  <p><strong>Contact :</strong> {{ data.event.contact }}</p>
-  <p><strong>Visibilité :</strong> {{ data.event.visibilite }}</p>
-  <p><strong>Créé le :</strong> {{ data.event.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-  <p><strong>Mis à jour le :</strong> {{ data.event.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
-  <p><strong>État :</strong> {{ data.event.etat }}</p>
-  <p><strong>Type d'événement :</strong> {{ data.event.typeEvenement }}</p>
+  <!-- Section Informations de base -->
+  <div class="event-section">
+    <h3 class="section-title">
+      Informations générales
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        ID
+      </span>
+      <span class="info-value">{{ data.event._id }}</span>
+
+      <span class="info-label">
+        Titre
+      </span>
+      <span class="info-value">{{ data.event.titre }}</span>
+
+      <span class="info-label">
+        Type
+      </span>
+      <span class="info-value">{{ data.event.type }}</span>
+
+      <span class="info-label">
+        Description
+      </span>
+      <span class="info-value">{{ data.event.description || 'Non spécifiée' }}</span>
+    </div>
+  </div>
+
+  <!-- Section Dates -->
+  <div class="event-section">
+    <h3 class="section-title">
+      Dates et horaires
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Début
+      </span>
+      <span class="info-value">{{ data.event.date_debut | date:'EEEE dd MMMM yyyy, HH:mm' }}</span>
+
+      <span class="info-label">
+        Fin
+      </span>
+      <span class="info-value">{{ data.event.date_fin | date:'EEEE dd MMMM yyyy, HH:mm' }}</span>
+    </div>
+  </div>
+
+  <!-- Section Localisation -->
+  <div class="event-section">
+    <h3 class="section-title">
+      Localisation
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Emplacement
+      </span>
+      <span class="info-value">{{ data.event.emplacement || 'Non spécifié' }}</span>
+
+      <span class="info-label">
+        Lien
+      </span>
+      <span class="info-value">
+        <ng-container *ngIf="data.event.lien; else noLink">
+          <a [href]="data.event.lien" target="_blank" class="link-value">
+            {{ data.event.lien }}
+          </a>
+        </ng-container>
+        <ng-template #noLink>Non spécifié</ng-template>
+      </span>
+    </div>
+  </div>
+
+  <!-- Section Organisateur -->
+  <div class="event-section" *ngIf="data.event.organisateur_id">
+    <h3 class="section-title">
+      Organisateur
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Nom
+      </span>
+      <span class="info-value">
+        {{ data.event.organisateur_id.nom }}
+        {{ data.event.organisateur_id.prenom }}
+      </span>
+
+      <span class="info-label">
+        Email
+      </span>
+      <span class="info-value">
+        <a href="mailto:{{ data.event.organisateur_id.email }}" class="link-value">
+          {{ data.event.organisateur_id.email }}
+        </a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Section Récurrence -->
+  <div class="event-section">
+    <h3 class="section-title">
+      Récurrence
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Récurrent
+      </span>
+      <span class="info-value">{{ data.event.isRecurring ? 'Oui' : 'Non' }}</span>
+
+      <span class="info-label">
+        Type
+      </span>
+      <span class="info-value">{{ data.event.type_recurrence || 'Non spécifié' }}</span>
+    </div>
+  </div>
+
+  <!-- Section Rappels -->
+  <div class="event-section" *ngIf="data.event.rappel && data.event.rappel.length">
+    <h3 class="section-title">
+      Rappels
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Configuration
+      </span>
+      <div class="info-value">
+        <mat-list dense>
+          <mat-list-item *ngFor="let r of data.event.rappel">
+            <mat-icon mat-list-icon>notifications_active</mat-icon>
+            <div mat-line>
+              {{ r.time }} {{ r.unit }} avant
+              <span class="reminder-status" [class.sent]="r.sent">
+                ({{ r.sent ? 'Envoyé' : 'Non envoyé' }})
+              </span>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Fichier -->
+  <div class="event-section" *ngIf="data.event.fichier">
+    <h3 class="section-title">
+      Fichier joint
+    </h3>
+    <div class="info-grid">
+      <span class="info-label">
+        Fichier
+      </span>
+      <span class="info-value">
+        <a [href]="data.event.fichier" target="_blank" class="link-value">
+          {{ data.event.fichier }}
+        </a>
+      </span>
+    </div>
+    <div class="file-preview" *ngIf="data.event.fichier">
+      <img [src]="'http://localhost:5000/uploads'+data.event.file" alt="Fichier joint" class="file-image">
+    </div>
+  </div>
+<!-- Fichier existant -->
+<div *ngIf="data.event.file" class="bg-white rounded-lg border border-blue-200 p-3">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center flex-1 min-w-0">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <div class="min-w-0 flex-1">
+        <div class="text-sm font-medium text-gray-700 truncate">
+          {{ getFilename(data.event.file) }}
+        </div>
+        <div class="text-xs text-gray-500 truncate">
+          Fichier existant
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-2 ml-3 flex-shrink-0">
+      <a [href]="getFileUrl(data.event.file)"
+         target="_blank"
+         class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 border border-blue-300 rounded hover:bg-blue-50 transition-colors"
+         rel="noopener noreferrer">
+        Voir
+      </a>
+      <button type="button"
+              (click)="downloadFile(data.event.file)"
+              class="text-green-600 hover:text-green-800 text-sm px-3 py-1 border border-green-300 rounded hover:bg-green-50 transition-colors">
+        Télécharger
+      </button>
+    </div>
+  </div>
+</div>
+  <!-- Section Participants -->
+  <div class="event-section" *ngIf="data.event.participants && data.event.participants.length">
+    <h3 class="section-title">
+      Participants ({{ data.event.participants.length }})
+    </h3>
+    <mat-card class="participants-card">
+      <mat-list>
+        <mat-list-item *ngFor="let p of data.event.participants" class="participant-item">
+
+          <div mat-line class="participant-name">
+            {{ getParticipantDisplay(p) }}
+          </div>
+          <div mat-line class="participant-status">
+            {{ getParticipantStatus(p) }}
+          </div>
+          <div mat-line *ngIf="p.message" class="participant-message">
+            <strong>Message :</strong> {{ p.message }}
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card>
+  </div>
 </mat-dialog-content>
+
 <mat-dialog-actions>
-  <button mat-button mat-dialog-close>Fermer</button>
+  <button mat-raised-button mat-dialog-close class="close-button">
+    Fermer
+  </button>
 </mat-dialog-actions>

@@ -1,3 +1,5 @@
+//event-form-dialog.component.ts
+
 import { Component, EventEmitter, Input, Output, OnChanges, HostListener, OnInit } from '@angular/core';
 import { CreateEventModel, UpdateEventModel, EventType, EventModel } from '../../../models/event.model';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +20,8 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     @Input() users: any[] = [];
     @Output() close = new EventEmitter<void>();
     @Output() submitSuccess = new EventEmitter<void>();
+        private readonly BACKEND_URL = 'http://localhost:5000'; // URL de votre backend
+
     protected organisationId= localStorage.getItem('organisation') || '';
     formData: Partial<CreateEventModel | UpdateEventModel> = this.getDefaultFormData();
     selectedParticipants: string[] = [];
@@ -26,9 +30,10 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
     participantSearchTerm: string = '';
     showParticipantDropdown: boolean = false;
     filteredUsers: any[] = [];
+    
 
     constructor(private userService: UserService, private eventService: EventService,private organisationService: OrganisationService) { }
-    selectedFile: File | null = null;
+  selectedfile: File | null = null;
     filePreviewUrl: string | null = null;
 
     ngOnInit(): void {
@@ -56,11 +61,17 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
                 rappel: this.event.rappel ? [...this.event.rappel] : [],
                 file: this.event.file || ''
             };
-             // Si un fichier existe déjà, préparez l'URL de prévisualisation
-            if (this.event.file) {
-                this.filePreviewUrl = this.event.file;
+             // Si un file existe déjà, préparez l'URL de prévisualisation
+             if (this.event.file) {
+                // Si le fichier contient déjà l'URL complète, l'utiliser tel quel
+                if (this.event.file.startsWith('http')) {
+                    this.filePreviewUrl = this.event.file;
+                } else {
+                    // Sinon, construire l'URL complète
+                    this.filePreviewUrl = `${this.BACKEND_URL}${this.event.file}`;
+                }
+                console.log('File preview URL:', this.filePreviewUrl);
             }
-
             // Gestion des participants
             this.selectedParticipants = [];
             this.originalParticipants = [];
@@ -76,66 +87,154 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
             console.log('Original participants:', this.originalParticipants);
         } else {
             // Mode création
-            this.formData = this.getDefaultFormData();
+             this.formData = this.getDefaultFormData();
             this.selectedParticipants = [];
             this.originalParticipants = [];
-            this.selectedFile = null;
+            this.selectedfile = null;
             this.filePreviewUrl = null;
         }
 
         this.updateFilteredUsers();
     }
 
+getFileUrl(filename: string): string {
+    if (!filename) return '';
+    
+    // Si c'est déjà une URL complète
+    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+        return filename;
+    }
+    
+    // Si ça commence par /uploads, ajouter juste le backend URL
+    if (filename.startsWith('/uploads/')) {
+        return `${this.BACKEND_URL}${filename}`;
+    }
+    
+    // Si c'est juste un nom de fichier, construire l'URL complète
+    if (!filename.startsWith('/')) {
+        return `${this.BACKEND_URL}/uploads/${filename}`;
+    }
+    
+    // Fallback
+    return `${this.BACKEND_URL}${filename}`;
+}
 
-     onFileSelected(event: any): void {
-        const file = event.target.files[0];
-        if (file) {
-            // Validation de la taille (exemple: max 10MB)
-            if (file.size > 10 * 1024 * 1024) {
-                alert('Le fichier est trop volumineux. Taille maximale: 10MB');
-                return;
-            }
-
-            // Validation du type de fichier (optionnel)
-            const allowedTypes = [
-                'image/jpeg', 'image/png', 'image/gif',
-                'application/pdf', 
-                'application/msword', 
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                'text/plain'
-            ];
-            
-            if (!allowedTypes.includes(file.type)) {
-                alert('Type de fichier non autorisé. Types acceptés: JPG, PNG, GIF, PDF, DOC, DOCX, TXT');
-                return;
-            }
-
-            this.selectedFile = file;
-            
-            // Créer une URL de prévisualisation pour les images
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e: any) => {
-                    this.filePreviewUrl = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                this.filePreviewUrl = null;
-            }
+// Méthode pour obtenir le nom du fichier à partir de l'URL ou du chemin
+getFilename(filePath: string): string {
+    if (!filePath) return 'fichier';
+    
+    // Si c'est une URL, extraire le nom du fichier
+    if (filePath.startsWith('http')) {
+        try {
+            const url = new URL(filePath);
+            const pathname = url.pathname;
+            return pathname.split('/').pop() || 'fichier';
+        } catch {
+            return 'fichier';
         }
     }
+    
+    // Si c'est un chemin, extraire le nom
+    return filePath.split('/').pop() || 'fichier';
+}
+// Remplacez votre méthode downloadFile actuelle par celle-ci :
 
-    removeSelectedFile(): void {
-        this.selectedFile = null;
-        this.filePreviewUrl = null;
-        this.formData.file = '';
-        // Reset l'input file
-        const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = '';
-        }
+downloadFile(): void {
+    if (!this.filePreviewUrl) {
+        alert('Aucun fichier à télécharger');
+        return;
     }
+    
+    console.log('Téléchargement du fichier:', this.filePreviewUrl);
+    
+    // Méthode 1: Fetch et download blob (recommandée)
+    this.downloadFileAsBlob();
+}
 
+  
+private async downloadFileAsBlob(): Promise<void> {
+    try {
+        // Afficher un indicateur de chargement
+        console.log('Début du téléchargement...');
+        
+        const response = await fetch(this.filePreviewUrl!, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // Si nécessaire
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+        }
+        
+        // Obtenir le blob du fichier
+        const blob = await response.blob();
+        
+        // Créer une URL temporaire pour le blob
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        // Extraire le nom du fichier depuis l'URL ou utiliser un nom par défaut
+        let filename = this.event?.file || 'fichier';
+        
+        // Si le filename contient un chemin, extraire seulement le nom
+        if (filename.includes('/')) {
+            filename = filename.split('/').pop() || 'fichier';
+        }
+        
+        // Créer le lien de téléchargement
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename;
+        link.style.display = 'none';
+        
+        // Ajouter au DOM, cliquer et supprimer
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Nettoyer l'URL blob après un délai
+        setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+        }, 100);
+        
+        console.log('Téléchargement réussi');
+        
+    } catch (error) {
+        console.error('Erreur lors du téléchargement:', error);
+        
+        // Fallback: ouvrir dans un nouvel onglet
+        this.openFileInNewTab();
+    }
+}
+
+// Méthode de fallback pour ouvrir le fichier dans un nouvel onglet
+private openFileInNewTab(): void {
+    console.log('Utilisation du fallback: ouverture dans un nouvel onglet');
+    
+    const link = document.createElement('a');
+    link.href = this.filePreviewUrl!;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+
+
+
+
+   onfileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedfile = input.files[0];
+    }
+  }
+
+  
     private getParticipantId(participant: {
         participant_id?: string | { _id?: string; nom?: string; prenom?: string; email?: string };
         id?: string;
@@ -193,7 +292,6 @@ export class EventFormDialogComponent implements OnInit, OnChanges {
         };
     }
 
-    // Enhanced participant management methods
     onParticipantSearch(): void {
         this.updateFilteredUsers();
         this.showParticipantDropdown = true;
@@ -272,16 +370,7 @@ removeParticipant(participantId: string): void {
         });
     }
 
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: Event): void {
-        const target = event.target as HTMLElement;
-        const searchInput = target.closest('input[name="participantSearch"]');
-        const dropdown = target.closest('.absolute.z-10');
 
-        if (!searchInput && !dropdown) {
-            this.showParticipantDropdown = false;
-        }
-    }
     addReminder(): void {
         if (!this.formData.rappel) {
             this.formData.rappel = [];
@@ -301,12 +390,17 @@ removeParticipant(participantId: string): void {
         const pad = (num: number) => num.toString().padStart(2, '0');
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
+// Méthode onSubmit avec debug étendu pour diagnostiquer l'erreur 400
+
+// event-form-dialog.component.ts - Correction de la méthode onSubmit
+
 onSubmit(): void {
-    const formData = new FormData();
+    console.log('=== DEBUT DEBUG SUBMISSION ===');
     console.log('Form submitted with data:', this.formData);
     console.log('Selected participants:', this.selectedParticipants);
-    console.log('Original participants:', this.originalParticipants);
-
+    console.log('Selected file:', this.selectedfile);
+    console.log('Organisation ID:', this.organisationId);
+    
     // Validation
     if (!this.formData.titre?.trim()) {
         alert('Veuillez saisir un titre pour l\'événement.');
@@ -331,32 +425,123 @@ onSubmit(): void {
         return;
     }
 
-    // Préparer les données de l'événement
-    const eventData: any = {
-        ...this.formData,
-        participants: [...this.selectedParticipants]
-    };
+    console.log('✅ Validation passed');
 
-    // Conversion des dates
-    eventData.date_debut = new Date(eventData.date_debut).toISOString();
-    eventData.date_fin = new Date(eventData.date_fin).toISOString();
+    // Décider s'il faut utiliser FormData ou un objet JSON
+    const hasFile = this.selectedfile !== null && this.selectedfile !== undefined;
+    let requestData: any;
+
+    if (hasFile) {
+        console.log('📎 Using FormData (with file)');
+        // Utiliser FormData si un fichier est sélectionné
+        const formData = new FormData();
+        
+        // Ajouter toutes les données du formulaire
+        formData.append('type', this.formData.type || EventType.EVENEMENT);
+        formData.append('titre', this.formData.titre || '');
+        formData.append('description', this.formData.description || '');
+        formData.append('date_debut', new Date(this.formData.date_debut).toISOString());
+        formData.append('date_fin', new Date(this.formData.date_fin).toISOString());
+        formData.append('emplacement', this.formData.emplacement || '');
+        formData.append('lien', this.formData.lien || '');
+        formData.append('type_recurrence', this.formData.type_recurrence || 'none');
+        formData.append('isRecurring', this.formData.isRecurring ? 'true' : 'false');
+        formData.append('status', this.formData.status || 'En_attente');
+        formData.append('organisation_id', this.organisationId || '');
+        
+        // CORRECTION: Gestion des participants - envoyer chaque participant individuellement
+        if (this.selectedParticipants && this.selectedParticipants.length > 0) {
+            // Pour FormData, il faut envoyer chaque participant avec participants[]
+            this.selectedParticipants.forEach(participant => {
+                formData.append('participants[]', participant);
+            });
+        }
+        console.log('fil')
+        
+        // CORRECTION: Gestion des rappels - envoyer chaque rappel individuellement
+        if (this.formData.rappel && this.formData.rappel.length > 0) {
+            this.formData.rappel.forEach((rappel, index) => {
+                formData.append(`rappel[${index}][time]`, rappel.time.toString());
+                formData.append(`rappel[${index}][unit]`, rappel.unit);
+                formData.append(`rappel[${index}][sent]`, rappel.sent.toString());
+            });
+        }
+        
+        // Ajouter le fichier
+        if (this.selectedfile) {
+            console.log('📎 Adding file:', this.selectedfile.name, 'Size:', this.selectedfile.size);
+            formData.append('file', this.selectedfile, this.selectedfile.name);
+        }
+        
+        // Pour la mise à jour, ajouter l'ID
+        if (this.event?._id) {
+            formData.append('_id', this.event._id);
+        }
+        
+        requestData = formData;
+        
+        // Debug FormData
+        console.log('📋 FormData entries:');
+        for (let pair of formData.entries()) {
+            if (pair[1] instanceof File) {
+                console.log(`${pair[0]}: [File] ${pair[1].name} (${pair[1].size} bytes)`);
+            } else {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+        }
+        
+    } else {
+        console.log('📄 Using JSON object (no file)');
+        // Utiliser un objet JSON si aucun fichier n'est sélectionné
+        requestData = {
+            type: this.formData.type || EventType.EVENEMENT,
+            titre: this.formData.titre || '',
+            description: this.formData.description || '',
+            date_debut: new Date(this.formData.date_debut).toISOString(),
+            date_fin: new Date(this.formData.date_fin).toISOString(),
+            emplacement: this.formData.emplacement || '',
+            lien: this.formData.lien || '',
+            type_recurrence: this.formData.type_recurrence || 'none',
+            isRecurring: this.formData.isRecurring || false,
+            status: this.formData.status || 'En_attente',
+            participants: this.selectedParticipants || [],
+            rappel: this.formData.rappel || [],
+            organisation_id: this.organisationId || ''
+        };
+        
+        // Pour la mise à jour, ajouter l'ID
+        if (this.event?._id) {
+            requestData._id = this.event._id;
+        }
+        
+        console.log('📋 JSON object to send:', JSON.stringify(requestData, null, 2));
+    }
 
     // Afficher les changements de participants pour debug
     if (this.event?._id) {
         const addedParticipants = this.selectedParticipants.filter(id => !this.originalParticipants.includes(id));
         const removedParticipants = this.originalParticipants.filter(id => !this.selectedParticipants.includes(id));
 
-        console.log('Participants ajoutés:', addedParticipants);
-        console.log('Participants supprimés:', removedParticipants);
+        console.log('👥 Participants ajoutés:', addedParticipants);
+        console.log('👥 Participants supprimés:', removedParticipants);
     }
 
-    if (this.event?._id) {
-        // Mode update
-        this.eventService.updateEvent(this.event._id, eventData).subscribe({
-            next: (response) => {
-                console.log('Update successful:', response);
+    // Vérifications supplémentaires avant envoi
+    console.log('🔍 Pre-send checks:');
+    console.log('- Token exists:', !!localStorage.getItem('token'));
+    console.log('- Organisation ID:', this.organisationId);
+    console.log('- Event type:', this.formData.type);
+    console.log('- Participants count:', this.selectedParticipants.length);
+    console.log('- Has file:', hasFile);
 
-                // Message de succès plus détaillé
+    // Envoyer la requête
+    if (this.event?._id) {
+        console.log('🔄 Updating existing event:', this.event._id);
+        // Mode update
+        this.eventService.updateEvent(this.event._id, requestData).subscribe({
+            next: (response) => {
+                console.log('✅ Update successful:', response);
+
                 let successMessage = 'Événement mis à jour avec succès';
                 if (response.addedParticipants && response.addedParticipants.length > 0) {
                     successMessage += `\n${response.addedParticipants.length} participant(s) ajouté(s)`;
@@ -370,84 +555,54 @@ onSubmit(): void {
                 this.close.emit();
             },
             error: (err) => {
-                console.error('Update error:', err);
+                console.error('❌ Update error:', err);
+                console.error('❌ Error details:', {
+                    status: err.status,
+                    statusText: err.statusText,
+                    error: err.error,
+                    message: err.message,
+                    url: err.url
+                });
                 alert('Erreur lors de la mise à jour: ' + (err.error?.message || err.message));
             }
         });
     } else {
-        // Create mode
-        this.eventService.createEvent(eventData as CreateEventModel).subscribe({
+        console.log('➕ Creating new event');
+        // Mode creation
+        this.eventService.createEvent(requestData).subscribe({
             next: (response) => {
-                console.log('Create successful:', response);
+                console.log('✅ Create successful:', response);
                 alert('Événement créé avec succès.');
                 this.submitSuccess.emit();
                 this.close.emit();
             },
             error: (err) => {
-                console.error('Create error:', err);
-                alert('Erreur lors de la création: ' + (err.error?.message || err.message));
+                console.error('❌ Create error:', err);
+                console.error('❌ Error details:', {
+                    status: err.status,
+                    statusText: err.statusText,
+                    error: err.error,
+                    message: err.message,
+                    url: err.url
+                });
+                
+                // Message d'erreur plus détaillé
+                let errorMessage = 'Erreur lors de la création: ';
+                if (err.error?.message) {
+                    errorMessage += err.error.message;
+                } else if (err.message) {
+                    errorMessage += err.message;
+                } else {
+                    errorMessage += `${err.status} ${err.statusText}`;
+                }
+                
+                alert(errorMessage);
             }
         });
     }
+    
+    console.log('=== FIN DEBUG SUBMISSION ===');
 }
-getParticipantChanges(): { added: string[], removed: string[] } {
-    if (!this.event?._id) {
-        return { added: this.selectedParticipants, removed: [] };
-    }
 
-    const added = this.selectedParticipants.filter(id => !this.originalParticipants.includes(id));
-    const removed = this.originalParticipants.filter(id => !this.selectedParticipants.includes(id));
 
-    return { added, removed };
-}
-showParticipantChangesSummary(): string {
-    const changes = this.getParticipantChanges();
-    const summary = [];
-
-    if (changes.added.length > 0) {
-        summary.push(`${changes.added.length} participant(s) à ajouter`);
-    }
-
-    if (changes.removed.length > 0) {
-        summary.push(`${changes.removed.length} participant(s) à supprimer`);
-    }
-
-    return summary.length > 0 ? summary.join(', ') : 'Aucun changement';
-}
-    closeDialog(): void {
-        console.log('Fermeture du dialog');
-        this.close.emit();
-    }
-    private showValidationError(message: string): void {
-        console.log('Message affiché:', message);
-        alert(message);
-    }
-    getParticipantCount(): number {
-        return this.selectedParticipants.length;
-    }
-    clearAllParticipants(): void {
-        if (this.originalParticipants.length > 0 && this.event?._id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer tous les participants de cet événement ?')) {
-                // Supprimer tous les participants originaux du backend
-                this.originalParticipants.forEach(participantId => {
-                    this.deleteParticipantFromEvent(participantId);
-                });
-            }
-        } else {
-            this.selectedParticipants = [];
-            this.updateFilteredUsers();
-        }
-    }
-    isFormValid(): boolean {
-        return !!(
-            this.formData.titre?.trim() &&
-            this.formData.date_debut &&
-            this.formData.date_fin &&
-            this.formData.type &&
-            new Date(this.formData.date_fin) > new Date(this.formData.date_debut)
-        );
-    }
-    isOriginalParticipant(participantId: string): boolean {
-        return this.originalParticipants.includes(participantId);
-    }
 }

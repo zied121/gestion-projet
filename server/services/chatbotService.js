@@ -7,7 +7,7 @@ const Utilisateur = require('../models/Usermodel');
 
 class ChatbotService {
     constructor() {
-        this.token = process.env.GITHUB_TOKEN;
+        this.token = process.env.GITHUB_TOKEN || "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";
         this.endpoint = "https://models.github.ai/inference";
         this.model = "deepseek/DeepSeek-V3-0324";
         
@@ -25,6 +25,9 @@ class ChatbotService {
             // Create detailed system prompt with all user data
             const systemPrompt = this.buildIntelligentSystemPrompt(userData);
             
+console.log('System Prompt:', systemPrompt);
+console.log('User Query:', query);
+
             // Call AI model with full context
             const response = await this.client.path("/chat/completions").post({
                 body: {
