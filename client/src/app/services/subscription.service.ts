@@ -1,27 +1,83 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+export interface SubscriptionPlan {
+  type: 'standard' | 'premium' | 'premium_plus';
+  isAnnual: boolean;
+}
+
+export interface Subscription {
+  id?: string;
+  organisationId: string;
+  plan: SubscriptionPlan;
+  price: number;
+  status: SubscriptionStatus;
+  createdAt?: Date;
+  active?: boolean;
+  cancelAtPeriodEnd?: boolean;
+  currentPeriodEnd?: Date;
+}
+
+export type SubscriptionStatus = 'active' | 'cancelled';
+
+export interface SubscriptionWithOrganization extends Subscription {
+  organizationName: string;
+  organizationId: string;
+  userCount: number;
+  totalRevenue: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
-  private baseUrl = `http://localhost:5000/api/subscription`;
+  private baseUrl = `${environment.apiUrl}/api/subscription`;
 
   constructor(private http: HttpClient) {}
 
-  createSubscription(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/create`, data);
-  }
-  updateSubscription(id: string, type: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}/update/${id}`, { type });
+  createSubscription(data: {
+    organisationId: string;
+    planType: string;
+    isAnnual: boolean;
+    userLimit?: number;
+    projectLimit?: number;
+  }): Observable<Subscription> {
+    const price = this.calculatePrice(data.planType, data.isAnnual);
+    return this.http.post<Subscription>(this.baseUrl, {
+      ...data,
+      price,
+      status: 'active'
+    });
   }
 
-  cancelSubscription(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/cancel/${id}`);
+  
+
+  getSubscriptionByOrg(orgId: string): Observable<Subscription> {
+    return this.http.get<Subscription>(`${this.baseUrl}/organisation/${orgId}`);
   }
 
-  getInvoices(customerId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/invoices/${customerId}`);
+  cancelSubscription(id: string): Observable<Subscription> {
+    return this.http.patch<Subscription>(`${this.baseUrl}/${id}`, {
+      status: 'cancelled'
+    });
+  }
+
+  resumeSubscription(id: string): Observable<Subscription> {
+    return this.http.patch<Subscription>(`${this.baseUrl}/${id}/resume`, {});
+  }
+  getAllSubscriptions(): Observable<SubscriptionWithOrganization[]> {
+    return this.http.get<SubscriptionWithOrganization[]>(`${this.baseUrl}/admin`);
+  }
+
+  private calculatePrice(planType: string, isAnnual: boolean): number {
+    const prices = {
+      standard: { monthly: 0, annual: 0 },
+      premium: { monthly: 40, annual: 384 }, // 32 * 12
+      premium_plus: { monthly: 100, annual: 960 } // 80 * 12
+    };
+
+    return prices[planType as keyof typeof prices][isAnnual ? 'annual' : 'monthly'];
   }
 }

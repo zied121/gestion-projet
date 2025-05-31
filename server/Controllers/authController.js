@@ -1,10 +1,9 @@
-const { User } = require('../models/Usermodel');
+const User = require('../models/Usermodel');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const { ForgetPasswordEmail,SendOtpMail } = require('../config/nodemailer');
-const { OAuth2Client } = require('google-auth-library');
 const login = async (req, res) => {
     const { email, motDePasse } = req.body;
 
@@ -106,66 +105,12 @@ const signup = async (req, res) => {
 
 }
 
-const client = new OAuth2Client('398876415878-tcp8anmiqvpd2datpfh7t47d4rgg4ipe.apps.googleusercontent.com');
-
-const googleLogin = async (req, res) => {
-    const { token } = req.body;
-    try {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: '398876415878-tcp8anmiqvpd2datpfh7t47d4rgg4ipe.apps.googleusercontent.com',
-        });
-        const payload = ticket.getPayload();
-        const { email, name, sub } = payload;
-        let user = await User.findOne({ email });
-        const jwtToken = jwt.sign({ id: user._id }, 'zied', { expiresIn: '10h' });
-        res.status(200).json({ token: jwtToken, role: user.role });
-    } catch (err) {
-        res.status(500).json({ msg: 'Google login failed' });
-    }
-};
-
-const googleRegister = async (req, res) => {
-    const { token } = req.body;
-console.log("toekn",token);
-    try {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: '398876415878-tcp8anmiqvpd2datpfh7t47d4rgg4ipe.apps.googleusercontent.com',
-        });
-
-        const payload = ticket.getPayload();
-        const { email, name, sub } = payload;
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ msg: 'User already exists' });
-        }
-
-        const newUser = new User({
-            email,
-            name,
-            googleId: sub,
-            Status: 'active',
-        });
-
-        await newUser.save();
-
-        const jwtToken = jwt.sign({ id: newUser._id }, 'zied', { expiresIn: '10h' });
-
-        res.status(200).json({ token: jwtToken, role: newUser.role, msg: 'Registration successful' });
-    } catch (err) {
-        res.status(500).json({ msg: 'Google registration failed' });
-    }
-};
 
 
 module.exports = {
     login,
     forgetPassword,
     signup,
-    verifyOtp,
-    googleLogin,
-    googleRegister
+    verifyOtp
 
 }

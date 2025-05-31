@@ -13,15 +13,16 @@ import { SubscriptionComponent } from './pages/subscription/subscription.compone
 
 import { SuccessPaiementComponent } from './components/success-paiement/success-paiement.component';
 import { FailPaiementComponent } from './components/fail-paiement/fail-paiement.component';
-import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
-import { ownerGuard } from './guards/owner.guard';
-{ownerGuard}
+import { SubscriptionManagementComponent } from './pages/admin/subscription-management/subscription-management.component';
+import { FakeStripeComponent } from './pages/subscription/fake-stripe.component';
+
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
   },
+  // Auth routes without navbar
   {
     path: 'login',
     component: LoginComponent
@@ -36,28 +37,35 @@ export const routes: Routes = [
   },
   {
     path: 'success',
-    component: SuccessPaiementComponent,
+    component: SuccessPaiementComponent
   },
   {
     path: 'cancel',
-    component: FailPaiementComponent,
+    component: FailPaiementComponent
   },
   {
-    path: 'workspaceform',
-    component: WorkspaceformComponent,
-    canActivate: [authGuard]
+    path: 'subscription',
+    component: SubscriptionComponent
+  },
+  {
+    path: 'fake-stripe',
+    component: FakeStripeComponent
   },
 
   // Protected routes with navbar via MainLayoutComponent
   {
     path: '',
     component: MainLayoutComponent,
-
+    canActivate: [authGuard],
     children: [
+      {
+        path: 'workspaceform',
+        component: WorkspaceformComponent
+      },
       {
         path: 'workspace/:id',
         component: DashboardComponent,
-        canActivate: [adminGuard]
+        canActivate: [authGuard,adminGuard]
       },
       {
         path: 'profile/:id',
@@ -69,28 +77,9 @@ export const routes: Routes = [
         component: OrganisationProfileComponent
       },
       {
-        path: 'subscription',
-        component: SubscriptionComponent
-      },
-      {
-        path: 'backoffice',
-        component: AdminApplicationDashboardComponent,
-        canActivate: [ownerGuard]
-      },
-      {
-        path: 'projects',
-        loadChildren: () =>
-          import('./components/project-task-management/project/project.module').then(
-            (m) => m.ProjectModule
-          ),
-
-      },
-      {
-        path: 'tasks',
-        loadChildren: () =>
-          import('./components/project-task-management/task/task.module').then(
-            (m) => m.TaskModule
-          ),
+        path: 'admin/subscriptions',
+        component: SubscriptionManagementComponent,
+        canActivate: [adminGuard]
       }
     ]
   }

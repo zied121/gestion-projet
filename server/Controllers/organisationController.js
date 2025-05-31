@@ -1,15 +1,12 @@
 const mongoose = require('mongoose');
-const {Organisation,OrganisationYupSchema} = require('../models/OrganisationModel'); // Assuming you have a model defined
-const { User } = require('../models/Usermodel');
+const Organisation = require('../models/OrganisationModel'); // Assuming you have a model defined
+const User = require('../models/Usermodel');
 const cloudinary = require('../config/cloudinary'); // adjust path if needed
 const streamifier = require('streamifier');
 
 const addOrganisation = async (req, res) => {
-    console.log("eaz",req.user._id);
     try {
         const foundUser = await User.findById(req.user._id); // Use req.user._id directly
-
-         await OrganisationYupSchema.validate(req.body);
 
         if (!foundUser) {
             return res.status(404).json({ message: "User not found" });
@@ -26,7 +23,7 @@ const addOrganisation = async (req, res) => {
         foundUser.role = "admin";
         await foundUser.save();
 
-        res.status(201).json({message: "Organisation created successfully", organisation: savedOrganisation });
+        res.status(201).json(savedOrganisation);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -86,27 +83,8 @@ const deleteOrganisation = async (req, res) => {
 }
 const getAllOrganisations = async (req, res) => {
     try {
-        const organisations = await Organisation.find().lean();
-        const organisationIds = organisations.map(org => org._id);
-
-        // Fetch users grouped by organisation
-        const users = await User.find({ Organisation_id: { $in: organisationIds } }).lean();
-
-        // Group users by organisation id
-        const usersByOrg = {};
-        users.forEach(user => {
-            const orgId = user.Organisation_id?.toString();
-            if (!usersByOrg[orgId]) usersByOrg[orgId] = [];
-            usersByOrg[orgId].push(user);
-        });
-
-        // Attach users to each organisation
-        const organisationsWithUsers = organisations.map(org => ({
-            ...org,
-            users: usersByOrg[org._id.toString()] || []
-        }));
-
-        res.status(200).json(organisationsWithUsers);
+        const organisations = await Organisation.find();
+        res.status(200).json(organisations);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -185,68 +163,26 @@ const checkUserOrganisation = async (req, res) => {
     }
 }
 const getAllUsersOfOrganization = async (req, res) => {
-    const { organisationId } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-
+   
+  
     try {
-        const [users, total] = await Promise.all([
-            User.find({ Organisation_id: organisationId })
-                .skip(skip)
-                .limit(limit),
-            User.countDocuments({ Organisation_id: organisationId })
-        ]);
-
+        const users = await User.find({ Organisation_id: req.params.organisationId});
+        console.log(users);
         if (!users || users.length === 0) {
             return res.status(404).json({
                 msg: 'No users found for this organization'
             });
+        } else {
+            res.status(200).json({
+                users
+            });
         }
-
-        res.status(200).json({
-            users,
-            currentPage: page,
-            totalPages: Math.ceil(total / limit),
-            totalUsers: total
-        });
     } catch (err) {
-        console.error(err);
         res.status(400).json({
-            msg: "Operation failed"
+            msg: "operation failed"
         });
     }
-};
-
-
-const analytics = async (req, res) => {
-    try {
-        // Count total organisations
-        const totalOrganisations = await Organisation.countDocuments();
-
-        // Count total users
-        const totalUsers = await User.countDocuments();
-
-        // Count organisations by category
-        const organisationsByCategory = await Organisation.aggregate([
-            {
-                $group: {
-                    _id: "$type",
-                    count: { $sum: 1 }
-                }
-            }
-        ]);
-
-        res.status(200).json({
-            totalOrganisations,
-            totalUsers,
-            organisationsByCategory
-        });
-    } catch (err) {
-        res.status(500).json({ message: 'Analytics fetch failed', error: err.message });
-    }
-};
-
+}
 module.exports = {
     addOrganisation,
     editOrganisation,
@@ -255,6 +191,5 @@ module.exports = {
     getOrganisationById,
     joinOrganisation,
     checkUserOrganisation,
-    getAllUsersOfOrganization,
-    analytics
+    getAllUsersOfOrganization
 };

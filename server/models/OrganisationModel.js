@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
-const yup = require('yup');
 
 const OrganisationSchema = new Schema({
     nom: {
@@ -51,24 +50,4 @@ const OrganisationSchema = new Schema({
     }
 });
 
- const OrganisationYupSchema = yup.object().shape({
-    nom: yup.string().required(),
-    matricule_fiscal: yup.string().required(),
-    type: yup.string(),
-    image: yup.string(),
-    description: yup.string(),
-    location: yup.string(),
-    admin: yup.string(),
-    membres: yup.array().of(yup.string()),
-    projets: yup.array().of(yup.string()),
-    subscription: yup.string()
- });
-
-
- 
-const  Organisation =  mongoose.model('Organisation', OrganisationSchema);
-
-module.exports = {
-    Organisation,
-    OrganisationYupSchema
-};
+module.exports = mongoose.model('Organisation', OrganisationSchema);

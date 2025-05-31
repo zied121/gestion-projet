@@ -17,6 +17,7 @@ import {
   HlmDialogHeaderComponent,
   HlmDialogTitleDirective,
 } from '@spartan-ng/ui-dialog-helm';
+
 import {
   HlmInputDirective,
 } from '@spartan-ng/ui-input-helm';
@@ -35,13 +36,14 @@ import {
   HlmAlertDialogTitleDirective,
   HlmAlertDialogActionButtonDirective,
 } from '@spartan-ng/ui-alertdialog-helm';
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+
+    // Dialog and UI elements
     BrnDialogTriggerDirective,
     BrnDialogContentDirective,
     HlmDialogComponent,
@@ -53,6 +55,8 @@ import {
     HlmLabelDirective,
     HlmInputDirective,
     HlmButtonDirective,
+
+    // Alert Dialogs
     BrnAlertDialogTriggerDirective,
     BrnAlertDialogContentDirective,
     HlmAlertDialogComponent,
@@ -69,12 +73,8 @@ import {
 export class DashboardComponent implements OnInit {
   listUsers: any[] = [];
   workspaceId = '';
-  selectedUserIndex: number | null = null;
-  currentPage = 1;
-  totalPages = 1;
-  totalUsers = 0;
-  limit = 2;
 
+  selectedUserIndex: number | null = null;
   editUserData = {
     nom: '',
     email: '',
@@ -104,20 +104,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.getUsersByOrganisation();
-    }
-  }
-
   getUsersByOrganisation(): void {
-    this.organisationService.getAllUsersByOrganisation(this.workspaceId, this.currentPage, this.limit).subscribe({
-      next: (res) => {
-        this.listUsers = res.users;
-        this.totalPages = res.totalPages;
-        this.totalUsers = res.totalUsers;
-      },
+    this.organisationService.getAllUsersByOrganisation(this.workspaceId).subscribe({
+      next: (res) => this.listUsers = res.users,
       error: (err) => console.error('Error fetching users:', err)
     });
   }
@@ -133,6 +122,7 @@ export class DashboardComponent implements OnInit {
       const userId = this.listUsers[this.selectedUserIndex]._id;
       this.userService.updateUser(userId, this.editUserData).subscribe({
         next: () => {
+          // ✅ After successful update, refresh the user list
           this.getUsersByOrganisation();
           this.selectedUserIndex = null;
           ctx.close();
@@ -145,14 +135,13 @@ export class DashboardComponent implements OnInit {
   addUser(ctx: any): void {
     this.userService.addUser(this.newUserData, this.workspaceId).subscribe({
       next: () => {
-        this.getUsersByOrganisation();
-        this.newUserData = { nom: '', email: '', role: '', motDePasse: '' };
+        this.getUsersByOrganisation(); // Refresh the list
+        this.newUserData = { nom: '', email: '', role: '', motDePasse: '' }; // Reset form
         ctx.close();
       },
       error: (err) => console.error('Error adding user:', err)
     });
   }
-
   deleteUser(index: number): void {
     const userId = this.listUsers[index]._id;
     this.userService.deleteUser(userId, this.workspaceId).subscribe({
@@ -160,6 +149,8 @@ export class DashboardComponent implements OnInit {
       error: (err) => console.error('Error deleting user:', err)
     });
   }
+
+
 
   generatePassword(length: number = 12): void {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
