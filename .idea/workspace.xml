@@ -4,22 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="merge zied+malek">
+    <list default="true" id="8b477372-06f0-43e8-b7bb-683cb6d97165" name="Changes" comment="first Prod merge">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/models/room.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/models/room.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/components/room/room.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/googleservice.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/googleservice.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/message.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/room.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/components/chat/services/socket.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/components/chat/services/socket.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client/src/app/services/task.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/app/services/task.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Controllers/projectController.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Controllers/projectController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/GoogleAuthRoute.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/GoogleAuthRoute.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/RoomRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/Routes/TaskRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/models/Usermodel.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/models/Usermodel.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -346,7 +332,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747492185118</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="first Prod merge">
+      <option name="closed" value="true" />
+      <created>1748689986807</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1748689986807</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,6 +382,7 @@
     <MESSAGE value="project admin module" />
     <MESSAGE value="a" />
     <MESSAGE value="merge zied+malek" />
-    <option name="LAST_COMMIT_MESSAGE" value="merge zied+malek" />
+    <MESSAGE value="first Prod merge" />
+    <option name="LAST_COMMIT_MESSAGE" value="first Prod merge" />
   </component>
 </project>
