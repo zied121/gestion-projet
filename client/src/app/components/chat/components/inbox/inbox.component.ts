@@ -30,7 +30,6 @@ export class InboxComponent implements OnInit, OnDestroy {
   organisationId: string = '6810e0c5e88e782d899ad96b';
   isSearching: boolean = false;
   
-  // NEW: Track unread counts
   unreadCounts: { [roomId: string]: number } = {};
 
   searchControl = new FormControl('');
@@ -50,11 +49,14 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.getUserRooms();
     this.loadUsers();
     this.setupSearch();
-    this.loadUnreadCounts(); // NEW
-    this.setupSocketListeners(); // NEW
+    this.loadUnreadCounts();
+    this.setupSocketListeners();
   }
 
   ngOnDestroy(): void {
+    this.rooms.forEach(room => {
+      this.socketService.leaveRoom(room._id);
+    });
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -62,7 +64,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   private setupSearch(): void {
     this.searchControl.valueChanges.pipe(
       tap(() => this.isSearching = true),
-      filter((query): query is string => query !== null), // Filter out null values
+      filter((query): query is string => query !== null),
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((query: string) => {
@@ -83,7 +85,7 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.rooms = rooms;
         this.updateRoomArrays();
         this.loadLastMessages();
-        this.loadUnreadCountsForRooms(rooms); // NEW: Load unread counts for filtered rooms
+        this.loadUnreadCountsForRooms(rooms);
       },
       error: (err: any) => {
         console.error('Search error:', err);
@@ -97,11 +99,9 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.groupRooms = this.rooms.filter((room: any) => !room.isPrivate);
   }
 
-  // NEW: Load unread counts for all rooms
   private loadUnreadCounts(): void {
     this.messageService.getAllUnreadCounts().subscribe({
       next: (counts) => {
-        // counts should be an object like { roomId1: 5, roomId2: 2, ... }
         this.unreadCounts = counts || {};
       },
       error: (err) => {
@@ -111,7 +111,6 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  // NEW: Load unread counts for specific rooms (used after search)
   private loadUnreadCountsForRooms(rooms: any[]): void {
     rooms.forEach(room => {
       this.messageService.getUnreadCount(room._id).subscribe({
@@ -126,29 +125,28 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  // NEW: Setup socket listeners for real-time updates
   private setupSocketListeners(): void {
-    // Listen for new messages to update unread counts
     this.socketService.onNewMessage().pipe(
       takeUntil(this.destroy$)
     ).subscribe((message: any) => {
-      if (message.roomId && message.roomId !== this.selectedRoomId) {
-        // Increment unread count for the room if it's not currently selected
-        this.unreadCounts[message.roomId] = (this.unreadCounts[message.roomId] || 0) + 1;
-        
-        // Update last message for the room
-        const room = this.rooms.find(r => r._id === message.roomId);
-        if (room) {
-          room.lastMessage = {
-            content: message.content,
-            timestamp: message.createdAt,
-            sender: message.sender
-          };
+      const roomIndex = this.rooms.findIndex(r => r._id === message.roomId);
+      if (roomIndex !== -1) {
+        this.rooms[roomIndex].lastMessage = {
+          content: message.content,
+          timestamp: message.createdAt,
+          sender: message.sender
+        };
+
+        if (message.roomId !== this.selectedRoomId) {
+          this.unreadCounts[message.roomId] = (this.unreadCounts[message.roomId] || 0) + 1;
         }
+
+        const updatedRoom = this.rooms.splice(roomIndex, 1)[0];
+        this.rooms.unshift(updatedRoom);
+        this.updateRoomArrays();
       }
     });
 
-    // Listen for messages marked as seen
     this.socketService.onMessagesSeen().pipe(
       takeUntil(this.destroy$)
     ).subscribe((data: any) => {
@@ -156,13 +154,32 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.unreadCounts[data.roomId] = 0;
       }
     });
+  }
 
-    // Listen for user joining/leaving rooms (optional)
-    this.socketService.onUserStatusChange().pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((data: any) => {
-      // Handle user status changes if needed
-      console.log('User status changed:', data);
+  loadLastMessages(roomsArray: any[] = this.rooms): void {
+    roomsArray.forEach(room => {
+      this.messageService.getLastMessageByRoom(room._id).subscribe({
+        next: (lastMessage) => {
+          room.lastMessage = lastMessage && lastMessage.content !== undefined ? {
+            content: lastMessage.content,
+            timestamp: lastMessage.createdAt,
+            sender: lastMessage.sender
+          } : {
+            content: 'No messages yet',
+            timestamp: null,
+            sender: null
+          };
+        },
+        error: (err) => {
+          console.error(`Error loading last message for room ${room._id}:`, err);
+          room.lastMessage = {
+            content: err.status === 404 ? 'No messages yet' : 'Failed to load messages',
+            timestamp: null,
+            sender: null
+          };
+        }
+      });
+      this.socketService.joinRoom(room._id);
     });
   }
 
@@ -211,6 +228,8 @@ export class InboxComponent implements OnInit, OnDestroy {
   }
 
   navigateToRoom(roomId: string): void {
+    this.selectedRoomId = roomId;
+    this.markRoomMessagesAsSeen(roomId);
     this.router.navigate(['/chat', roomId]);
   }
 
@@ -220,7 +239,7 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.rooms = res;
         this.updateRoomArrays();
         this.loadLastMessages();
-        this.loadUnreadCounts(); // NEW: Load unread counts when rooms are loaded
+        this.loadUnreadCounts();
       },
       error: (err) => {
         console.error('Error fetching rooms', err);
@@ -228,55 +247,11 @@ export class InboxComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadLastMessages(roomsArray: any[] = this.rooms): void {
-    roomsArray.forEach(room => {
-      this.messageService.getLastMessageByRoom(room._id).subscribe({
-        next: (lastMessage) => {
-          if (lastMessage && lastMessage.content !== undefined) {
-            room.lastMessage = {
-              content: lastMessage.content,
-              timestamp: lastMessage.createdAt,
-              sender: lastMessage.sender
-            };
-          } else {
-            room.lastMessage = {
-              content: 'No messages yet',
-              timestamp: null,
-              sender: null
-            };
-          }
-        },
-        error: (err) => {
-          console.error(`Error loading last message for room ${room._id}:`, err);
-          room.lastMessage = {
-            content: err.status === 404 ? 'No messages yet' : 'Failed to load messages',
-            timestamp: null,
-            sender: null
-          };
-        }
-      });
-    });
-  }
-
-  selectRoom(roomId: string): void {
-    this.selectedRoomId = roomId;
-    
-    // NEW: Mark messages as seen when room is selected
-    this.markRoomMessagesAsSeen(roomId);
-    
-    this.router.navigate(['/chat', roomId]);
-  }
-
-  // NEW: Mark messages as seen for a specific room
   private markRoomMessagesAsSeen(roomId: string): void {
-    // Only mark as seen if there are unread messages
     if (this.hasUnreadMessages(roomId)) {
       this.messageService.markMessagesAsSeen(roomId).subscribe({
         next: () => {
-          // Reset unread count for this room
           this.unreadCounts[roomId] = 0;
-          
-          // Emit socket event to notify other users
           this.socketService.emitMessagesSeen(roomId);
         },
         error: (err) => {
@@ -286,9 +261,8 @@ export class InboxComponent implements OnInit, OnDestroy {
     }
   }
 
-  // NEW: Mark messages as seen when user focuses on input (called from chat component)
-  markMessagesAsSeenOnFocus(roomId: string): void {
-    this.markRoomMessagesAsSeen(roomId);
+  selectRoom(roomId: string): void {
+    this.navigateToRoom(roomId);
   }
 
   getRoomName(roomId: string): string {
@@ -309,46 +283,19 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.searchControl.setValue(query);
   }
 
-  // NEW: Get unread count for a room
   getUnreadCount(roomId: string): number {
     return this.unreadCounts[roomId] || 0;
   }
 
-  // NEW: Check if room has unread messages
   hasUnreadMessages(roomId: string): boolean {
     return this.getUnreadCount(roomId) > 0;
   }
 
-  // NEW: Get total unread count across all rooms
   getTotalUnreadCount(): number {
     return Object.values(this.unreadCounts).reduce((total, count) => total + count, 0);
   }
 
-  // NEW: Format unread count for display (e.g., 99+ for counts over 99)
   formatUnreadCount(count: number): string {
-    if (count > 99) {
-      return '99+';
-    }
-    return count.toString();
-  }
-
-  // NEW: Handle room updates from socket
-  handleRoomUpdate(roomData: any): void {
-    const existingRoomIndex = this.rooms.findIndex(room => room._id === roomData._id);
-    if (existingRoomIndex !== -1) {
-      // Update existing room
-      this.rooms[existingRoomIndex] = { ...this.rooms[existingRoomIndex], ...roomData };
-    } else {
-      // Add new room
-      this.rooms.push(roomData);
-    }
-    this.updateRoomArrays();
-  }
-
-  // NEW: Clear all notifications for debugging/admin purposes
-  clearAllUnreadCounts(): void {
-    Object.keys(this.unreadCounts).forEach(roomId => {
-      this.unreadCounts[roomId] = 0;
-    });
+    return count > 99 ? '99+' : count.toString();
   }
 }

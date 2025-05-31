@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef , ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from '../../services/message.service';
 import { Message } from '../../services/message.service';
@@ -26,6 +26,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   currentUserId: string = '';
   rooms: any[] = [];
+  showPinnedModal: boolean = false;
   private roomSubscription!: Subscription;
 
   editingMessageId: string | null = null;
@@ -37,8 +38,8 @@ export class RoomComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private socketService: SocketService,
     private route: ActivatedRoute,
-    private roomService: RoomService
-
+    private roomService: RoomService,
+  private cdr: ChangeDetectorRef 
   ) {
     /*
     this.checkGoogleAuth();
@@ -145,6 +146,21 @@ async startVideoCall() {
           this.messages = this.messages.filter(m => m._id !== deletedMessageId); // Supprimer le message de la liste
         });
     });
+ this.socketService.listen('messagePinned').subscribe((updatedMessage: Message) => {
+    const index = this.messages.findIndex(m => m._id === updatedMessage._id);
+    if (index !== -1) {
+      // Créer une nouvelle copie du message avec les nouvelles propriétés
+      this.messages[index] = { ...this.messages[index], ...updatedMessage };
+      // Forcer la détection de changement en créant un nouveau tableau
+      this.messages = [...this.messages];
+      
+      // Forcer le rafraîchissement de la vue
+      setTimeout(() => {
+        // Déclencher la détection de changement
+      }, 0);
+    }
+  });
+
   }
 
   ngOnDestroy(): void {
@@ -272,9 +288,42 @@ pinMessage(messageId: string): void {
       this.messages[index] = updatedMsg;
       this.messages = [...this.messages];
     }
-    this.socketService.emit('updateMessage', updatedMsg);  // si besoin
+    this.socketService.emit('updateMessage', updatedMsg);
   });
 }
+// Dans votre component TypeScript
+
+// Dans votre component TypeScript
+/*
+pinMessage(messageId: string): void {
+  this.messageService.pinMessage(messageId).subscribe({
+    next: (updatedMsg) => {
+      // Mettre à jour le message localement
+      const index = this.messages.findIndex(m => m._id === updatedMsg._id);
+      if (index !== -1) {
+        // Créer une nouvelle copie du message avec les nouvelles propriétés
+        this.messages[index] = { ...this.messages[index], ...updatedMsg };
+        // Forcer la détection de changement en créant un nouveau tableau
+        this.messages = [...this.messages];
+        
+        // Forcer la détection de changement d'Angular
+        setTimeout(() => {
+          // Trigger change detection
+        }, 0);
+      }
+      
+      // Émettre la mise à jour via WebSocket pour les autres utilisateurs
+      this.socketService.emit('messagePinned', updatedMsg);
+      
+      // Optionnel: afficher une notification
+      const action = updatedMsg.isPinned ? 'épinglé' : 'désépinglé';
+      console.log(`Message ${action} avec succès`);
+    },
+    error: (err) => {
+      console.error("Erreur lors du pin/unpin du message:", err);
+    }
+  });
+}*/
 
 ngOnChanges() {
   if (this.roomId) {
@@ -282,7 +331,7 @@ ngOnChanges() {
   }}
 
 loadMessages(roomId: string) {
-  this.messages = []; // ✅ Clear first
+  this.messages = [];
   this.messageService.getMessagesByRoom(roomId).subscribe({
     next: (res) => {
       this.messages = res;
@@ -305,6 +354,91 @@ loadMessages(roomId: string) {
   });
 }
 */
+showPinnedMessagesModal(): void {
+  this.showPinnedModal = true;
+}
+
+// Method to close the pinned messages modal
+closePinnedMessagesModal(): void {
+  this.showPinnedModal = false;
+}
+
+// Method to get pinned messages
+getPinnedMessages(): any[] {
+  return this.messages.filter(msg => msg.isPinned);
+}
+
+// Method to start editing from modal and close modal
+startEditingFromModal(messageId: string, content: string): void {
+  this.startEditing(messageId, content);
+  this.closePinnedMessagesModal();
+}
+
+// Method to jump to a specific message and close modal
+/*jumpToMessage(messageId: string): void {
+  this.closePinnedMessagesModal();
+  // Scroll to the message in the chat
+  setTimeout(() => {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Optional: highlight the message briefly
+      messageElement.classList.add('highlight');
+      setTimeout(() => {
+        messageElement.classList.remove('highlight');
+      }, 2000);
+    }
+  }, 100);
+}*/
+
+// Dans votre component TypeScript
+
+jumpToMessage(messageId: string): void {
+  this.closePinnedMessagesModal();
+  
+  // Attendre que le modal soit fermé et le DOM mis à jour
+  setTimeout(() => {
+    // Essayer plusieurs sélecteurs possibles
+    let messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    
+    // Si le premier sélecteur ne fonctionne pas, essayer avec l'ID
+    if (!messageElement) {
+      messageElement = document.getElementById(`message-${messageId}`);
+    }
+    
+    // Si toujours pas trouvé, chercher dans tous les éléments avec une classe message
+    if (!messageElement) {
+      const allMessages = document.querySelectorAll('.message, .message-item, .chat-message');
+      messageElement = Array.from(allMessages).find(el => 
+        el.getAttribute('data-id') === messageId || 
+        el.id === messageId ||
+        el.classList.contains(`msg-${messageId}`)
+      ) || null;
+    }
+    
+    if (messageElement) {
+      // Scroll vers le message
+      messageElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center',
+        inline: 'nearest'
+      });
+      
+      // Ajouter un effet de surbrillance
+      messageElement.classList.add('highlight-message');
+      
+      // Retirer l'effet après 3 secondes
+      setTimeout(() => {
+        messageElement?.classList.remove('highlight-message');
+      }, 3000);
+      
+      console.log('Message trouvé et scroll effectué:', messageId);
+    } else {
+      console.warn('Message non trouvé dans le DOM:', messageId);
+      console.log('Messages disponibles:', document.querySelectorAll('[data-message-id], .message, .message-item'));
+    }
+  }, 200); // Augmenter le délai pour s'assurer que le modal est fermé
+}
 getUserColor(username: string): string {
   if (!username) return '#cccccc'; // Default gray for unknown users
   
@@ -319,8 +453,26 @@ getUserColor(username: string): string {
   }, 0);
   
   return colors[Math.abs(hash) % colors.length];
-}/*
-signInWithGoogle() {
-  this.roomService.initiateGoogleAuth();
-}*/
+}
+
+ /*markAllMessagesAsSeen(): void {
+    if (!this.roomId) return;
+    
+    this.messageService.markMessagesAsSeen(this.roomId).subscribe({
+      next: () => {
+        // Update local state
+        this.messages = this.messages.map(msg => ({
+          ...msg,
+          seenBy: msg.sender !== this.currentUserId 
+            ? [...(msg.seenBy || []), { userId: this.currentUserId, seenAt: new Date() }]
+            : msg.seenBy
+        }));
+        
+        // Notify others via socket
+        this.socketService.emitMessagesSeen(this.roomId);
+      },
+      error: (err) => console.error('Error marking messages as seen:', err)
+    });
+  } */
+
 }

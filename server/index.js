@@ -51,6 +51,9 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (message) => io.to(message.room).emit('receiveMessage', message));
     socket.on('leaveRoom', (roomId) => socket.leave(roomId));
     socket.on('disconnect', () => console.log('User disconnected'));
+    socket.on('messagePinned', (updatedMessage) => {
+  socket.to(updatedMessage.room).emit('messagePinned', updatedMessage);
+});
 });
 
 // Routes setup

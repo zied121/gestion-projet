@@ -252,7 +252,7 @@ const getMessagesByRoom = async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   };
-  
+  /*
   const pinMessage = async (req, res) => {
     try {
       const message = await Message.findById(req.params.id);
@@ -268,8 +268,36 @@ const getMessagesByRoom = async (req, res) => {
       console.error("Erreur lors du pin/unpin :", error);
       res.status(500).json({ message: "Erreur serveur" });
     }
-  };
+  };*/
+const pinMessage = async (req, res) => {
+  try {
+    const messageId = req.params.id;
+    const message = await Message.findById(messageId);
 
+    if (!message) {
+      return res.status(404).json({ message: "Message not found" });
+    }
+
+    // Toggle the pin status
+    message.isPinned = !message.isPinned;
+    await message.save();
+
+    // Fetch the updated message (like in toggleLikeMessage)
+    const updated = await Message.findById(messageId);
+
+    // Emit the update via socket (like in toggleLikeMessage)
+    const io = req.app.get('io');
+    if (io) {
+      io.to(message.room.toString()).emit('messageUpdated', updated);
+    }
+
+    // Return the full updated message object (like in toggleLikeMessage)
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error during pin/unpin:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
   const toggleLikeMessage = async (req, res) => {
     try {
       const messageId = req.params.id;

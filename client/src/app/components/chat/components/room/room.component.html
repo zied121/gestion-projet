@@ -8,15 +8,16 @@
 
     <div class="header-right">
       <button class="header-icon" title="Video Call" (click)="startVideoCall()">
-        <i class="fi fi-rr-video-camera-alt"></i></button>
+        <i class="fi fi-rr-video-camera-alt"></i>
+      </button>
       <div *ngIf="!isGoogleAuthenticated" class="google-auth-notice">
-        <small>Sign in with Google to start calls</small>
         <button (click)="signInWithGoogle()" class="google-signin-btn">
-          Sign In with Google
         </button>
       </div>
-      <button class="header-icon" title="Shared Files">
-        <i class="fi fi-rr-clip"></i></button>
+      <!-- Updated clip icon to show pinned messages modal -->
+      <button class="header-icon" title="Pinned Messages" (click)="showPinnedMessagesModal()">
+        <i class="fi fi-rr-clip"></i>
+      </button>
     </div>
   </div>
   
@@ -24,7 +25,9 @@
     <div *ngFor="let msg of messages" [ngClass]="{
       'message': true,
       'other-message': msg.sender !== currentUserId,
-      'my-message': msg.sender === currentUserId
+      'my-message': msg.sender === currentUserId,
+        'pinned-message': msg.isPinned
+
     }">
 
       <!-- Mode affichage -->
@@ -36,7 +39,7 @@
           {{ (msg.SenderName || 'U').charAt(0).toUpperCase() }}
         </div>
 
-        <div class="message-content">
+        <div class="message-content"  [attr.data-message-id]="msg._id">
           <div class="bubble">
             <strong>{{ msg.SenderName || 'Utilisateur inconnu' }}</strong> : {{ msg.content }}
             <div *ngIf="msg.file" class="file-attachment">
@@ -49,7 +52,7 @@
           <!-- Actions pour MES messages (tous les boutons) -->
           <div *ngIf="msg.sender === currentUserId" class="message-actions">
             <button class="action-btn edit-btn" (click)="startEditing(msg._id, msg.content)">
-              Modifier
+              📝
             </button>
             <button class="action-btn delete-btn" (click)="deleteMessage(msg._id)">
               🗑
@@ -58,6 +61,13 @@
               ❤️{{ msg.likes?.length || 0 }}
               <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
             </button>
+         <!-- Updated pin button with explicit boolean conversion and change detection -->
+<button (click)="pinMessage(msg._id)" 
+        class="action-btn pin-btn"
+        [class.pinned]="!!msg.isPinned"
+        [attr.data-pinned]="msg.isPinned">
+  {{ msg.isPinned === true ? '🚫' : '📌' }}
+</button>
           </div>
 
           <!-- Actions pour les messages des AUTRES (seulement like) -->
@@ -66,6 +76,11 @@
               ❤️{{ msg.likes?.length || 0 }}
               <span *ngIf="msg.likes?.includes(currentUserId)"> (Vous)</span>
             </button>
+             <button (click)="pinMessage(msg._id)" 
+              class="action-btn pin-btn"
+              [class.pinned]="msg.isPinned">
+        {{ msg.isPinned ? '🚫' : '📌' }}
+      </button>
           </div>
         </div>
       </div>
@@ -97,4 +112,59 @@
     <input type="file" (change)="onFileSelected($event)" class="file-input" #fileInput />
     <button type="submit" class="send-btn">Envoyer</button>
   </form>
+</div>
+
+<!-- Pinned Messages Modal (without +Pin option) -->
+<div *ngIf="showPinnedModal" class="modal-overlay" (click)="closePinnedMessagesModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>📌 Messages Épinglés</h2>
+      <button class="close-btn" (click)="closePinnedMessagesModal()">×</button>
+    </div>
+    
+    <div class="modal-body">
+      <div *ngIf="getPinnedMessages().length === 0" class="no-pinned-messages">
+        <p>Aucun message épinglé dans cette conversation.</p>
+      </div>
+      
+      <div *ngFor="let msg of getPinnedMessages()" class="pinned-message-item">
+        <div class="pinned-message-header">
+          <div class="avatar small-avatar" [style.background-color]="getUserColor(msg.SenderName || 'Unknown')">
+            {{ (msg.SenderName || 'U').charAt(0).toUpperCase() }}
+          </div>
+          <div class="message-info">
+            <span class="sender-name">{{ msg.SenderName || 'Utilisateur inconnu' }}</span>
+            <span class="message-date">{{ msg.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+          </div>
+          <button class="unpin-btn" (click)="pinMessage(msg._id)" title="Désépingler">
+            📌
+          </button>
+        </div>
+        
+        <div class="pinned-message-content">
+          {{ msg.content }}
+          <div *ngIf="msg.file" class="file-attachment">
+            <a [href]="'http://localhost:5000/uploads/' + msg.file" target="_blank" class="file-link">
+              📎 Voir le fichier
+            </a>
+          </div>
+        </div>
+        
+        <div class="pinned-message-actions">
+          <button class="action-btn like-btn small" (click)="toggleLike(msg._id)">
+            ❤️ {{ msg.likes?.length || 0 }}
+          </button>
+          <button *ngIf="msg.sender === currentUserId" 
+                  class="action-btn edit-btn small" 
+                  (click)="startEditingFromModal(msg._id, msg.content)">
+            ✏️ Modifier
+          </button>
+          <button class="action-btn jump-btn small" 
+                  (click)="jumpToMessage(msg._id)">
+            🔗 Aller au message
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

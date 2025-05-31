@@ -40,8 +40,8 @@ router.get('/login', (req, res) => {
   res.redirect(url);
 });
 
-// UPDATE YOUR EXISTING CALLBACK to redirect to Angular
-router.get('/callback', async (req, res) => {
+// UPDATE YOUR EXISTING CALLBACK to redirect to Angular/*
+/*router.get('/callback', async (req, res) => {
   try {
     const { code } = req.query;
     
@@ -89,8 +89,16 @@ router.get('/callback', async (req, res) => {
     
     res.redirect(errorRedirectUrl);
   }
-});
+});*/
 // OPTIONAL: Add revoke auth endpoint
+
+router.get('/callback', async (req, res) => {
+  const { code } = req.query;
+  const { tokens } = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+  res.send('Google authentication successful. You can now create meetings!');
+});
+
 router.post('/revoke-auth', async (req, res) => {
   try {
     if (oauth2Client.credentials) {
