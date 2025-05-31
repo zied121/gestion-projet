@@ -19,6 +19,9 @@ import { ChatComponent } from './components/chat/components/chat/chat.component'
 import { PlaceholderComponent } from './components/chat/components/placeholder/placeholder.component';
 import {AdminApplicationDashboardComponent} from './pages/admin-application-dashboard/admin-application-dashboard.component';
 import { ownerGuard } from './guards/owner.guard';
+
+import { AuthRedirectGuard } from './guards/auth-redirect.guard';
+
 import {BlogModule} from './components/blog/blog.module';
 import { memberGuard } from './guards/member.guard';
 import {FrontofficelayoutComponent} from './layouts/Front-office-layout/Front-office-layout.component';
@@ -34,11 +37,13 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+       canActivate: [AuthRedirectGuard]
   },
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
+       canActivate: [AuthRedirectGuard]
   },
   {
     path: 'forgetpswd',

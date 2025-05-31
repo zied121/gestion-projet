@@ -11,7 +11,9 @@ const {
     getOneUser,
     deleteUser,
     updateUser,
-    getAllUsers
+    getAllUsers,
+    analyticsForUser,
+    getFilteredUsers
 } = require("../Controllers/userController");
 
 router.post("/add/:organisationId",isAuth,isAdmin, createUser)
@@ -21,9 +23,10 @@ router.delete("/delete/:organisationId/:id", isAuth,isAdmin, deleteUser)
 
 router.put("/update/:id", isAuth,upload.single('image'), updateUser)
 
-
+router.get("/analytics/:id", isAuth, analyticsForUser)
 //get connteted user data
 router.get("/getone", isAuth, getOneUser)
+router.get('/search', isAuth, getFilteredUsers);
 
 //get all users
 router.get("/getall", isAuth, getAllUsers)

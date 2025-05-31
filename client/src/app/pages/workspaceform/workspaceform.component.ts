@@ -89,8 +89,9 @@ export class WorkspaceformComponent {
           this.showSuccess = true;
           this.susccessMessage = response.message;
 
-          this.router.navigate(['/workspace/' + response.organisation._id ]);
-        },
+this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+  this.router.navigate(['/workspace/' + response.organisation._id]);
+});        },
         error: (err: any) => {
           this.showError = true;
           this.errorMessage = err.error.message;
@@ -102,8 +103,14 @@ export class WorkspaceformComponent {
     if (this.joinWorkspaceForm.valid) {
       this.organisationService.onJoinWorkspace(this.joinWorkspaceForm.value).subscribe({
         next: (response: any) => {
+          console.log("reponse", response);
           this.showSuccess = true;
           this.susccessMessage = response.message;
+           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+  this.router.navigate(['/workspace/' + response.organisation._id]);
+});
+
+
         },
         error: (err: any) => {
           this.showError = true;

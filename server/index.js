@@ -53,6 +53,8 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
 });
+const teamRoutes = require('./Routes/TeamRoutes');
+
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
@@ -139,7 +141,7 @@ app.use('/api', participantRoutes);
 app.use('/api/holiday', holidayRoutes);
 app.use('/api', chatbotRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'Middleware/uploads')));
-
+app.use('/api/team', teamRoutes);
 
 
 

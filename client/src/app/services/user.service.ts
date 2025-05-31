@@ -67,6 +67,20 @@ export class UserService {
       });
 
 }
+  analyticsForUser(organisationid: string): Observable<any> {
+    return this.http.get<any>(`${API_URL}/analytics/${organisationid}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
+  getFilteredUsers(params: any): Observable<any> {
+  return this.http.get(`${API_URL}/search`, {
+    headers: this.getAuthHeaders(),
+    params: params
+  });
+}
+
 
 
 

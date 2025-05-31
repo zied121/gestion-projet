@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
         ref: 'Organisation',
         required: false
     },
+    teams: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Team',
+    required: false
+}],
     role:{
         type:String,
         required:false
