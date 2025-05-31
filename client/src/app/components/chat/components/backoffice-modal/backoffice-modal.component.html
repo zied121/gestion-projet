@@ -1,39 +1,43 @@
 <div class="modal-header">
-      <h5 class="modal-title" id="modal-basic-title">
-        {{ isEditMode ? 'Modifier une Room' : 'Ajouter une Room' }}
-      </h5>
-      <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+  <h5 class="modal-title" id="modal-basic-title">
+    {{ isEditMode ? 'Modifier une Room' : 'Ajouter une Room' }}
+  </h5>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form" (ngSubmit)="saveRoom()" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="name" class="form-label">Nom de la Room</label>
+      <input type="text" id="name" formControlName="name" class="form-control" />
     </div>
-    <div class="modal-body">
-      <form [formGroup]="form" (ngSubmit)="saveRoom()">
-        <div class="mb-3">
-          <label for="name" class="form-label">Nom de la Room</label>
-          <input type="text" id="name" formControlName="name" class="form-control" />
-        </div>
 
-
-        <div class="mb-3">
-          <label for="image" class="form-label">Image</label>
-          <input type="file" id="image" (change)="onFileSelected($event)" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-          <label for="projects" class="form-label">Projets liés</label>
-          <select id="projects" formControlName="project" class="form-select" required>
-            <option *ngFor="let project of projects" [value]="project._id">{{ project.name }}</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="members" class="form-label">Membres</label>
-          <select id="members" formControlName="members" class="form-select" multiple>
-            <option *ngFor="let member of members" [value]="member._id">{{ member.name }}</option>
-          </select>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeModal()">Annuler</button>
-          <button type="submit" class="btn btn-success">Enregistrer</button>
-        </div>
-      </form>
+    <div class="mb-3">
+      <label for="image" class="form-label">Image</label>
+      <input type="file" id="image" (change)="onFileSelected($event)" class="form-control" />
+      <div *ngIf="isEditMode && roomData?.image" class="mt-2">
+        <label class="form-label">Image actuelle :</label><br />
+        <img [src]="roomData?.image" alt="Image actuelle" class="img-thumbnail" style="max-height: 150px;" />
+      </div>
     </div>
+
+    <div class="mb-3">
+      <label for="projects" class="form-label">Projet lié</label>
+      <select id="projects" formControlName="project" class="form-select" required>
+        <option *ngFor="let project of projects" [value]="project._id">{{ project.name }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="members" class="form-label">Membres</label>
+      <select id="members" formControlName="members" class="form-select" multiple>
+        <option *ngFor="let member of members" [value]="member">{{ member }}</option>
+      </select>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Annuler</button>
+      <button type="submit" class="btn btn-success">Enregistrer</button>
+    </div>
+  </form>
+</div>

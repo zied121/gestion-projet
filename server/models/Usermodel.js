@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
     },
     motDePasse: {
         type: String,
-        required: true
+        required: false
     },
     Organisation_id: {
          type: Schema.Types.ObjectId,
@@ -48,7 +48,12 @@ const userSchema = new mongoose.Schema({
     otpExpires: {
         type: Date,
         required: false
-    }
+    },
+      google: {
+    access_token: String,
+    refresh_token: String,
+    expiry_date: Number,
+  },
 }, {
     timestamps: true 
 });

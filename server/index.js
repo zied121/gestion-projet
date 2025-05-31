@@ -42,6 +42,7 @@ const aiRoutes = require('./Routes/aiRoutes');
 const notificationRoutes = require("./Routes/NotificationRoutes");
 
 
+
 // Socket.io config (as is)
 const io = socketIo(server, { cors: { origin: '*' } });
 app.set('io', io);
@@ -57,6 +58,7 @@ io.on('connection', (socket) => {
 });
 
 // Routes setup
+app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
 app.use('/api', AuthRoutes);
 app.use('/api/users', userRouter);
 app.use('/api/organisation', OrganisationRoutes);
@@ -69,9 +71,9 @@ app.use('/api', require('./Routes/ProjectRoutes'));
 app.use('/api', require('./Routes/TaskRoutes'));
 app.use('/api', require('./Routes/aiRoutes'));
 app.use('/api', require('./Routes/NotificationRoutes'));
-app.use('/google', GoogleAuth);
+app.use('/api/google', GoogleAuth);
 app.use('/uploads', express.static(path.join(__dirname, 'Middleware', 'uploads')));
-
+//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Start server
 const port = 5000;
 server.listen(port, (err) =>

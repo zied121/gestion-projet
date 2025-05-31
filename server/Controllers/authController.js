@@ -127,7 +127,6 @@ const googleLogin = async (req, res) => {
 
 const googleRegister = async (req, res) => {
     const { token } = req.body;
-console.log("toekn",token);
     try {
         const ticket = await client.verifyIdToken({
             idToken: token,
@@ -135,7 +134,8 @@ console.log("toekn",token);
         });
 
         const payload = ticket.getPayload();
-        const { email, name, sub } = payload;
+        console.log("payload",payload);
+        const { email, given_name, picture ,family_name} = payload;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -144,16 +144,15 @@ console.log("toekn",token);
 
         const newUser = new User({
             email,
-            name,
-            googleId: sub,
-            Status: 'active',
+            nom: given_name,
+            prenom: family_name,
+            image: picture,
         });
 
         await newUser.save();
 
-        const jwtToken = jwt.sign({ id: newUser._id }, 'zied', { expiresIn: '10h' });
 
-        res.status(200).json({ token: jwtToken, role: newUser.role, msg: 'Registration successful' });
+        res.status(200).json({ msg: 'Registration successful' });
     } catch (err) {
         res.status(500).json({ msg: 'Google registration failed' });
     }

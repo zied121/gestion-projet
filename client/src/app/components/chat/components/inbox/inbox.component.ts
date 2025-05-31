@@ -27,7 +27,7 @@ export class InboxComponent implements OnInit, OnDestroy {
   users: any[] = [];
   selectedUserId: string = '';
   isCreatingRoom: boolean = false;
-  organisationId: string = '6810e0c5e88e782d899ad96b';
+  organisationId: any = localStorage.getItem('organisation');
   isSearching: boolean = false;
   
   unreadCounts: { [roomId: string]: number } = {};

@@ -7,7 +7,9 @@ import { SocketService } from '../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { Room, RoomService } from '../../services/room.service';
+import {  RoomService } from '../../services/room.service';
+import { Room } from '../../../../../../models/room.model'; // Import du modèle Room
+import { GoogleMeetService } from '../../services/googleservice.service';
 
 @Component({
   selector: 'app-room',
@@ -39,76 +41,44 @@ export class RoomComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private route: ActivatedRoute,
     private roomService: RoomService,
-  private cdr: ChangeDetectorRef 
+    private googleMeetService: GoogleMeetService
+
   ) {
     /*
     this.checkGoogleAuth();
     this.handleAuthRedirect();*/
   }
-private handleAuthRedirect() {
-  this.route.queryParams.subscribe(params => {
-    if (params['googleAuthSuccess'] && this.room?._id) {
-      // Only start call if we have a room ID
-      this.isGoogleAuthenticated = true;
-      this.startVideoCall();
-    } else if (params['googleAuthError']) {
-      alert('Google authentication failed. Please try again.');
+connectGoogleCalendar() {
+  this.googleMeetService.loginWithGoogle().subscribe({
+    next: () => {}, // Redirect happens in the service
+    error: err => {
+      console.error('Google login failed:', err);
     }
   });
 }
 
-signInWithGoogle() {
-  if (this.room?._id) {
-    this.roomService.initiateGoogleAuth(this.room._id);
-  } else {
-    this.roomService.initiateGoogleAuth();
-  }
-}
-  checkGoogleAuth() {
-    this.roomService.checkGoogleAuth().subscribe({
-      next: (response) => {
-        this.isGoogleAuthenticated = response.authenticated;
-      },
-      error: () => {
-        this.isGoogleAuthenticated = false;
-      }
-    });
-  }
-async startVideoCall() {
-   if (!this.room?._id) return;
-  
-  try {
-    // Type is now guaranteed to be AuthCheckResponse
-    const authCheck = await this.roomService.checkGoogleAuth().toPromise();
-    
-    // No need for undefined check since we have the interface
 
-    if (!this.isGoogleAuthenticated) {
-      this.signInWithGoogle();
-      return;
+startVideoCall(): void {
+  if (!this.currentRoomId) return;
+  this.isStartingCall = true;
+  this.roomService.startCall(this.currentRoomId).subscribe({
+    next: (response) => {
+      this.isStartingCall = false;
+      if (response && response.meetLink) {
+        window.open(response.meetLink, '_blank');
+      }
+    },
+    error: (err) => {
+      this.isStartingCall = false;
+      console.error('Failed to start video call:', err);
     }
-    this.isStartingCall = true;
-    const response = await this.roomService.startCall(this.room._id).toPromise();
-    
-    if (response?.meetLink) {
-      this.messageText = `Video call started: ${response.meetLink}`;
-      this.sendMessage();
-      setTimeout(() => {
-        window.open(response.meetLink, '_blank', 'noopener,noreferrer');
-      }, 300);
-    }
-  } catch (error) {
-    // Error handling remains the same
-  } finally {
-    this.isStartingCall = false;
-  }
+  });
 }
 
   ngOnInit(): void {
 
     const userId = localStorage.getItem('userId');
     this.currentUserId = userId ? userId : '';
-    console.log("currentUserId", this.currentUserId);
     this.route.paramMap.subscribe(params => {
       this.currentRoomId = params.get('id')!;
       this.messages = [];
@@ -441,17 +411,17 @@ jumpToMessage(messageId: string): void {
 }
 getUserColor(username: string): string {
   if (!username) return '#cccccc'; // Default gray for unknown users
-  
+
   // Simple hash function to convert name to color
   const colors = [
-    '#FFB6C1', '#FFD700', '#98FB98', '#87CEFA', 
+    '#FFB6C1', '#FFD700', '#98FB98', '#87CEFA',
     '#FFA07A', '#9370DB', '#20B2AA', '#F08080'
   ];
-  
+
   const hash = username.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
-  
+
   return colors[Math.abs(hash) % colors.length];
 }
 

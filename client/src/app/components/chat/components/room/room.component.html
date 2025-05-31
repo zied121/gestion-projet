@@ -7,12 +7,13 @@
     </div>
 
     <div class="header-right">
-      <button class="header-icon" title="Video Call" (click)="startVideoCall()">
-        <i class="fi fi-rr-video-camera-alt"></i>
-      </button>
+      <button (click)="connectGoogleCalendar()">Connect Google Calendar</button>
+
+      <button class="header-icon" title="Video Call"   (click)="startVideoCall()">
+        <i class="fi fi-rr-video-camera-alt"></i></button>
       <div *ngIf="!isGoogleAuthenticated" class="google-auth-notice">
-        <button (click)="signInWithGoogle()" class="google-signin-btn">
-        </button>
+      
+  
       </div>
       <!-- Updated clip icon to show pinned messages modal -->
       <button class="header-icon" title="Pinned Messages" (click)="showPinnedMessagesModal()">
