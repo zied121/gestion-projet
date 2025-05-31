@@ -273,22 +273,19 @@
             </hlm-dialog-content>
           </hlm-dialog>
 
-          <!-- Tailwind-based Custom Modal for Delete Confirmation -->
-          <div class="relative">
-            <input type="checkbox" id="delete-confirm-{{i}}" class="modal-toggle hidden">
-            <label for="delete-confirm-{{i}}" class="text-red-500 cursor-pointer">🗑</label>
-            <div class="fixed inset-0 bg-black bg-opacity-40 z-40 hidden" id="modal-bg-{{i}}"></div>
-            <div class="modal fixed z-50 inset-0 flex items-center justify-center hidden" id="modal-box-{{i}}">
-              <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">Confirm Deletion</h3>
-                <p class="text-gray-600 mb-4">Are you sure you want to delete <strong>{{ team.name }}</strong>? This action cannot be undone.</p>
-                <div class="flex justify-end gap-3">
-                  <label for="delete-confirm-{{i}}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer">Cancel</label>
-                  <label for="delete-confirm-{{i}}" (click)="deleteTeam(i)" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 cursor-pointer">Delete</label>
-                </div>
-              </div>
-            </div>
-          </div>
+          <hlm-alert-dialog>
+            <button brnAlertDialogTrigger title="Delete" class="text-red-500 hover:text-red-600">🗑</button>
+            <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+              <hlm-alert-dialog-header>
+                <h3 hlmAlertDialogTitle>Delete Team?</h3>
+                <p hlmAlertDialogDescription>This action cannot be undone.</p>
+              </hlm-alert-dialog-header>
+              <hlm-alert-dialog-footer>
+                <button hlmAlertDialogCancel (click)="ctx.close()">Cancel</button>
+                <button hlmAlertDialogAction (click)="deleteTeam(i); ctx.close()">Delete</button>
+              </hlm-alert-dialog-footer>
+            </hlm-alert-dialog-content>
+          </hlm-alert-dialog>
          
         </td>
       </tr>
