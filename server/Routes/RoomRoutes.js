@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const isauth = require("../Middleware/isauth");
+const isAuth = require("../Middleware/isauth");
 const isAdmin = require("../Middleware/adminorganisation");
 const validate = require('../Middleware/validate');
 const { ValideRoomSchema } = require("../models/Room");
@@ -24,7 +24,7 @@ router.post('/CreatePrivateRoom', isAuth, createPrivateRoom);
 ///router.post("/addRoom" , isAuth , validate(valideRoomSchema) , createRoom) 
 router.put("/UpdateRoom/:id" , isAuth, upload.single('image'), updateRoom)
 router.delete("/DeleteRoom/:id", isAuth, deleteRoom)
-router.post('/:id/start-call', isauth,createGoogleMeet);
+router.post('/:id/start-call', isAuth,createGoogleMeet);
 router.get('/searchRoom',isAuth , searchRooms);
 router.get('/getRoomsPerUser', isAuth, getRoomsByUser);
 router.get("/getRoomsPerowner", isAuth, getRoomsByOwner);
